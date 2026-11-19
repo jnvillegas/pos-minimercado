@@ -143,7 +143,7 @@ export function TeamManager({
       case "owner":
         return {
           label: "Dueño",
-          color: "bg-amber-500/15 text-amber-400 border-amber-500/30",
+          color: "bg-[#FE9820]/15 text-[#FE9820] border-[#FE9820]/30",
           icon: Crown,
         }
       case "manager":
@@ -155,13 +155,13 @@ export function TeamManager({
       case "cashier":
         return {
           label: "Cajero",
-          color: "bg-neutral-800 text-neutral-300 border-neutral-700",
+          color: "bg-neutral-800 text-neutral-700 border-neutral-300",
           icon: Users,
         }
       default:
         return {
           label: role,
-          color: "bg-neutral-800 text-neutral-400 border-neutral-700",
+          color: "bg-neutral-800 text-neutral-400 border-neutral-300",
           icon: Users,
         }
     }
@@ -176,7 +176,7 @@ export function TeamManager({
             <AlertCircle className="w-5 h-5 flex-shrink-0" />
             <span>{errorMsg}</span>
           </div>
-          <button onClick={() => setErrorMsg(null)} className="hover:text-white">
+          <button onClick={() => setErrorMsg(null)} className="hover:text-[#1F1F1F]">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -187,7 +187,7 @@ export function TeamManager({
             <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
             <span>{successMsg}</span>
           </div>
-          <button onClick={() => setSuccessMsg(null)} className="hover:text-white">
+          <button onClick={() => setSuccessMsg(null)} className="hover:text-[#1F1F1F]">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -196,7 +196,7 @@ export function TeamManager({
       {/* Header and Invite Trigger */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black tracking-tight text-white">
+          <h1 className="text-2xl font-black tracking-tight text-[#1F1F1F]">
             Equipo y Permisos (RBAC)
           </h1>
           <p className="text-xs text-neutral-400 mt-0.5">
@@ -218,11 +218,11 @@ export function TeamManager({
       </div>
 
       {/* Active Team Members Card */}
-      <div className="rounded-2xl bg-neutral-900 border border-neutral-800 overflow-hidden shadow-sm">
-        <div className="p-4 border-b border-neutral-800 flex items-center justify-between">
+      <div className="rounded-2xl bg-white border border-neutral-200 overflow-hidden shadow-sm">
+        <div className="p-4 border-b border-neutral-200 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Users className="w-5 h-5 text-amber-400" />
-            <h3 className="font-bold text-white text-base">Miembros Activos</h3>
+            <Users className="w-5 h-5 text-[#FE9820]" />
+            <h3 className="font-bold text-[#1F1F1F] text-base">Miembros Activos</h3>
           </div>
           <span className="text-xs text-neutral-500">{members.length} miembros</span>
         </div>
@@ -230,7 +230,7 @@ export function TeamManager({
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-sm">
             <thead>
-              <tr className="border-b border-neutral-800 bg-neutral-950/60 text-[11px] font-semibold text-neutral-400 uppercase tracking-wider">
+              <tr className="border-b border-neutral-200 bg-neutral-50/60 text-[11px] font-semibold text-neutral-400 uppercase tracking-wider">
                 <th className="py-3 px-4">Usuario / Email</th>
                 <th className="py-3 px-4">Rol Asignado</th>
                 <th className="py-3 px-4">Fecha de Ingreso</th>
@@ -245,9 +245,9 @@ export function TeamManager({
                 const isOwner = m.role === "owner"
 
                 return (
-                  <tr key={m.id} className="hover:bg-neutral-800/40 transition-colors">
-                    <td className="py-3.5 px-4 font-medium text-white flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full bg-neutral-800 border border-neutral-700 flex items-center justify-center text-xs font-bold text-amber-400">
+                  <tr key={m.id} className="hover:bg-neutral-100/40 transition-colors">
+                    <td className="py-3.5 px-4 font-medium text-[#1F1F1F] flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-full bg-neutral-800 border border-neutral-300 flex items-center justify-center text-xs font-bold text-[#FE9820]">
                         {(m.email || "U").charAt(0).toUpperCase()}
                       </div>
                       <div>
@@ -279,7 +279,7 @@ export function TeamManager({
                           onClick={() => handleRemoveMember(m)}
                           disabled={isPending}
                           title="Desvincular miembro"
-                          className="p-1.5 rounded-lg text-neutral-500 hover:text-red-400 hover:bg-neutral-800 transition-colors"
+                          className="p-1.5 rounded-lg text-neutral-500 hover:text-red-400 hover:bg-neutral-100 transition-colors"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -297,11 +297,11 @@ export function TeamManager({
 
       {/* Pending Invitations Card */}
       {invitations.length > 0 && (
-        <div className="rounded-2xl bg-neutral-900 border border-neutral-800 overflow-hidden shadow-sm">
-          <div className="p-4 border-b border-neutral-800 flex items-center justify-between">
+        <div className="rounded-2xl bg-white border border-neutral-200 overflow-hidden shadow-sm">
+          <div className="p-4 border-b border-neutral-200 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Mail className="w-5 h-5 text-blue-400" />
-              <h3 className="font-bold text-white text-base">Invitaciones Pendientes</h3>
+              <h3 className="font-bold text-[#1F1F1F] text-base">Invitaciones Pendientes</h3>
             </div>
             <span className="text-xs text-neutral-500">{invitations.length} pendientes</span>
           </div>
@@ -309,7 +309,7 @@ export function TeamManager({
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-sm">
               <thead>
-                <tr className="border-b border-neutral-800 bg-neutral-950/60 text-[11px] font-semibold text-neutral-400 uppercase tracking-wider">
+                <tr className="border-b border-neutral-200 bg-neutral-50/60 text-[11px] font-semibold text-neutral-400 uppercase tracking-wider">
                   <th className="py-3 px-4">Correo Invitado</th>
                   <th className="py-3 px-4">Rol Ofrecido</th>
                   <th className="py-3 px-4">Enlace de Aceptación</th>
@@ -322,8 +322,8 @@ export function TeamManager({
                   const isCopied = copiedToken === inv.token
 
                   return (
-                    <tr key={inv.id} className="hover:bg-neutral-800/40 transition-colors">
-                      <td className="py-3.5 px-4 font-medium text-white">{inv.email}</td>
+                    <tr key={inv.id} className="hover:bg-neutral-100/40 transition-colors">
+                      <td className="py-3.5 px-4 font-medium text-[#1F1F1F]">{inv.email}</td>
 
                       <td className="py-3.5 px-4">
                         <span
@@ -336,7 +336,7 @@ export function TeamManager({
                       <td className="py-3.5 px-4">
                         <button
                           onClick={() => handleCopyLink(inv.token)}
-                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-neutral-950 border border-neutral-800 hover:border-neutral-700 text-xs font-mono text-neutral-300 transition-colors"
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-neutral-50 border border-neutral-200 hover:border-neutral-300 text-xs font-mono text-neutral-700 transition-colors"
                         >
                           {isCopied ? (
                             <Check className="w-3.5 h-3.5 text-emerald-400" />
@@ -352,7 +352,7 @@ export function TeamManager({
                           onClick={() => handleRevokeInvite(inv.id)}
                           disabled={isPending}
                           title="Revocar invitación"
-                          className="p-1.5 rounded-lg text-neutral-500 hover:text-red-400 hover:bg-neutral-800 transition-colors text-xs"
+                          className="p-1.5 rounded-lg text-neutral-500 hover:text-red-400 hover:bg-neutral-100 transition-colors text-xs"
                         >
                           Revocar
                         </button>
@@ -369,15 +369,15 @@ export function TeamManager({
       {/* Modal: Invite Staff */}
       {isInviteModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="w-full max-w-md rounded-2xl bg-neutral-900 border border-neutral-800 shadow-2xl p-6 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-neutral-800">
+          <div className="w-full max-w-md rounded-2xl bg-white border border-neutral-200 shadow-2xl p-6 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-neutral-200">
               <div className="flex items-center gap-2">
-                <UserPlus className="w-5 h-5 text-amber-400" />
-                <h3 className="font-bold text-white text-base">Invitar Empleado</h3>
+                <UserPlus className="w-5 h-5 text-[#FE9820]" />
+                <h3 className="font-bold text-[#1F1F1F] text-base">Invitar Empleado</h3>
               </div>
               <button
                 onClick={() => setIsInviteModalOpen(false)}
-                className="text-neutral-400 hover:text-white"
+                className="text-neutral-400 hover:text-[#1F1F1F]"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -395,14 +395,14 @@ export function TeamManager({
                     type="text"
                     readOnly
                     value={createdInviteUrl}
-                    className="flex-1 px-3 py-2 rounded-xl bg-neutral-950 border border-neutral-800 font-mono text-xs text-white"
+                    className="flex-1 px-3 py-2 rounded-xl bg-neutral-50 border border-neutral-200 font-mono text-xs text-[#1F1F1F]"
                   />
                   <button
                     onClick={() => {
                       navigator.clipboard.writeText(createdInviteUrl)
                       showNotification("Enlace copiado")
                     }}
-                    className="px-3 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-bold text-xs"
+                    className="px-3 py-2 rounded-xl bg-[#FE9820] hover:bg-[#FE9820]/90 text-neutral-950 font-bold text-xs"
                   >
                     Copiar
                   </button>
@@ -410,7 +410,7 @@ export function TeamManager({
 
                 <button
                   onClick={() => setIsInviteModalOpen(false)}
-                  className="w-full py-2.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-white font-semibold text-xs"
+                  className="w-full py-2.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-[#1F1F1F] font-semibold text-xs"
                 >
                   Finalizar
                 </button>
@@ -418,7 +418,7 @@ export function TeamManager({
             ) : (
               <form onSubmit={handleCreateInvite} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-semibold text-neutral-300 mb-1">
+                  <label className="block text-xs font-semibold text-neutral-700 mb-1">
                     Correo Electrónico del Empleado *
                   </label>
                   <div className="relative">
@@ -430,19 +430,19 @@ export function TeamManager({
                       value={emailInput}
                       onChange={(e) => setEmailInput(e.target.value)}
                       placeholder="empleado@gmail.com"
-                      className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-amber-500"
+                      className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-neutral-50 border border-neutral-200 text-sm text-[#1F1F1F] placeholder-neutral-500 focus:outline-none focus:border-[#FE9820]"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-neutral-300 mb-1">
+                  <label className="block text-xs font-semibold text-neutral-700 mb-1">
                     Rol en el Negocio
                   </label>
                   <select
                     value={roleInput}
                     onChange={(e) => setRoleInput(e.target.value as "manager" | "cashier")}
-                    className="w-full px-3 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 text-xs text-neutral-200 focus:outline-none focus:border-amber-500"
+                    className="w-full px-3 py-2.5 rounded-xl bg-neutral-50 border border-neutral-200 text-xs text-neutral-800 focus:outline-none focus:border-[#FE9820]"
                   >
                     <option value="cashier">
                       Cajero (Solo cobra en POS y opera caja; costos ocultos)
@@ -453,11 +453,11 @@ export function TeamManager({
                   </select>
                 </div>
 
-                <div className="pt-3 border-t border-neutral-800 flex items-center justify-end gap-2">
+                <div className="pt-3 border-t border-neutral-200 flex items-center justify-end gap-2">
                   <button
                     type="button"
                     onClick={() => setIsInviteModalOpen(false)}
-                    className="px-4 py-2 rounded-xl border border-neutral-800 text-neutral-400 hover:text-white text-xs"
+                    className="px-4 py-2 rounded-xl border border-neutral-200 text-neutral-400 hover:text-[#1F1F1F] text-xs"
                   >
                     Cancelar
                   </button>

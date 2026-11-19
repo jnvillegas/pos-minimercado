@@ -224,7 +224,7 @@ export function CashRegisterView({
             <AlertCircle className="w-5 h-5 flex-shrink-0" />
             <span>{errorMsg}</span>
           </div>
-          <button onClick={() => setErrorMsg(null)} className="hover:text-white">
+          <button onClick={() => setErrorMsg(null)} className="hover:text-[#1F1F1F]">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -235,7 +235,7 @@ export function CashRegisterView({
             <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
             <span>{successMsg}</span>
           </div>
-          <button onClick={() => setSuccessMsg(null)} className="hover:text-white">
+          <button onClick={() => setSuccessMsg(null)} className="hover:text-[#1F1F1F]">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -244,9 +244,9 @@ export function CashRegisterView({
       {/* Main Shift Status Card */}
       {activeShift ? (
         /* State B: OPEN SHIFT (Active) */
-        <div className="rounded-2xl bg-neutral-900 border border-neutral-800 p-6 shadow-sm space-y-6">
+        <div className="rounded-2xl bg-white border border-neutral-200 p-6 shadow-sm space-y-6">
           {/* Header Banner */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-neutral-800">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-neutral-200">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
                 <Unlock className="w-6 h-6" />
@@ -254,7 +254,7 @@ export function CashRegisterView({
               <div>
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-                  <h2 className="text-xl font-bold text-white">Turno de Caja Abierto</h2>
+                  <h2 className="text-xl font-bold text-[#1F1F1F]">Turno de Caja Abierto</h2>
                 </div>
                 <p className="text-xs text-neutral-400 flex items-center gap-2 mt-0.5">
                   <Clock className="w-3.5 h-3.5 text-neutral-500" />
@@ -267,7 +267,7 @@ export function CashRegisterView({
 
             <button
               onClick={handleOpenCloseModal}
-              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-500 to-red-600 hover:from-red-400 hover:to-red-500 text-white font-bold text-sm shadow-lg shadow-red-500/20 flex items-center gap-2 transition-all"
+              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-500 to-red-600 hover:from-red-400 hover:to-red-500 text-[#1F1F1F] font-bold text-sm shadow-lg shadow-red-500/20 flex items-center gap-2 transition-all"
             >
               <Lock className="w-4 h-4" />
               <span>Cerrar Turno y Arqueo</span>
@@ -277,19 +277,19 @@ export function CashRegisterView({
           {/* Metric Cards Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Metric 1: Fondo Inicial */}
-            <div className="p-4 rounded-xl bg-neutral-950 border border-neutral-800/80">
+            <div className="p-4 rounded-xl bg-neutral-50 border border-neutral-200/80">
               <div className="flex items-center justify-between text-neutral-400 text-xs mb-1">
                 <span>Fondo Inicial</span>
                 <Banknote className="w-4 h-4 text-neutral-500" />
               </div>
-              <p className="text-xl font-bold font-mono text-white">
+              <p className="text-xl font-bold font-mono text-[#1F1F1F]">
                 {formatMoney(activeShift.initial_cash)}
               </p>
               <p className="text-[11px] text-neutral-500 mt-1">Efectivo de apertura</p>
             </div>
 
             {/* Metric 2: Ventas en Efectivo */}
-            <div className="p-4 rounded-xl bg-neutral-950 border border-neutral-800/80">
+            <div className="p-4 rounded-xl bg-neutral-50 border border-neutral-200/80">
               <div className="flex items-center justify-between text-neutral-400 text-xs mb-1">
                 <span>Ventas Efectivo</span>
                 <TrendingUp className="w-4 h-4 text-emerald-500" />
@@ -301,7 +301,7 @@ export function CashRegisterView({
             </div>
 
             {/* Metric 3: Ventas Digitales */}
-            <div className="p-4 rounded-xl bg-neutral-950 border border-neutral-800/80">
+            <div className="p-4 rounded-xl bg-neutral-50 border border-neutral-200/80">
               <div className="flex items-center justify-between text-neutral-400 text-xs mb-1">
                 <span>Ventas Digitales</span>
                 <CreditCard className="w-4 h-4 text-blue-400" />
@@ -313,10 +313,10 @@ export function CashRegisterView({
             </div>
 
             {/* Metric 4: Efectivo Esperado en Cajón */}
-            <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30">
-              <div className="flex items-center justify-between text-amber-400 text-xs mb-1">
+            <div className="p-4 rounded-xl bg-[#FE9820]/10 border border-[#FE9820]/30">
+              <div className="flex items-center justify-between text-[#FE9820] text-xs mb-1">
                 <span className="font-semibold uppercase tracking-wider">Efectivo Esperado</span>
-                <DollarSign className="w-4 h-4 text-amber-400" />
+                <DollarSign className="w-4 h-4 text-[#FE9820]" />
               </div>
               <p className="text-2xl font-black font-mono text-amber-300">
                 {formatMoney(activeMetrics?.expected_cash ?? activeShift.initial_cash)}
@@ -326,17 +326,17 @@ export function CashRegisterView({
           </div>
 
           {/* Quick info row */}
-          <div className="p-3.5 rounded-xl bg-neutral-950/60 border border-neutral-800/60 flex items-center justify-between text-xs text-neutral-400">
+          <div className="p-3.5 rounded-xl bg-neutral-50/60 border border-neutral-200/60 flex items-center justify-between text-xs text-neutral-400">
             <div className="flex items-center gap-2">
               <Receipt className="w-4 h-4 text-neutral-500" />
               <span>
                 Total de operaciones registradas:{" "}
-                <strong className="text-white">{activeMetrics?.sales_count ?? 0} ventas</strong>
+                <strong className="text-[#1F1F1F]">{activeMetrics?.sales_count ?? 0} ventas</strong>
               </span>
             </div>
             <span>
               Volumen total facturado:{" "}
-              <strong className="text-white font-mono">
+              <strong className="text-[#1F1F1F] font-mono">
                 {formatMoney(activeMetrics?.total_sales ?? 0)}
               </strong>
             </span>
@@ -344,12 +344,12 @@ export function CashRegisterView({
         </div>
       ) : (
         /* State A: CLOSED SHIFT (Need to Open) */
-        <div className="rounded-2xl bg-neutral-900 border border-neutral-800 p-8 shadow-sm text-center max-w-xl mx-auto">
-          <div className="w-16 h-16 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 mx-auto mb-4 shadow-lg shadow-amber-500/10">
+        <div className="rounded-2xl bg-white border border-neutral-200 p-8 shadow-sm text-center max-w-xl mx-auto">
+          <div className="w-16 h-16 rounded-2xl bg-[#FE9820]/15 border border-[#FE9820]/30 flex items-center justify-center text-[#FE9820] mx-auto mb-4 shadow-lg shadow-amber-500/10">
             <Lock className="w-8 h-8" />
           </div>
 
-          <h2 className="text-2xl font-bold text-white mb-2">La Caja está Cerrada</h2>
+          <h2 className="text-2xl font-bold text-[#1F1F1F] mb-2">La Caja está Cerrada</h2>
           <p className="text-sm text-neutral-400 max-w-md mx-auto mb-6">
             Para comenzar a operar el punto de venta y registrar ventas, abrí un nuevo turno
             indicando el fondo inicial de cambio disponible en el cajón.
@@ -357,7 +357,7 @@ export function CashRegisterView({
 
           <form onSubmit={handleOpenShift} className="space-y-4 text-left">
             <div>
-              <label className="block text-xs font-semibold text-neutral-300 mb-1.5 uppercase tracking-wider">
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">
                 Fondo Inicial en Efectivo ($)
               </label>
               <div className="relative">
@@ -370,7 +370,7 @@ export function CashRegisterView({
                   value={initialCashInput}
                   onChange={(e) => setInitialCashInput(e.target.value)}
                   placeholder="0.00"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-neutral-950 border border-neutral-800 text-lg font-mono font-bold text-white placeholder-neutral-500 focus:outline-none focus:border-amber-500"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-neutral-50 border border-neutral-200 text-lg font-mono font-bold text-[#1F1F1F] placeholder-neutral-500 focus:outline-none focus:border-[#FE9820]"
                 />
               </div>
             </div>
@@ -383,7 +383,7 @@ export function CashRegisterView({
                   key={amt}
                   type="button"
                   onClick={() => setInitialCashInput(amt.toString())}
-                  className="px-2.5 py-1 rounded-lg bg-neutral-950 border border-neutral-800 hover:border-neutral-700 text-xs font-mono text-neutral-300 transition-colors"
+                  className="px-2.5 py-1 rounded-lg bg-neutral-50 border border-neutral-200 hover:border-neutral-300 text-xs font-mono text-neutral-700 transition-colors"
                 >
                   ${amt.toLocaleString("es-AR")}
                 </button>
@@ -407,11 +407,11 @@ export function CashRegisterView({
       )}
 
       {/* Historical Shift Log Table */}
-      <div className="rounded-2xl bg-neutral-900 border border-neutral-800 overflow-hidden shadow-sm">
-        <div className="p-4 border-b border-neutral-800 flex items-center justify-between">
+      <div className="rounded-2xl bg-white border border-neutral-200 overflow-hidden shadow-sm">
+        <div className="p-4 border-b border-neutral-200 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Landmark className="w-5 h-5 text-amber-400" />
-            <h3 className="font-bold text-white text-base">Historial de Turnos y Arqueos</h3>
+            <Landmark className="w-5 h-5 text-[#FE9820]" />
+            <h3 className="font-bold text-[#1F1F1F] text-base">Historial de Turnos y Arqueos</h3>
           </div>
           <span className="text-xs text-neutral-500">
             {historyShifts.length} turnos registrados
@@ -421,7 +421,7 @@ export function CashRegisterView({
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-sm">
             <thead>
-              <tr className="border-b border-neutral-800 bg-neutral-950/60 text-[11px] font-semibold text-neutral-400 uppercase tracking-wider">
+              <tr className="border-b border-neutral-200 bg-neutral-50/60 text-[11px] font-semibold text-neutral-400 uppercase tracking-wider">
                 <th className="py-3 px-4">Fecha y Horarios</th>
                 <th className="py-3 px-4 text-right">Fondo Inicial</th>
                 <th className="py-3 px-4 text-right">Esperado</th>
@@ -448,10 +448,10 @@ export function CashRegisterView({
                   const isSurplus = diff > 0.01
 
                   return (
-                    <tr key={shift.id} className="hover:bg-neutral-800/40 transition-colors">
+                    <tr key={shift.id} className="hover:bg-neutral-100/40 transition-colors">
                       {/* Dates */}
                       <td className="py-3.5 px-4">
-                        <p className="font-semibold text-white">
+                        <p className="font-semibold text-[#1F1F1F]">
                           {formatDate(shift.opened_at)}
                         </p>
                         {shift.closed_at ? (
@@ -471,12 +471,12 @@ export function CashRegisterView({
                       </td>
 
                       {/* Expected */}
-                      <td className="py-3.5 px-4 text-right font-mono text-neutral-300">
+                      <td className="py-3.5 px-4 text-right font-mono text-neutral-700">
                         {shift.expected_cash !== null ? formatMoney(shift.expected_cash) : "-"}
                       </td>
 
                       {/* Actual Counted */}
-                      <td className="py-3.5 px-4 text-right font-mono font-bold text-white">
+                      <td className="py-3.5 px-4 text-right font-mono font-bold text-[#1F1F1F]">
                         {shift.actual_cash !== null ? formatMoney(shift.actual_cash) : "-"}
                       </td>
 
@@ -503,7 +503,7 @@ export function CashRegisterView({
                       {/* Notes */}
                       <td className="py-3.5 px-4">
                         {shift.notes ? (
-                          <p className="text-xs text-neutral-300 max-w-xs truncate" title={shift.notes}>
+                          <p className="text-xs text-neutral-700 max-w-xs truncate" title={shift.notes}>
                             {shift.notes}
                           </p>
                         ) : (
@@ -522,30 +522,30 @@ export function CashRegisterView({
       {/* Modal: Arqueo y Cierre de Caja */}
       {isCloseModalOpen && activeShift && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="w-full max-w-lg rounded-2xl bg-neutral-900 border border-neutral-800 shadow-2xl p-6 space-y-5">
-            <div className="flex items-center justify-between pb-3 border-b border-neutral-800">
+          <div className="w-full max-w-lg rounded-2xl bg-white border border-neutral-200 shadow-2xl p-6 space-y-5">
+            <div className="flex items-center justify-between pb-3 border-b border-neutral-200">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-lg bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-400">
                   <Lock className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-white text-base">Arqueo y Cierre de Caja</h3>
+                  <h3 className="font-bold text-[#1F1F1F] text-base">Arqueo y Cierre de Caja</h3>
                   <p className="text-xs text-neutral-400">Validá el efectivo físico en cajón</p>
                 </div>
               </div>
               <button
                 onClick={() => setIsCloseModalOpen(false)}
-                className="text-neutral-400 hover:text-white"
+                className="text-neutral-400 hover:text-[#1F1F1F]"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Expected Balance Card */}
-            <div className="p-4 rounded-xl bg-neutral-950 border border-neutral-800 flex items-center justify-between">
+            <div className="p-4 rounded-xl bg-neutral-50 border border-neutral-200 flex items-center justify-between">
               <div>
                 <p className="text-xs text-neutral-400">Efectivo Teórico Esperado</p>
-                <p className="text-2xl font-black font-mono text-amber-400 mt-0.5">
+                <p className="text-2xl font-black font-mono text-[#FE9820] mt-0.5">
                   {formatMoney(activeMetrics?.expected_cash ?? activeShift.initial_cash)}
                 </p>
                 <p className="text-[11px] text-neutral-500 mt-1">
@@ -558,7 +558,7 @@ export function CashRegisterView({
             <form onSubmit={handleConfirmClose} className="space-y-4">
               {/* Actual Counted Cash Input */}
               <div>
-                <label className="block text-xs font-semibold text-neutral-300 mb-1.5">
+                <label className="block text-xs font-semibold text-neutral-700 mb-1.5">
                   Efectivo Real Contado en Cajón ($) *
                 </label>
                 <div className="relative">
@@ -570,7 +570,7 @@ export function CashRegisterView({
                     required
                     value={countedCashInput}
                     onChange={(e) => setCountedCashInput(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 text-lg font-mono font-bold text-white focus:outline-none focus:border-amber-500"
+                    className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-neutral-50 border border-neutral-200 text-lg font-mono font-bold text-[#1F1F1F] focus:outline-none focus:border-[#FE9820]"
                   />
                 </div>
               </div>
@@ -623,7 +623,7 @@ export function CashRegisterView({
 
                 return (
                   <div>
-                    <label className="block text-xs font-semibold text-neutral-300 mb-1">
+                    <label className="block text-xs font-semibold text-neutral-700 mb-1">
                       {hasDiff ? "Motivo / Justificación de la diferencia *" : "Notas de Cierre (Opcional)"}
                     </label>
                     <textarea
@@ -636,10 +636,10 @@ export function CashRegisterView({
                           ? "Explicá el motivo del faltante o sobrante (obligatorio)..."
                           : "Observaciones del turno..."
                       }
-                      className={`w-full px-3 py-2 rounded-xl bg-neutral-950 border text-xs text-white placeholder-neutral-500 focus:outline-none ${
+                      className={`w-full px-3 py-2 rounded-xl bg-neutral-50 border text-xs text-[#1F1F1F] placeholder-neutral-500 focus:outline-none ${
                         hasDiff && notesInput.trim().length < 4
                           ? "border-red-500/50 focus:border-red-500"
-                          : "border-neutral-800 focus:border-amber-500"
+                          : "border-neutral-200 focus:border-[#FE9820]"
                       }`}
                     />
                     {hasDiff && notesInput.trim().length < 4 && (
@@ -652,18 +652,18 @@ export function CashRegisterView({
               })()}
 
               {/* Modal Actions */}
-              <div className="pt-3 border-t border-neutral-800 flex items-center justify-end gap-2">
+              <div className="pt-3 border-t border-neutral-200 flex items-center justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setIsCloseModalOpen(false)}
-                  className="px-4 py-2 rounded-xl border border-neutral-800 text-neutral-400 hover:text-white text-xs"
+                  className="px-4 py-2 rounded-xl border border-neutral-200 text-neutral-400 hover:text-[#1F1F1F] text-xs"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={isPending}
-                  className="px-5 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs shadow-md shadow-red-600/20 disabled:opacity-50 flex items-center gap-1.5"
+                  className="px-5 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-[#1F1F1F] font-bold text-xs shadow-md shadow-red-600/20 disabled:opacity-50 flex items-center gap-1.5"
                 >
                   {isPending ? (
                     <RefreshCw className="w-3.5 h-3.5 animate-spin" />

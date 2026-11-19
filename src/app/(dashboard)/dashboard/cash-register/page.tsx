@@ -123,10 +123,10 @@ export default async function CashRegisterPage() {
     <div className="space-y-6">
       {/* Title */}
       <div>
-        <h1 className="text-2xl font-black tracking-tight text-white">
+        <h1 className="text-2xl font-black tracking-tight text-[#1F1F1F]">
           Caja y Control de Turnos
         </h1>
-        <p className="text-xs text-neutral-400 mt-0.5">
+        <p className="text-xs text-neutral-500 mt-0.5">
           Apertura de turno, arqueo ciego, control de diferencias y auditoría de efectivo
         </p>
       </div>

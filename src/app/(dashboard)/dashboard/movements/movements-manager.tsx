@@ -205,7 +205,7 @@ export function MovementsManager({
       case "debit_card":
         return { label: "Débito", icon: CreditCard, color: "text-purple-400" }
       case "credit_card":
-        return { label: "Crédito", icon: CreditCard, color: "text-amber-400" }
+        return { label: "Crédito", icon: CreditCard, color: "text-[#FE9820]" }
       default:
         return { label: method, icon: DollarSign, color: "text-neutral-400" }
     }
@@ -220,7 +220,7 @@ export function MovementsManager({
             <AlertCircle className="w-5 h-5 flex-shrink-0" />
             <span>{errorMsg}</span>
           </div>
-          <button onClick={() => setErrorMsg(null)} className="hover:text-white">
+          <button onClick={() => setErrorMsg(null)} className="hover:text-[#1F1F1F]">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -231,7 +231,7 @@ export function MovementsManager({
             <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
             <span>{successMsg}</span>
           </div>
-          <button onClick={() => setSuccessMsg(null)} className="hover:text-white">
+          <button onClick={() => setSuccessMsg(null)} className="hover:text-[#1F1F1F]">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -240,7 +240,7 @@ export function MovementsManager({
       {/* Header with Title and Primary Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black tracking-tight text-white">
+          <h1 className="text-2xl font-black tracking-tight text-[#1F1F1F]">
             Movimientos y Flujo Diario
           </h1>
           <p className="text-xs text-neutral-400 mt-0.5">
@@ -251,7 +251,7 @@ export function MovementsManager({
         <div className="flex items-center gap-2.5">
           <Link
             href="/dashboard/pos"
-            className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md shadow-emerald-600/20 flex items-center gap-2 transition-all"
+            className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-[#1F1F1F] font-bold text-xs shadow-md shadow-emerald-600/20 flex items-center gap-2 transition-all"
           >
             <ShoppingBag className="w-4 h-4" />
             <span>+ Nueva Venta (POS)</span>
@@ -259,7 +259,7 @@ export function MovementsManager({
 
           <button
             onClick={() => handleOpenModal("income")}
-            className="px-3.5 py-2.5 rounded-xl bg-neutral-900 border border-neutral-800 text-xs font-semibold text-emerald-400 hover:text-emerald-300 hover:border-emerald-500/40 transition-all flex items-center gap-1.5"
+            className="px-3.5 py-2.5 rounded-xl bg-white border border-neutral-200 text-xs font-semibold text-emerald-400 hover:text-emerald-300 hover:border-emerald-500/40 transition-all flex items-center gap-1.5"
           >
             <ArrowDownLeft className="w-4 h-4 text-emerald-400" />
             <span>+ Ingreso</span>
@@ -278,7 +278,7 @@ export function MovementsManager({
       {/* Financial KPI Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {/* Card 1: Balance (Net Cash Flow) */}
-        <div className="p-5 rounded-2xl bg-neutral-900 border border-neutral-800 shadow-sm flex items-center justify-between">
+        <div className="p-5 rounded-2xl bg-white border border-neutral-200 shadow-sm flex items-center justify-between">
           <div>
             <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider">
               Balance Neto
@@ -309,7 +309,7 @@ export function MovementsManager({
         </div>
 
         {/* Card 2: Total Incomes */}
-        <div className="p-5 rounded-2xl bg-neutral-900 border border-neutral-800 shadow-sm flex items-center justify-between">
+        <div className="p-5 rounded-2xl bg-white border border-neutral-200 shadow-sm flex items-center justify-between">
           <div>
             <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider">
               Ingresos Totales
@@ -325,7 +325,7 @@ export function MovementsManager({
         </div>
 
         {/* Card 3: Total Expenses */}
-        <div className="p-5 rounded-2xl bg-neutral-900 border border-neutral-800 shadow-sm flex items-center justify-between">
+        <div className="p-5 rounded-2xl bg-white border border-neutral-200 shadow-sm flex items-center justify-between">
           <div>
             <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider">
               Gastos y Egresos
@@ -342,17 +342,17 @@ export function MovementsManager({
       </div>
 
       {/* Filter Toolbar */}
-      <div className="p-4 rounded-2xl bg-neutral-900 border border-neutral-800 space-y-4">
+      <div className="p-4 rounded-2xl bg-white border border-neutral-200 space-y-4">
         {/* Row 1: Tabs & Date Presets */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
           {/* Tabs: Resumen, Ingresos, Gastos */}
-          <div className="inline-flex p-1 rounded-xl bg-neutral-950 border border-neutral-800">
+          <div className="inline-flex p-1 rounded-xl bg-neutral-50 border border-neutral-200">
             <button
               onClick={() => setActiveTab("all")}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                 activeTab === "all"
-                  ? "bg-neutral-800 text-white shadow-sm"
-                  : "text-neutral-400 hover:text-white"
+                  ? "bg-neutral-800 text-[#1F1F1F] shadow-sm"
+                  : "text-neutral-400 hover:text-[#1F1F1F]"
               }`}
             >
               Resumen ({items.length})
@@ -397,8 +397,8 @@ export function MovementsManager({
                 onClick={() => setDatePreset(p.id)}
                 className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-colors ${
                   datePreset === p.id
-                    ? "bg-amber-500 text-neutral-950 font-bold"
-                    : "bg-neutral-950 border border-neutral-800 text-neutral-400 hover:text-white"
+                    ? "bg-[#FE9820] text-neutral-950 font-bold"
+                    : "bg-neutral-50 border border-neutral-200 text-neutral-400 hover:text-[#1F1F1F]"
                 }`}
               >
                 {p.label}
@@ -408,7 +408,7 @@ export function MovementsManager({
         </div>
 
         {/* Row 2: Search & Payment Method Filter */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-3 border-t border-neutral-800/80">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-3 border-t border-neutral-200/80">
           <div className="relative flex-1">
             <Search className="w-4 h-4 text-neutral-500 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
@@ -416,12 +416,12 @@ export function MovementsManager({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Buscar por concepto o categoría (ej: Distribuidora, Luz, Venta #...)..."
-              className="w-full pl-9 pr-3 py-2 rounded-xl bg-neutral-950 border border-neutral-800 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-amber-500"
+              className="w-full pl-9 pr-3 py-2 rounded-xl bg-neutral-50 border border-neutral-200 text-xs text-[#1F1F1F] placeholder-neutral-500 focus:outline-none focus:border-[#FE9820]"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-white text-xs"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-[#1F1F1F] text-xs"
               >
                 Limpiar
               </button>
@@ -431,7 +431,7 @@ export function MovementsManager({
           <select
             value={paymentFilter}
             onChange={(e) => setPaymentFilter(e.target.value)}
-            className="px-3 py-2 rounded-xl bg-neutral-950 border border-neutral-800 text-xs text-neutral-200 focus:outline-none focus:border-amber-500"
+            className="px-3 py-2 rounded-xl bg-neutral-50 border border-neutral-200 text-xs text-neutral-800 focus:outline-none focus:border-[#FE9820]"
           >
             <option value="all">Todos los Métodos de Pago</option>
             <option value="cash">Efectivo</option>
@@ -443,11 +443,11 @@ export function MovementsManager({
       </div>
 
       {/* Unified Activity Table */}
-      <div className="rounded-2xl bg-neutral-900 border border-neutral-800 overflow-hidden shadow-sm">
+      <div className="rounded-2xl bg-white border border-neutral-200 overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-sm">
             <thead>
-              <tr className="border-b border-neutral-800 bg-neutral-950/60 text-[11px] font-semibold text-neutral-400 uppercase tracking-wider">
+              <tr className="border-b border-neutral-200 bg-neutral-50/60 text-[11px] font-semibold text-neutral-400 uppercase tracking-wider">
                 <th className="py-3 px-4">Fecha y Hora</th>
                 <th className="py-3 px-4">Tipo & Categoría</th>
                 <th className="py-3 px-4">Concepto / Descripción</th>
@@ -478,7 +478,7 @@ export function MovementsManager({
                   return (
                     <tr
                       key={item.id}
-                      className="hover:bg-neutral-800/40 transition-colors group"
+                      className="hover:bg-neutral-100/40 transition-colors group"
                     >
                       {/* Date */}
                       <td className="py-3.5 px-4 whitespace-nowrap text-xs text-neutral-400">
@@ -507,7 +507,7 @@ export function MovementsManager({
                       <td className="py-3.5 px-4">
                         <button
                           onClick={() => setSelectedItemDetail(item)}
-                          className="font-medium text-white hover:text-amber-400 text-left transition-colors flex items-center gap-1.5"
+                          className="font-medium text-[#1F1F1F] hover:text-[#FE9820] text-left transition-colors flex items-center gap-1.5"
                         >
                           <span>{item.concept}</span>
                           {item.source === "sale" && (
@@ -525,7 +525,7 @@ export function MovementsManager({
 
                       {/* Payment Method */}
                       <td className="py-3.5 px-4 whitespace-nowrap">
-                        <span className="inline-flex items-center gap-1 text-xs text-neutral-300">
+                        <span className="inline-flex items-center gap-1 text-xs text-neutral-700">
                           <PayIcon className={`w-3.5 h-3.5 ${payInfo.color}`} />
                           <span>{payInfo.label}</span>
                         </span>
@@ -547,7 +547,7 @@ export function MovementsManager({
                           <button
                             onClick={() => setSelectedItemDetail(item)}
                             title="Ver detalle"
-                            className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors"
+                            className="p-1.5 rounded-lg text-neutral-400 hover:text-[#1F1F1F] hover:bg-neutral-100 transition-colors"
                           >
                             <Receipt className="w-4 h-4" />
                           </button>
@@ -555,7 +555,7 @@ export function MovementsManager({
                             <button
                               onClick={() => handleDeleteMovement(item)}
                               title="Eliminar gasto/ingreso"
-                              className="p-1.5 rounded-lg text-neutral-500 hover:text-red-400 hover:bg-neutral-800 transition-colors"
+                              className="p-1.5 rounded-lg text-neutral-500 hover:text-red-400 hover:bg-neutral-100 transition-colors"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
@@ -682,8 +682,8 @@ function MovementFormModal({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="w-full max-w-md rounded-2xl bg-neutral-900 border border-neutral-800 shadow-2xl p-6 space-y-4">
-        <div className="flex items-center justify-between pb-3 border-b border-neutral-800">
+      <div className="w-full max-w-md rounded-2xl bg-white border border-neutral-200 shadow-2xl p-6 space-y-4">
+        <div className="flex items-center justify-between pb-3 border-b border-neutral-200">
           <div className="flex items-center gap-2">
             <div
               className={`w-8 h-8 rounded-lg flex items-center justify-center ${
@@ -698,11 +698,11 @@ function MovementFormModal({
                 <ArrowDownLeft className="w-4 h-4" />
               )}
             </div>
-            <h3 className="font-bold text-white text-base">
+            <h3 className="font-bold text-[#1F1F1F] text-base">
               {type === "expense" ? "Registrar Nuevo Gasto" : "Registrar Nuevo Ingreso"}
             </h3>
           </div>
-          <button onClick={onClose} className="text-neutral-400 hover:text-white">
+          <button onClick={onClose} className="text-neutral-400 hover:text-[#1F1F1F]">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -716,7 +716,7 @@ function MovementFormModal({
 
           {/* Concept */}
           <div>
-            <label className="block text-xs font-semibold text-neutral-300 mb-1">
+            <label className="block text-xs font-semibold text-neutral-700 mb-1">
               Concepto / Detalle *
             </label>
             <input
@@ -730,13 +730,13 @@ function MovementFormModal({
                   ? "Ej: Pago de pan diario, Factura de luz..."
                   : "Ej: Cobro de fiado pendiente, Aporte de caja..."
               }
-              className="w-full px-3 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-amber-500"
+              className="w-full px-3 py-2.5 rounded-xl bg-neutral-50 border border-neutral-200 text-sm text-[#1F1F1F] placeholder-neutral-500 focus:outline-none focus:border-[#FE9820]"
             />
           </div>
 
           {/* Amount */}
           <div>
-            <label className="block text-xs font-semibold text-neutral-300 mb-1">
+            <label className="block text-xs font-semibold text-neutral-700 mb-1">
               Monto ($) *
             </label>
             <div className="relative">
@@ -749,7 +749,7 @@ function MovementFormModal({
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder="0.00"
-                className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 text-base font-mono font-bold text-white focus:outline-none focus:border-amber-500"
+                className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-neutral-50 border border-neutral-200 text-base font-mono font-bold text-[#1F1F1F] focus:outline-none focus:border-[#FE9820]"
               />
             </div>
           </div>
@@ -757,14 +757,14 @@ function MovementFormModal({
           {/* Category & Payment Method Grid */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-neutral-300 mb-1">
+              <label className="block text-xs font-semibold text-neutral-700 mb-1">
                 Categoría
               </label>
               {type === "expense" ? (
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-neutral-950 border border-neutral-800 text-xs text-neutral-200 focus:outline-none focus:border-amber-500"
+                  className="w-full px-3 py-2 rounded-xl bg-neutral-50 border border-neutral-200 text-xs text-neutral-800 focus:outline-none focus:border-[#FE9820]"
                 >
                   {movementCategoryOptions.map((opt) => (
                     <option key={opt.value} value={opt.label}>
@@ -777,13 +777,13 @@ function MovementFormModal({
                   type="text"
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-neutral-950 border border-neutral-800 text-xs text-neutral-200 focus:outline-none focus:border-amber-500"
+                  className="w-full px-3 py-2 rounded-xl bg-neutral-50 border border-neutral-200 text-xs text-neutral-800 focus:outline-none focus:border-[#FE9820]"
                 />
               )}
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-neutral-300 mb-1">
+              <label className="block text-xs font-semibold text-neutral-700 mb-1">
                 Método de Pago
               </label>
               <select
@@ -793,7 +793,7 @@ function MovementFormModal({
                     e.target.value as "cash" | "transfer" | "debit_card" | "credit_card"
                   )
                 }
-                className="w-full px-3 py-2 rounded-xl bg-neutral-950 border border-neutral-800 text-xs text-neutral-200 focus:outline-none focus:border-amber-500"
+                className="w-full px-3 py-2 rounded-xl bg-neutral-50 border border-neutral-200 text-xs text-neutral-800 focus:outline-none focus:border-[#FE9820]"
               >
                 <option value="cash">Efectivo</option>
                 <option value="transfer">Transferencia</option>
@@ -805,15 +805,15 @@ function MovementFormModal({
 
           {/* Affect Active Shift Checkbox */}
           {paymentMethod === "cash" && isCashShiftOpen && (
-            <div className="p-3 rounded-xl bg-neutral-950 border border-neutral-800 flex items-center gap-2.5">
+            <div className="p-3 rounded-xl bg-neutral-50 border border-neutral-200 flex items-center gap-2.5">
               <input
                 type="checkbox"
                 id="affectShift"
                 checked={affectShift}
                 onChange={(e) => setAffectShift(e.target.checked)}
-                className="w-4 h-4 rounded text-amber-500 focus:ring-0 bg-neutral-900 border-neutral-700 cursor-pointer"
+                className="w-4 h-4 rounded text-amber-500 focus:ring-0 bg-white border-neutral-300 cursor-pointer"
               />
-              <label htmlFor="affectShift" className="text-xs text-neutral-300 cursor-pointer">
+              <label htmlFor="affectShift" className="text-xs text-neutral-700 cursor-pointer">
                 {type === "expense"
                   ? "Descontar del efectivo de la caja actual (afectar arqueo)"
                   : "Sumar al efectivo de la caja actual (afectar arqueo)"}
@@ -823,7 +823,7 @@ function MovementFormModal({
 
           {/* Notes */}
           <div>
-            <label className="block text-xs font-semibold text-neutral-300 mb-1">
+            <label className="block text-xs font-semibold text-neutral-700 mb-1">
               Notas adicionales (Opcional)
             </label>
             <textarea
@@ -831,15 +831,15 @@ function MovementFormModal({
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Número de comprobante, observaciones..."
-              className="w-full px-3 py-2 rounded-xl bg-neutral-950 border border-neutral-800 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-amber-500"
+              className="w-full px-3 py-2 rounded-xl bg-neutral-50 border border-neutral-200 text-xs text-[#1F1F1F] placeholder-neutral-500 focus:outline-none focus:border-[#FE9820]"
             />
           </div>
 
-          <div className="pt-3 border-t border-neutral-800 flex items-center justify-end gap-2">
+          <div className="pt-3 border-t border-neutral-200 flex items-center justify-end gap-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl border border-neutral-800 text-neutral-400 hover:text-white text-xs"
+              className="px-4 py-2 rounded-xl border border-neutral-200 text-neutral-400 hover:text-[#1F1F1F] text-xs"
             >
               Cancelar
             </button>
@@ -848,7 +848,7 @@ function MovementFormModal({
               disabled={loading}
               className={`px-5 py-2 rounded-xl text-neutral-950 font-bold text-xs shadow-md disabled:opacity-50 flex items-center gap-1.5 ${
                 type === "expense"
-                  ? "bg-red-500 hover:bg-red-400 text-white shadow-red-500/20"
+                  ? "bg-red-500 hover:bg-red-400 text-[#1F1F1F] shadow-red-500/20"
                   : "bg-emerald-500 hover:bg-emerald-400 text-neutral-950 shadow-emerald-500/20"
               }`}
             >
@@ -893,19 +893,19 @@ function TransactionDetailModal({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="w-full max-w-lg rounded-2xl bg-neutral-900 border border-neutral-800 shadow-2xl p-6 space-y-5">
-        <div className="flex items-center justify-between pb-3 border-b border-neutral-800">
+      <div className="w-full max-w-lg rounded-2xl bg-white border border-neutral-200 shadow-2xl p-6 space-y-5">
+        <div className="flex items-center justify-between pb-3 border-b border-neutral-200">
           <div className="flex items-center gap-2">
-            <Receipt className="w-5 h-5 text-amber-400" />
-            <h3 className="font-bold text-white text-base">Comprobante de Operación</h3>
+            <Receipt className="w-5 h-5 text-[#FE9820]" />
+            <h3 className="font-bold text-[#1F1F1F] text-base">Comprobante de Operación</h3>
           </div>
-          <button onClick={onClose} className="text-neutral-400 hover:text-white">
+          <button onClick={onClose} className="text-neutral-400 hover:text-[#1F1F1F]">
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Amount & Status Card */}
-        <div className="p-4 rounded-xl bg-neutral-950 border border-neutral-800 text-center">
+        <div className="p-4 rounded-xl bg-neutral-50 border border-neutral-200 text-center">
           <p className="text-xs text-neutral-400 mb-1">{item.concept}</p>
           <p
             className={`text-3xl font-black font-mono ${
@@ -928,19 +928,19 @@ function TransactionDetailModal({
 
         {/* Details list */}
         <div className="space-y-2.5 text-xs">
-          <div className="flex items-center justify-between py-1.5 border-b border-neutral-800/60">
+          <div className="flex items-center justify-between py-1.5 border-b border-neutral-200/60">
             <span className="text-neutral-400">Fecha y Hora</span>
-            <span className="text-neutral-200 font-medium">{formatDate(item.created_at)}</span>
+            <span className="text-neutral-800 font-medium">{formatDate(item.created_at)}</span>
           </div>
 
-          <div className="flex items-center justify-between py-1.5 border-b border-neutral-800/60">
+          <div className="flex items-center justify-between py-1.5 border-b border-neutral-200/60">
             <span className="text-neutral-400">Método de Pago</span>
-            <span className="text-neutral-200 font-semibold uppercase">{item.payment_method}</span>
+            <span className="text-neutral-800 font-semibold uppercase">{item.payment_method}</span>
           </div>
 
-          <div className="flex items-center justify-between py-1.5 border-b border-neutral-800/60">
+          <div className="flex items-center justify-between py-1.5 border-b border-neutral-200/60">
             <span className="text-neutral-400">Origen</span>
-            <span className="text-neutral-200">
+            <span className="text-neutral-800">
               {item.source === "sale" ? "Punto de Venta (POS)" : "Movimiento Manual"}
             </span>
           </div>
@@ -948,7 +948,7 @@ function TransactionDetailModal({
           {item.notes && (
             <div className="py-2">
               <span className="text-neutral-400 block mb-1">Notas / Observaciones:</span>
-              <p className="p-2.5 rounded-lg bg-neutral-950 border border-neutral-800 text-neutral-300">
+              <p className="p-2.5 rounded-lg bg-neutral-50 border border-neutral-200 text-neutral-700">
                 {item.notes}
               </p>
             </div>
@@ -960,9 +960,9 @@ function TransactionDetailModal({
               <span className="text-neutral-400 block mb-2 font-semibold">
                 Productos Vendidos ({item.items.length})
               </span>
-              <div className="border border-neutral-800 rounded-xl overflow-hidden max-h-40 overflow-y-auto">
+              <div className="border border-neutral-200 rounded-xl overflow-hidden max-h-40 overflow-y-auto">
                 <table className="w-full text-left text-xs border-collapse">
-                  <thead className="bg-neutral-950 text-neutral-400 sticky top-0 border-b border-neutral-800">
+                  <thead className="bg-neutral-50 text-neutral-400 sticky top-0 border-b border-neutral-200">
                     <tr>
                       <th className="p-2">Producto</th>
                       <th className="p-2 text-center">Cant</th>
@@ -970,13 +970,13 @@ function TransactionDetailModal({
                       <th className="p-2 text-right">Subtotal</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-neutral-800 text-neutral-300">
+                  <tbody className="divide-y divide-neutral-800 text-neutral-700">
                     {item.items.map((line, idx) => (
                       <tr key={idx}>
-                        <td className="p-2 font-medium text-white">{line.product_name}</td>
+                        <td className="p-2 font-medium text-[#1F1F1F]">{line.product_name}</td>
                         <td className="p-2 text-center font-mono">{line.quantity}</td>
                         <td className="p-2 text-right font-mono">{formatMoney(line.unit_price)}</td>
-                        <td className="p-2 text-right font-mono font-bold text-white">
+                        <td className="p-2 text-right font-mono font-bold text-[#1F1F1F]">
                           {formatMoney(line.total_price)}
                         </td>
                       </tr>
@@ -988,10 +988,10 @@ function TransactionDetailModal({
           )}
         </div>
 
-        <div className="pt-3 border-t border-neutral-800 flex justify-end">
+        <div className="pt-3 border-t border-neutral-200 flex justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-xs font-semibold text-white transition-colors"
+            className="px-4 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-xs font-semibold text-[#1F1F1F] transition-colors"
           >
             Cerrar
           </button>

@@ -193,7 +193,7 @@ export function ReportsView({
       {/* Header and Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black tracking-tight text-white">
+          <h1 className="text-2xl font-black tracking-tight text-[#1F1F1F]">
             Reportes Financieros y Rentabilidad
           </h1>
           <p className="text-xs text-neutral-400 mt-0.5">
@@ -203,7 +203,7 @@ export function ReportsView({
 
         <div className="flex flex-wrap items-center gap-2">
           {/* Period Selector Tabs */}
-          <div className="inline-flex p-1 rounded-xl bg-neutral-900 border border-neutral-800">
+          <div className="inline-flex p-1 rounded-xl bg-white border border-neutral-200">
             {(
               [
                 { id: "today", label: "Hoy" },
@@ -218,8 +218,8 @@ export function ReportsView({
                 disabled={isPending}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                   activePeriod === p.id
-                    ? "bg-amber-500 text-neutral-950 shadow-sm"
-                    : "text-neutral-400 hover:text-white"
+                    ? "bg-[#FE9820] text-neutral-950 shadow-sm"
+                    : "text-neutral-400 hover:text-[#1F1F1F]"
                 }`}
               >
                 {p.label}
@@ -230,7 +230,7 @@ export function ReportsView({
           {/* Export to Excel */}
           <button
             onClick={handleExportExcel}
-            className="px-3.5 py-2 rounded-xl bg-neutral-900 border border-neutral-800 hover:border-neutral-700 text-xs font-semibold text-neutral-200 hover:text-white transition-all flex items-center gap-2 shadow-sm"
+            className="px-3.5 py-2 rounded-xl bg-white border border-neutral-200 hover:border-neutral-300 text-xs font-semibold text-neutral-800 hover:text-[#1F1F1F] transition-all flex items-center gap-2 shadow-sm"
           >
             <Download className="w-3.5 h-3.5 text-amber-500" />
             <span>Exportar Excel</span>
@@ -240,7 +240,7 @@ export function ReportsView({
 
       {/* Loading state indicator */}
       {isPending && (
-        <div className="p-3 rounded-xl bg-neutral-900/60 border border-neutral-800 text-xs text-amber-400 flex items-center gap-2 animate-pulse">
+        <div className="p-3 rounded-xl bg-white/60 border border-neutral-200 text-xs text-[#FE9820] flex items-center gap-2 animate-pulse">
           <RefreshCw className="w-3.5 h-3.5 animate-spin" />
           <span>Actualizando métricas financieras...</span>
         </div>
@@ -249,24 +249,24 @@ export function ReportsView({
       {/* 5 Headline Executive KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         {/* Card 1: Facturación Total */}
-        <div className="p-4 rounded-2xl bg-neutral-900 border border-neutral-800 shadow-sm">
+        <div className="p-4 rounded-2xl bg-white border border-neutral-200 shadow-sm">
           <div className="flex items-center justify-between text-neutral-400 text-xs mb-1">
             <span className="font-medium uppercase tracking-wider">Facturación</span>
             <DollarSign className="w-4 h-4 text-emerald-400" />
           </div>
-          <h3 className="text-xl font-bold font-mono text-white mt-1">
+          <h3 className="text-xl font-bold font-mono text-[#1F1F1F] mt-1">
             {formatMoney(report.gross_revenue)}
           </h3>
           <p className="text-[11px] text-neutral-500 mt-1">Ingresos brutos por ventas</p>
         </div>
 
         {/* Card 2: Costo de Mercadería (COGS) */}
-        <div className="p-4 rounded-2xl bg-neutral-900 border border-neutral-800 shadow-sm">
+        <div className="p-4 rounded-2xl bg-white border border-neutral-200 shadow-sm">
           <div className="flex items-center justify-between text-neutral-400 text-xs mb-1">
             <span className="font-medium uppercase tracking-wider">Costo (COGS)</span>
             <Package className="w-4 h-4 text-neutral-500" />
           </div>
-          <h3 className="text-xl font-bold font-mono text-neutral-300 mt-1">
+          <h3 className="text-xl font-bold font-mono text-neutral-700 mt-1">
             {formatMoney(report.cogs)}
           </h3>
           <p className="text-[11px] text-neutral-500 mt-1">Costo de reposición</p>
@@ -287,10 +287,10 @@ export function ReportsView({
         </div>
 
         {/* Card 4: Ticket Promedio (AOV) */}
-        <div className="p-4 rounded-2xl bg-neutral-900 border border-neutral-800 shadow-sm">
+        <div className="p-4 rounded-2xl bg-white border border-neutral-200 shadow-sm">
           <div className="flex items-center justify-between text-neutral-400 text-xs mb-1">
             <span className="font-medium uppercase tracking-wider">Ticket Promedio</span>
-            <ShoppingBag className="w-4 h-4 text-amber-400" />
+            <ShoppingBag className="w-4 h-4 text-[#FE9820]" />
           </div>
           <h3 className="text-xl font-bold font-mono text-amber-300 mt-1">
             {formatMoney(report.aov)}
@@ -299,12 +299,12 @@ export function ReportsView({
         </div>
 
         {/* Card 5: Cantidad de Ventas */}
-        <div className="p-4 rounded-2xl bg-neutral-900 border border-neutral-800 shadow-sm">
+        <div className="p-4 rounded-2xl bg-white border border-neutral-200 shadow-sm">
           <div className="flex items-center justify-between text-neutral-400 text-xs mb-1">
             <span className="font-medium uppercase tracking-wider">Operaciones</span>
             <TrendingUp className="w-4 h-4 text-blue-400" />
           </div>
-          <h3 className="text-xl font-bold font-mono text-white mt-1">
+          <h3 className="text-xl font-bold font-mono text-[#1F1F1F] mt-1">
             {report.sales_count}
           </h3>
           <p className="text-[11px] text-neutral-500 mt-1">Tickets emitidos</p>
@@ -314,11 +314,11 @@ export function ReportsView({
       {/* Visual Analytics Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Chart 1: Daily Revenue Trend (Area Chart) */}
-        <div className="lg:col-span-2 rounded-2xl bg-neutral-900 border border-neutral-800 p-5 shadow-sm space-y-4">
+        <div className="lg:col-span-2 rounded-2xl bg-white border border-neutral-200 p-5 shadow-sm space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <TrendingUp className="w-4 h-4 text-amber-400" />
-              <h3 className="font-bold text-white text-sm">Evolución de Facturación Diaria</h3>
+              <TrendingUp className="w-4 h-4 text-[#FE9820]" />
+              <h3 className="font-bold text-[#1F1F1F] text-sm">Evolución de Facturación Diaria</h3>
             </div>
             <span className="text-[11px] text-neutral-500">Monto total facturado por día</span>
           </div>
@@ -374,11 +374,11 @@ export function ReportsView({
         </div>
 
         {/* Chart 2: Payment Methods Share (Donut / Pie Chart) */}
-        <div className="rounded-2xl bg-neutral-900 border border-neutral-800 p-5 shadow-sm space-y-4">
+        <div className="rounded-2xl bg-white border border-neutral-200 p-5 shadow-sm space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <CreditCard className="w-4 h-4 text-emerald-400" />
-              <h3 className="font-bold text-white text-sm">Métodos de Cobro</h3>
+              <h3 className="font-bold text-[#1F1F1F] text-sm">Métodos de Cobro</h3>
             </div>
           </div>
 
@@ -423,11 +423,11 @@ export function ReportsView({
           </div>
 
           {/* Legend */}
-          <div className="space-y-1.5 pt-2 border-t border-neutral-800/80">
+          <div className="space-y-1.5 pt-2 border-t border-neutral-200/80">
             {(report.payment_methods || []).map((pm, idx) => (
               <div
                 key={pm.payment_method}
-                className="flex items-center justify-between text-xs text-neutral-300"
+                className="flex items-center justify-between text-xs text-neutral-700"
               >
                 <div className="flex items-center gap-2">
                   <span
@@ -446,11 +446,11 @@ export function ReportsView({
       </div>
 
       {/* Chart 3: Peak Hours Distribution (Bar Chart) */}
-      <div className="rounded-2xl bg-neutral-900 border border-neutral-800 p-5 shadow-sm space-y-4">
+      <div className="rounded-2xl bg-white border border-neutral-200 p-5 shadow-sm space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Clock className="w-4 h-4 text-blue-400" />
-            <h3 className="font-bold text-white text-sm">
+            <h3 className="font-bold text-[#1F1F1F] text-sm">
               Horarios Pico de Atención (Volumen de Tickets)
             </h3>
           </div>
@@ -503,22 +503,22 @@ export function ReportsView({
       </div>
 
       {/* Section 4: Top 10 Best-Selling Products Table */}
-      <div className="rounded-2xl bg-neutral-900 border border-neutral-800 overflow-hidden shadow-sm">
-        <div className="p-4 border-b border-neutral-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="rounded-2xl bg-white border border-neutral-200 overflow-hidden shadow-sm">
+        <div className="p-4 border-b border-neutral-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <Trophy className="w-5 h-5 text-amber-400" />
-            <h3 className="font-bold text-white text-base">
+            <Trophy className="w-5 h-5 text-[#FE9820]" />
+            <h3 className="font-bold text-[#1F1F1F] text-base">
               Top 10 Productos Más Rentables y Vendidos
             </h3>
           </div>
 
-          <div className="inline-flex p-1 rounded-xl bg-neutral-950 border border-neutral-800">
+          <div className="inline-flex p-1 rounded-xl bg-neutral-50 border border-neutral-200">
             <button
               onClick={() => setProductSortBy("profit")}
               className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
                 productSortBy === "profit"
                   ? "bg-emerald-500 text-neutral-950 shadow-sm"
-                  : "text-neutral-400 hover:text-white"
+                  : "text-neutral-400 hover:text-[#1F1F1F]"
               }`}
             >
               Mayor Ganancia ($)
@@ -527,8 +527,8 @@ export function ReportsView({
               onClick={() => setProductSortBy("units")}
               className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
                 productSortBy === "units"
-                  ? "bg-amber-500 text-neutral-950 shadow-sm"
-                  : "text-neutral-400 hover:text-white"
+                  ? "bg-[#FE9820] text-neutral-950 shadow-sm"
+                  : "text-neutral-400 hover:text-[#1F1F1F]"
               }`}
             >
               Más Vendidos (Unidades)
@@ -539,7 +539,7 @@ export function ReportsView({
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-sm">
             <thead>
-              <tr className="border-b border-neutral-800 bg-neutral-950/60 text-[11px] font-semibold text-neutral-400 uppercase tracking-wider">
+              <tr className="border-b border-neutral-200 bg-neutral-50/60 text-[11px] font-semibold text-neutral-400 uppercase tracking-wider">
                 <th className="py-3 px-4 w-12 text-center">#</th>
                 <th className="py-3 px-4">Producto</th>
                 <th className="py-3 px-4 text-center">Unidades</th>
@@ -570,18 +570,18 @@ export function ReportsView({
                   return (
                     <tr
                       key={idx}
-                      className="hover:bg-neutral-800/40 transition-colors"
+                      className="hover:bg-neutral-100/40 transition-colors"
                     >
                       <td className="py-3 px-4 text-center font-bold text-xs font-mono text-amber-500">
                         {idx + 1}
                       </td>
-                      <td className="py-3 px-4 font-semibold text-white">
+                      <td className="py-3 px-4 font-semibold text-[#1F1F1F]">
                         {prod.product_name}
                       </td>
-                      <td className="py-3 px-4 text-center font-mono font-bold text-neutral-300">
+                      <td className="py-3 px-4 text-center font-mono font-bold text-neutral-700">
                         {prod.units_sold}
                       </td>
-                      <td className="py-3 px-4 text-right font-mono text-neutral-300">
+                      <td className="py-3 px-4 text-right font-mono text-neutral-700">
                         {formatMoney(prod.revenue)}
                       </td>
                       <td className="py-3 px-4 text-right font-mono text-neutral-500">
@@ -596,7 +596,7 @@ export function ReportsView({
                             margin >= 40
                               ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30"
                               : margin >= 20
-                              ? "bg-amber-500/10 text-amber-400 border border-amber-500/30"
+                              ? "bg-[#FE9820]/10 text-[#FE9820] border border-[#FE9820]/30"
                               : "bg-neutral-800 text-neutral-400"
                           }`}
                         >

@@ -233,7 +233,7 @@ export function InventoryManager({
             <AlertTriangle className="w-5 h-5 flex-shrink-0" />
             <span>{errorMsg}</span>
           </div>
-          <button onClick={() => setErrorMsg(null)} className="hover:text-white">
+          <button onClick={() => setErrorMsg(null)} className="hover:text-[#1F1F1F]">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -244,7 +244,7 @@ export function InventoryManager({
             <Check className="w-5 h-5 flex-shrink-0" />
             <span>{successMsg}</span>
           </div>
-          <button onClick={() => setSuccessMsg(null)} className="hover:text-white">
+          <button onClick={() => setSuccessMsg(null)} className="hover:text-[#1F1F1F]">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -253,26 +253,26 @@ export function InventoryManager({
       {/* KPI Cards Header */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {/* Card 1: Total Products */}
-        <div className="p-5 rounded-2xl bg-neutral-900 border border-neutral-800 shadow-sm flex items-center justify-between">
+        <div className="p-5 rounded-2xl bg-white border border-neutral-200 shadow-sm flex items-center justify-between">
           <div>
-            <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider">
+            <p className="text-xs font-medium text-neutral-500 uppercase tracking-wider">
               Total Productos
             </p>
-            <h3 className="text-2xl font-bold text-white mt-1">{totalProducts}</h3>
+            <h3 className="text-2xl font-bold text-[#1F1F1F] mt-1">{totalProducts}</h3>
             <p className="text-xs text-neutral-500 mt-1">Activos en catálogo</p>
           </div>
-          <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+          <div className="w-12 h-12 rounded-xl bg-[#FE9820]/10 border border-[#FE9820]/20 flex items-center justify-center text-[#FE9820]">
             <Package className="w-6 h-6" />
           </div>
         </div>
 
         {/* Card 2: Total Valuation at Cost */}
-        <div className="p-5 rounded-2xl bg-neutral-900 border border-neutral-800 shadow-sm flex items-center justify-between">
+        <div className="p-5 rounded-2xl bg-white border border-neutral-200 shadow-sm flex items-center justify-between">
           <div>
-            <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider">
+            <p className="text-xs font-medium text-neutral-500 uppercase tracking-wider">
               Valor del Inventario (Costo)
             </p>
-            <h3 className="text-2xl font-bold text-white mt-1">
+            <h3 className="text-2xl font-bold text-[#1F1F1F] mt-1">
               {formatMoney(totalValuation)}
             </h3>
             <p className="text-xs text-neutral-500 mt-1">Capital en mercadería</p>
@@ -289,13 +289,13 @@ export function InventoryManager({
             showLowStockOnly
               ? "bg-red-500/15 border-red-500/50 ring-2 ring-red-500/30"
               : lowStockCount > 0
-              ? "bg-neutral-900 border-red-500/30 hover:border-red-500/50"
-              : "bg-neutral-900 border-neutral-800"
+              ? "bg-white border-red-500/30 hover:border-red-500/50"
+              : "bg-white border-neutral-200"
           }`}
         >
           <div>
             <div className="flex items-center gap-1.5">
-              <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider">
+              <p className="text-xs font-medium text-neutral-500 uppercase tracking-wider">
                 Stock Bajo / Reposición
               </p>
               {lowStockCount > 0 && (
@@ -306,7 +306,7 @@ export function InventoryManager({
             </div>
             <h3
               className={`text-2xl font-bold mt-1 ${
-                lowStockCount > 0 ? "text-red-400" : "text-white"
+                lowStockCount > 0 ? "text-red-400" : "text-[#1F1F1F]"
               }`}
             >
               {lowStockCount}
@@ -319,7 +319,7 @@ export function InventoryManager({
             className={`w-12 h-12 rounded-xl border flex items-center justify-center ${
               lowStockCount > 0
                 ? "bg-red-500/10 border-red-500/30 text-red-400"
-                : "bg-neutral-800 border-neutral-700 text-neutral-400"
+                : "bg-neutral-800 border-neutral-300 text-neutral-400"
             }`}
           >
             <AlertTriangle className="w-6 h-6" />
@@ -328,7 +328,7 @@ export function InventoryManager({
       </div>
 
       {/* Main Toolbar & Actions */}
-      <div className="p-4 rounded-2xl bg-neutral-900 border border-neutral-800 space-y-4">
+      <div className="p-4 rounded-2xl bg-white border border-neutral-200 space-y-4">
         <div className="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center justify-between">
           {/* Search Bar */}
           <div className="relative flex-1">
@@ -338,12 +338,12 @@ export function InventoryManager({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Buscar por nombre o código de barras (ej: Ariel, 7791290...)..."
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-amber-500 transition-colors"
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-neutral-50 border border-neutral-200 text-sm text-[#1F1F1F] placeholder-neutral-500 focus:outline-none focus:border-[#FE9820] transition-colors"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-white text-xs"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-[#1F1F1F] text-xs"
               >
                 Limpiar
               </button>
@@ -356,7 +356,7 @@ export function InventoryManager({
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
               aria-label="Filtrar por categoría"
-              className="px-3 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 text-sm text-neutral-200 focus:outline-none focus:border-amber-500 cursor-pointer"
+              className="px-3 py-2.5 rounded-xl bg-neutral-50 border border-neutral-200 text-sm text-neutral-800 focus:outline-none focus:border-[#FE9820] cursor-pointer"
             >
               <option value="all">Todas las Categorías</option>
               {categories.map((c) => (
@@ -372,7 +372,7 @@ export function InventoryManager({
               className={`px-3 py-2.5 rounded-xl border text-sm font-medium flex items-center gap-2 transition-all whitespace-nowrap ${
                 showLowStockOnly
                   ? "bg-red-500/20 border-red-500/50 text-red-300"
-                  : "bg-neutral-950 border-neutral-800 text-neutral-400 hover:text-white hover:border-neutral-700"
+                  : "bg-neutral-50 border-neutral-200 text-neutral-400 hover:text-[#1F1F1F] hover:border-neutral-300"
               }`}
             >
               <AlertTriangle className="w-4 h-4" />
@@ -382,11 +382,11 @@ export function InventoryManager({
         </div>
 
         {/* Action Buttons Row */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-neutral-800/80">
+        <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-neutral-200/80">
           <div className="flex items-center gap-2">
             <button
               onClick={() => setIsCategoryModalOpen(true)}
-              className="px-3 py-2 rounded-xl bg-neutral-950 border border-neutral-800 text-xs font-medium text-neutral-300 hover:text-white hover:border-neutral-700 transition-all flex items-center gap-1.5"
+              className="px-3 py-2 rounded-xl bg-neutral-50 border border-neutral-200 text-xs font-medium text-neutral-700 hover:text-[#1F1F1F] hover:border-neutral-300 transition-all flex items-center gap-1.5"
             >
               <Layers className="w-3.5 h-3.5" />
               <span>+ Nueva Categoría</span>
@@ -395,7 +395,7 @@ export function InventoryManager({
             <button
               onClick={handleDownloadTemplate}
               title="Descargar plantilla Excel para importación"
-              className="px-3 py-2 rounded-xl bg-neutral-950 border border-neutral-800 text-xs font-medium text-neutral-300 hover:text-white hover:border-neutral-700 transition-all flex items-center gap-1.5"
+              className="px-3 py-2 rounded-xl bg-neutral-50 border border-neutral-200 text-xs font-medium text-neutral-700 hover:text-[#1F1F1F] hover:border-neutral-300 transition-all flex items-center gap-1.5"
             >
               <Download className="w-3.5 h-3.5" />
               <span>Plantilla Excel</span>
@@ -403,7 +403,7 @@ export function InventoryManager({
 
             <button
               onClick={() => setIsImportModalOpen(true)}
-              className="px-3 py-2 rounded-xl bg-neutral-950 border border-neutral-800 text-xs font-medium text-amber-400 hover:border-amber-500/40 transition-all flex items-center gap-1.5"
+              className="px-3 py-2 rounded-xl bg-neutral-50 border border-neutral-200 text-xs font-medium text-[#FE9820] hover:border-[#FE9820]/40 transition-all flex items-center gap-1.5"
             >
               <Upload className="w-3.5 h-3.5" />
               <span>Importar Excel / CSV</span>
@@ -421,11 +421,11 @@ export function InventoryManager({
       </div>
 
       {/* Products Data Table */}
-      <div className="rounded-2xl bg-neutral-900 border border-neutral-800 overflow-hidden shadow-sm">
+      <div className="rounded-2xl bg-white border border-neutral-200 overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-neutral-800 bg-neutral-950/60 text-[11px] font-semibold text-neutral-400 uppercase tracking-wider">
+              <tr className="border-b border-neutral-200 bg-neutral-50/60 text-[11px] font-semibold text-neutral-500 uppercase tracking-wider">
                 <th className="py-3.5 px-4">Producto</th>
                 <th className="py-3.5 px-4">Categoría</th>
                 <th className="py-3.5 px-4 text-right">Costo</th>
@@ -463,12 +463,12 @@ export function InventoryManager({
                   return (
                     <tr
                       key={p.id}
-                      className="hover:bg-neutral-800/40 transition-colors group"
+                      className="hover:bg-neutral-100/40 transition-colors group"
                     >
                       {/* Product Name & Barcode */}
                       <td className="py-3.5 px-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-neutral-800 border border-neutral-700/80 flex items-center justify-center text-amber-400 flex-shrink-0">
+                          <div className="w-10 h-10 rounded-xl bg-neutral-800 border border-neutral-300/80 flex items-center justify-center text-[#FE9820] flex-shrink-0">
                             {p.image_url ? (
                               /* eslint-disable-next-line @next/next/no-img-element */
                               <img
@@ -481,7 +481,7 @@ export function InventoryManager({
                             )}
                           </div>
                           <div>
-                            <p className="font-semibold text-white group-hover:text-amber-400 transition-colors">
+                            <p className="font-semibold text-[#1F1F1F] group-hover:text-[#FE9820] transition-colors">
                               {p.name}
                             </p>
                             {p.barcode ? (
@@ -501,7 +501,7 @@ export function InventoryManager({
                       {/* Category Badge */}
                       <td className="py-3.5 px-4">
                         {p.category_id && categoryMap.has(p.category_id) ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-neutral-800 text-neutral-300 border border-neutral-700">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-neutral-800 text-neutral-700 border border-neutral-300">
                             <Tag className="w-3 h-3 text-amber-500" />
                             {categoryMap.get(p.category_id)}
                           </span>
@@ -516,7 +516,7 @@ export function InventoryManager({
                       </td>
 
                       {/* Sale Price */}
-                      <td className="py-3.5 px-4 text-right font-mono font-bold text-white">
+                      <td className="py-3.5 px-4 text-right font-mono font-bold text-[#1F1F1F]">
                         {formatMoney(p.sale_price)}
                       </td>
 
@@ -527,7 +527,7 @@ export function InventoryManager({
                             marginPct >= 40
                               ? "bg-emerald-500/10 text-emerald-400"
                               : marginPct >= 20
-                              ? "bg-amber-500/10 text-amber-400"
+                              ? "bg-[#FE9820]/10 text-[#FE9820]"
                               : "bg-neutral-800 text-neutral-400"
                           }`}
                         >
@@ -542,7 +542,7 @@ export function InventoryManager({
                           <button
                             onClick={() => handleApplyStockAdjustment(p, -1, "shrinkage")}
                             title="Restar 1 unidad"
-                            className="w-6 h-6 rounded-md bg-neutral-800 hover:bg-neutral-700 text-neutral-400 hover:text-white flex items-center justify-center text-xs font-bold transition-colors"
+                            className="w-6 h-6 rounded-md bg-neutral-800 hover:bg-neutral-700 text-neutral-400 hover:text-[#1F1F1F] flex items-center justify-center text-xs font-bold transition-colors"
                           >
                             -
                           </button>
@@ -553,7 +553,7 @@ export function InventoryManager({
                             className={`px-2.5 py-1 rounded-lg text-xs font-bold font-mono border transition-all ${
                               isLowStock
                                 ? "bg-red-500/15 text-red-400 border-red-500/30 hover:border-red-500"
-                                : "bg-neutral-800 text-neutral-200 border-neutral-700 hover:border-neutral-600"
+                                : "bg-neutral-800 text-neutral-800 border-neutral-300 hover:border-neutral-600"
                             }`}
                           >
                             {p.stock}
@@ -565,7 +565,7 @@ export function InventoryManager({
                           <button
                             onClick={() => handleApplyStockAdjustment(p, 1, "intake")}
                             title="Sumar 1 unidad"
-                            className="w-6 h-6 rounded-md bg-neutral-800 hover:bg-neutral-700 text-neutral-400 hover:text-white flex items-center justify-center text-xs font-bold transition-colors"
+                            className="w-6 h-6 rounded-md bg-neutral-800 hover:bg-neutral-700 text-neutral-400 hover:text-[#1F1F1F] flex items-center justify-center text-xs font-bold transition-colors"
                           >
                             +
                           </button>
@@ -583,14 +583,14 @@ export function InventoryManager({
                           <button
                             onClick={() => handleOpenEditModal(p)}
                             title="Editar producto"
-                            className="p-1.5 rounded-lg text-neutral-400 hover:text-amber-400 hover:bg-neutral-800 transition-colors"
+                            className="p-1.5 rounded-lg text-neutral-400 hover:text-[#FE9820] hover:bg-neutral-100 transition-colors"
                           >
                             <Edit2 className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => handleDeleteProduct(p)}
                             title="Eliminar producto"
-                            className="p-1.5 rounded-lg text-neutral-400 hover:text-red-400 hover:bg-neutral-800 transition-colors"
+                            className="p-1.5 rounded-lg text-neutral-400 hover:text-red-400 hover:bg-neutral-100 transition-colors"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -790,20 +790,20 @@ function ProductFormModal({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="w-full max-w-lg rounded-2xl bg-neutral-900 border border-neutral-800 shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+      <div className="w-full max-w-lg rounded-2xl bg-white border border-neutral-200 shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-neutral-800 flex items-center justify-between">
+        <div className="px-6 py-4 border-b border-neutral-200 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+            <div className="w-8 h-8 rounded-lg bg-[#FE9820]/10 border border-[#FE9820]/30 flex items-center justify-center text-[#FE9820]">
               <Package className="w-4 h-4" />
             </div>
-            <h3 className="font-bold text-white text-base">
+            <h3 className="font-bold text-[#1F1F1F] text-base">
               {isEditing ? "Editar Producto" : "Nuevo Producto"}
             </h3>
           </div>
           <button
             onClick={onClose}
-            className="text-neutral-400 hover:text-white p-1 rounded-lg"
+            className="text-neutral-400 hover:text-[#1F1F1F] p-1 rounded-lg"
           >
             <X className="w-5 h-5" />
           </button>
@@ -819,7 +819,7 @@ function ProductFormModal({
 
           {/* Product Name */}
           <div>
-            <label className="block text-xs font-medium text-neutral-300 mb-1">
+            <label className="block text-xs font-medium text-neutral-700 mb-1">
               Nombre del Producto *
             </label>
             <input
@@ -828,20 +828,20 @@ function ProductFormModal({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Ej: Jabón Líquido Ariel 3L"
-              className="w-full px-3 py-2 rounded-xl bg-neutral-950 border border-neutral-800 text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-amber-500"
+              className="w-full px-3 py-2 rounded-xl bg-neutral-50 border border-neutral-200 text-sm text-[#1F1F1F] placeholder-neutral-500 focus:outline-none focus:border-[#FE9820]"
             />
           </div>
 
           {/* Barcode & Auto-generator */}
           <div>
             <div className="flex items-center justify-between mb-1">
-              <label className="text-xs font-medium text-neutral-300">
+              <label className="text-xs font-medium text-neutral-700">
                 Código de Barras (EAN / UPC)
               </label>
               <button
                 type="button"
                 onClick={handleGenerateBarcode}
-                className="text-[11px] text-amber-400 hover:underline flex items-center gap-1"
+                className="text-[11px] text-[#FE9820] hover:underline flex items-center gap-1"
               >
                 <Sparkles className="w-3 h-3" />
                 Generar código aleatorio
@@ -854,7 +854,7 @@ function ProductFormModal({
                 value={barcode}
                 onChange={(e) => setBarcode(e.target.value)}
                 placeholder="Escaneá con el lector o ingresá número..."
-                className="w-full pl-9 pr-3 py-2 rounded-xl bg-neutral-950 border border-neutral-800 text-sm font-mono text-white placeholder-neutral-500 focus:outline-none focus:border-amber-500"
+                className="w-full pl-9 pr-3 py-2 rounded-xl bg-neutral-50 border border-neutral-200 text-sm font-mono text-[#1F1F1F] placeholder-neutral-500 focus:outline-none focus:border-[#FE9820]"
               />
             </div>
           </div>
@@ -862,11 +862,11 @@ function ProductFormModal({
           {/* Category with Inline Add Button */}
           <div>
             <div className="flex items-center justify-between mb-1">
-              <label className="text-xs font-medium text-neutral-300">Categoría</label>
+              <label className="text-xs font-medium text-neutral-700">Categoría</label>
               <button
                 type="button"
                 onClick={onOpenNewCategory}
-                className="text-[11px] text-amber-400 hover:underline flex items-center gap-1"
+                className="text-[11px] text-[#FE9820] hover:underline flex items-center gap-1"
               >
                 + Crear categoría
               </button>
@@ -874,7 +874,7 @@ function ProductFormModal({
             <select
               value={categoryId}
               onChange={(e) => setCategoryId(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl bg-neutral-950 border border-neutral-800 text-sm text-neutral-200 focus:outline-none focus:border-amber-500"
+              className="w-full px-3 py-2 rounded-xl bg-neutral-50 border border-neutral-200 text-sm text-neutral-800 focus:outline-none focus:border-[#FE9820]"
             >
               <option value="">Sin Categoría (General)</option>
               {categories.map((c) => (
@@ -888,7 +888,7 @@ function ProductFormModal({
           {/* Pricing Row: Cost & Sale Price */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium text-neutral-300 mb-1">
+              <label className="block text-xs font-medium text-neutral-700 mb-1">
                 Precio de Costo ($)
               </label>
               <input
@@ -898,12 +898,12 @@ function ProductFormModal({
                 value={costPrice}
                 onChange={(e) => setCostPrice(e.target.value)}
                 placeholder="0.00"
-                className="w-full px-3 py-2 rounded-xl bg-neutral-950 border border-neutral-800 text-sm font-mono text-white placeholder-neutral-500 focus:outline-none focus:border-amber-500"
+                className="w-full px-3 py-2 rounded-xl bg-neutral-50 border border-neutral-200 text-sm font-mono text-[#1F1F1F] placeholder-neutral-500 focus:outline-none focus:border-[#FE9820]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-neutral-300 mb-1">
+              <label className="block text-xs font-medium text-neutral-700 mb-1">
                 Precio de Venta ($) *
               </label>
               <input
@@ -914,13 +914,13 @@ function ProductFormModal({
                 value={salePrice}
                 onChange={(e) => setSalePrice(e.target.value)}
                 placeholder="0.00"
-                className="w-full px-3 py-2 rounded-xl bg-neutral-950 border border-neutral-800 text-sm font-mono font-bold text-amber-400 placeholder-neutral-500 focus:outline-none focus:border-amber-500"
+                className="w-full px-3 py-2 rounded-xl bg-neutral-50 border border-neutral-200 text-sm font-mono font-bold text-[#FE9820] placeholder-neutral-500 focus:outline-none focus:border-[#FE9820]"
               />
             </div>
           </div>
 
           {/* Profit Margin live calculator widget */}
-          <div className="p-3 rounded-xl bg-neutral-950 border border-neutral-800 flex items-center justify-between text-xs">
+          <div className="p-3 rounded-xl bg-neutral-50 border border-neutral-200 flex items-center justify-between text-xs">
             <div>
               <p className="text-neutral-400">Margen comercial bruto</p>
               <p
@@ -928,7 +928,7 @@ function ProductFormModal({
                   marginPct >= 35
                     ? "text-emerald-400"
                     : marginPct > 0
-                    ? "text-amber-400"
+                    ? "text-[#FE9820]"
                     : "text-neutral-400"
                 }`}
               >
@@ -937,7 +937,7 @@ function ProductFormModal({
             </div>
             <div className="text-right">
               <p className="text-neutral-400">Ganancia neta / unidad</p>
-              <p className="font-bold font-mono text-sm text-white">
+              <p className="font-bold font-mono text-sm text-[#1F1F1F]">
                 ${grossProfit > 0 ? grossProfit.toLocaleString("es-AR") : "0.00"}
               </p>
             </div>
@@ -946,7 +946,7 @@ function ProductFormModal({
           {/* Stock & Minimum Stock */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium text-neutral-300 mb-1">
+              <label className="block text-xs font-medium text-neutral-700 mb-1">
                 Stock Inicial
               </label>
               <input
@@ -955,12 +955,12 @@ function ProductFormModal({
                 min="0"
                 value={stock}
                 onChange={(e) => setStock(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-neutral-950 border border-neutral-800 text-sm font-mono text-white focus:outline-none focus:border-amber-500"
+                className="w-full px-3 py-2 rounded-xl bg-neutral-50 border border-neutral-200 text-sm font-mono text-[#1F1F1F] focus:outline-none focus:border-[#FE9820]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-neutral-300 mb-1">
+              <label className="block text-xs font-medium text-neutral-700 mb-1">
                 Stock Mínimo (Alerta)
               </label>
               <input
@@ -969,14 +969,14 @@ function ProductFormModal({
                 min="0"
                 value={minStock}
                 onChange={(e) => setMinStock(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-neutral-950 border border-neutral-800 text-sm font-mono text-white focus:outline-none focus:border-amber-500"
+                className="w-full px-3 py-2 rounded-xl bg-neutral-50 border border-neutral-200 text-sm font-mono text-[#1F1F1F] focus:outline-none focus:border-[#FE9820]"
               />
             </div>
           </div>
 
           {/* Image URL */}
           <div>
-            <label className="block text-xs font-medium text-neutral-300 mb-1">
+            <label className="block text-xs font-medium text-neutral-700 mb-1">
               URL de Imagen (Opcional)
             </label>
             <input
@@ -984,16 +984,16 @@ function ProductFormModal({
               value={imageUrl}
               onChange={(e) => setImageUrl(e.target.value)}
               placeholder="https://ejemplo.com/foto-producto.jpg"
-              className="w-full px-3 py-2 rounded-xl bg-neutral-950 border border-neutral-800 text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-amber-500"
+              className="w-full px-3 py-2 rounded-xl bg-neutral-50 border border-neutral-200 text-sm text-[#1F1F1F] placeholder-neutral-500 focus:outline-none focus:border-[#FE9820]"
             />
           </div>
 
           {/* Submit Buttons */}
-          <div className="pt-3 border-t border-neutral-800 flex items-center justify-end gap-2">
+          <div className="pt-3 border-t border-neutral-200 flex items-center justify-end gap-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl border border-neutral-800 text-neutral-400 hover:text-white text-sm"
+              className="px-4 py-2 rounded-xl border border-neutral-200 text-neutral-400 hover:text-[#1F1F1F] text-sm"
             >
               Cancelar
             </button>
@@ -1051,13 +1051,13 @@ function CategoryModal({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="w-full max-w-sm rounded-2xl bg-neutral-900 border border-neutral-800 shadow-2xl p-5">
+      <div className="w-full max-w-sm rounded-2xl bg-white border border-neutral-200 shadow-2xl p-5">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <Layers className="w-4 h-4 text-amber-400" />
-            <h3 className="font-bold text-white text-sm">Nueva Categoría</h3>
+            <Layers className="w-4 h-4 text-[#FE9820]" />
+            <h3 className="font-bold text-[#1F1F1F] text-sm">Nueva Categoría</h3>
           </div>
-          <button onClick={onClose} className="text-neutral-400 hover:text-white">
+          <button onClick={onClose} className="text-neutral-400 hover:text-[#1F1F1F]">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -1070,7 +1070,7 @@ function CategoryModal({
           )}
 
           <div>
-            <label className="block text-xs font-medium text-neutral-300 mb-1">
+            <label className="block text-xs font-medium text-neutral-700 mb-1">
               Nombre de la categoría
             </label>
             <input
@@ -1080,7 +1080,7 @@ function CategoryModal({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Ej: Lácteos, Fiambres, Limpieza..."
-              className="w-full px-3 py-2 rounded-xl bg-neutral-950 border border-neutral-800 text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-amber-500"
+              className="w-full px-3 py-2 rounded-xl bg-neutral-50 border border-neutral-200 text-sm text-[#1F1F1F] placeholder-neutral-500 focus:outline-none focus:border-[#FE9820]"
             />
           </div>
 
@@ -1088,14 +1088,14 @@ function CategoryModal({
             <button
               type="button"
               onClick={onClose}
-              className="px-3 py-1.5 rounded-xl border border-neutral-800 text-xs text-neutral-400 hover:text-white"
+              className="px-3 py-1.5 rounded-xl border border-neutral-200 text-xs text-neutral-400 hover:text-[#1F1F1F]"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={loading || !name.trim()}
-              className="px-4 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-bold text-xs disabled:opacity-50"
+              className="px-4 py-1.5 rounded-xl bg-[#FE9820] hover:bg-[#FE9820]/90 text-neutral-950 font-bold text-xs disabled:opacity-50"
             >
               {loading ? "Creando..." : "Crear"}
             </button>
@@ -1134,22 +1134,22 @@ function QuickStockModal({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="w-full max-w-sm rounded-2xl bg-neutral-900 border border-neutral-800 shadow-2xl p-5">
+      <div className="w-full max-w-sm rounded-2xl bg-white border border-neutral-200 shadow-2xl p-5">
         <div className="flex items-center justify-between mb-3">
           <div>
-            <h3 className="font-bold text-white text-sm">Ajuste de Stock</h3>
+            <h3 className="font-bold text-[#1F1F1F] text-sm">Ajuste de Stock</h3>
             <p className="text-xs text-neutral-400 truncate max-w-[240px]">
               {product.name}
             </p>
           </div>
-          <button onClick={onClose} className="text-neutral-400 hover:text-white">
+          <button onClick={onClose} className="text-neutral-400 hover:text-[#1F1F1F]">
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="p-3 rounded-xl bg-neutral-950 border border-neutral-800 mb-4 flex items-center justify-between text-xs">
+        <div className="p-3 rounded-xl bg-neutral-50 border border-neutral-200 mb-4 flex items-center justify-between text-xs">
           <span className="text-neutral-400">Stock Actual:</span>
-          <span className="font-bold font-mono text-white text-sm">
+          <span className="font-bold font-mono text-[#1F1F1F] text-sm">
             {product.stock} unidades
           </span>
         </div>
@@ -1167,7 +1167,7 @@ function QuickStockModal({
                     handleQuickAdd(amt)
                     setReason("intake")
                   }}
-                  className="py-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-xs font-mono font-bold text-neutral-200 transition-colors"
+                  className="py-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-xs font-mono font-bold text-neutral-800 transition-colors"
                 >
                   +{amt}
                 </button>
@@ -1192,7 +1192,7 @@ function QuickStockModal({
 
           {/* Custom Delta Input */}
           <div>
-            <label className="block text-xs font-medium text-neutral-300 mb-1">
+            <label className="block text-xs font-medium text-neutral-700 mb-1">
               Ajuste (número positivo para sumar, negativo para restar)
             </label>
             <input
@@ -1201,19 +1201,19 @@ function QuickStockModal({
               required
               value={delta}
               onChange={(e) => setDelta(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl bg-neutral-950 border border-neutral-800 text-sm font-mono text-white focus:outline-none focus:border-amber-500"
+              className="w-full px-3 py-2 rounded-xl bg-neutral-50 border border-neutral-200 text-sm font-mono text-[#1F1F1F] focus:outline-none focus:border-[#FE9820]"
             />
           </div>
 
           {/* Reason */}
           <div>
-            <label className="block text-xs font-medium text-neutral-300 mb-1">
+            <label className="block text-xs font-medium text-neutral-700 mb-1">
               Motivo
             </label>
             <select
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl bg-neutral-950 border border-neutral-800 text-xs text-neutral-200 focus:outline-none focus:border-amber-500"
+              className="w-full px-3 py-2 rounded-xl bg-neutral-50 border border-neutral-200 text-xs text-neutral-800 focus:outline-none focus:border-[#FE9820]"
             >
               <option value="intake">Ingreso de mercadería / Compra</option>
               <option value="shrinkage">Merma / Producto roto / Vencido</option>
@@ -1226,13 +1226,13 @@ function QuickStockModal({
             <button
               type="button"
               onClick={onClose}
-              className="px-3 py-1.5 rounded-xl border border-neutral-800 text-xs text-neutral-400 hover:text-white"
+              className="px-3 py-1.5 rounded-xl border border-neutral-200 text-xs text-neutral-400 hover:text-[#1F1F1F]"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="px-4 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-bold text-xs shadow-md shadow-amber-500/20"
+              className="px-4 py-1.5 rounded-xl bg-[#FE9820] hover:bg-[#FE9820]/90 text-neutral-950 font-bold text-xs shadow-md shadow-amber-500/20"
             >
               Aplicar Ajuste
             </button>
@@ -1365,15 +1365,15 @@ function BulkImportModal({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="w-full max-w-2xl rounded-2xl bg-neutral-900 border border-neutral-800 shadow-2xl p-6 max-h-[90vh] flex flex-col">
-        <div className="flex items-center justify-between pb-4 border-b border-neutral-800">
+      <div className="w-full max-w-2xl rounded-2xl bg-white border border-neutral-200 shadow-2xl p-6 max-h-[90vh] flex flex-col">
+        <div className="flex items-center justify-between pb-4 border-b border-neutral-200">
           <div className="flex items-center gap-2">
-            <FileSpreadsheet className="w-5 h-5 text-amber-400" />
-            <h3 className="font-bold text-white text-base">
+            <FileSpreadsheet className="w-5 h-5 text-[#FE9820]" />
+            <h3 className="font-bold text-[#1F1F1F] text-base">
               Importación Masiva de Productos (Excel / CSV)
             </h3>
           </div>
-          <button onClick={onClose} className="text-neutral-400 hover:text-white">
+          <button onClick={onClose} className="text-neutral-400 hover:text-[#1F1F1F]">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -1386,16 +1386,16 @@ function BulkImportModal({
           )}
 
           {/* Dropzone */}
-          <div className="border-2 border-dashed border-neutral-800 rounded-2xl p-6 text-center hover:border-amber-500/50 transition-colors bg-neutral-950">
+          <div className="border-2 border-dashed border-neutral-200 rounded-2xl p-6 text-center hover:border-[#FE9820]/50 transition-colors bg-neutral-50">
             <Upload className="w-8 h-8 text-neutral-400 mx-auto mb-2" />
-            <p className="text-sm font-medium text-white">
+            <p className="text-sm font-medium text-[#1F1F1F]">
               {file ? file.name : "Seleccioná un archivo .xlsx o .csv"}
             </p>
             <p className="text-xs text-neutral-500 mt-1">
               Las columnas admitidas son: Nombre, CodigoDeBarras, Categoria, PrecioCosto,
               PrecioVenta, Stock, StockMinimo
             </p>
-            <label className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-neutral-900 border border-neutral-700 text-xs font-semibold text-neutral-200 hover:text-white hover:border-neutral-600 cursor-pointer transition-all">
+            <label className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white border border-neutral-300 text-xs font-semibold text-neutral-800 hover:text-[#1F1F1F] hover:border-neutral-600 cursor-pointer transition-all">
               <span>Examinar archivo</span>
               <input
                 type="file"
@@ -1410,16 +1410,16 @@ function BulkImportModal({
           {parsedRows.length > 0 && (
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <p className="text-xs font-semibold text-neutral-300">
+                <p className="text-xs font-semibold text-neutral-700">
                   Previsualización ({parsedRows.length} productos detectados)
                 </p>
-                <span className="text-[11px] text-amber-400">
+                <span className="text-[11px] text-[#FE9820]">
                   Categorías nuevas se crearán automáticamente
                 </span>
               </div>
-              <div className="border border-neutral-800 rounded-xl overflow-hidden max-h-48 overflow-y-auto">
+              <div className="border border-neutral-200 rounded-xl overflow-hidden max-h-48 overflow-y-auto">
                 <table className="w-full text-left text-xs border-collapse">
-                  <thead className="bg-neutral-950 text-neutral-400 sticky top-0 border-b border-neutral-800">
+                  <thead className="bg-neutral-50 text-neutral-400 sticky top-0 border-b border-neutral-200">
                     <tr>
                       <th className="p-2">Nombre</th>
                       <th className="p-2">Código</th>
@@ -1429,10 +1429,10 @@ function BulkImportModal({
                       <th className="p-2 text-center">Stock</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-neutral-800 text-neutral-300">
+                  <tbody className="divide-y divide-neutral-800 text-neutral-700">
                     {parsedRows.slice(0, 10).map((row, idx) => (
-                      <tr key={idx} className="hover:bg-neutral-800/30">
-                        <td className="p-2 font-medium text-white">{row.name}</td>
+                      <tr key={idx} className="hover:bg-neutral-100/30">
+                        <td className="p-2 font-medium text-[#1F1F1F]">{row.name}</td>
                         <td className="p-2 font-mono text-neutral-400">
                           {row.barcode || "-"}
                         </td>
@@ -1440,7 +1440,7 @@ function BulkImportModal({
                         <td className="p-2 text-right font-mono">
                           ${row.cost_price}
                         </td>
-                        <td className="p-2 text-right font-mono font-bold text-amber-400">
+                        <td className="p-2 text-right font-mono font-bold text-[#FE9820]">
                           ${row.sale_price}
                         </td>
                         <td className="p-2 text-center font-mono">{row.stock}</td>
@@ -1458,11 +1458,11 @@ function BulkImportModal({
           )}
         </div>
 
-        <div className="pt-4 border-t border-neutral-800 flex items-center justify-end gap-2">
+        <div className="pt-4 border-t border-neutral-200 flex items-center justify-end gap-2">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 rounded-xl border border-neutral-800 text-xs text-neutral-400 hover:text-white"
+            className="px-4 py-2 rounded-xl border border-neutral-200 text-xs text-neutral-400 hover:text-[#1F1F1F]"
           >
             Cancelar
           </button>
@@ -1470,7 +1470,7 @@ function BulkImportModal({
             type="button"
             disabled={loading || parsedRows.length === 0}
             onClick={handleImportSubmit}
-            className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-bold text-xs shadow-md shadow-amber-500/20 disabled:opacity-50 flex items-center gap-1.5"
+            className="px-5 py-2 rounded-xl bg-[#FE9820] hover:bg-[#FE9820]/90 text-neutral-950 font-bold text-xs shadow-md shadow-amber-500/20 disabled:opacity-50 flex items-center gap-1.5"
           >
             {loading ? (
               <RefreshCw className="w-3.5 h-3.5 animate-spin" />

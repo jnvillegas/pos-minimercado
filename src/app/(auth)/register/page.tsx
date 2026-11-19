@@ -18,10 +18,10 @@ export default function RegisterPage() {
   )
 
   return (
-    <Card className="border-neutral-800 bg-neutral-900/90 text-neutral-100 backdrop-blur shadow-2xl">
+    <Card className="border-neutral-200 bg-white text-[#1F1F1F] shadow-xl shadow-neutral-200/50 rounded-2xl">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-xl font-semibold text-white">Crear Cuenta</CardTitle>
-        <CardDescription className="text-neutral-400">
+        <CardTitle className="text-xl font-semibold text-[#1F1F1F]">Crear Cuenta</CardTitle>
+        <CardDescription className="text-[#9E9E9E]">
           Registrate para administrar tu negocio e inventario
         </CardDescription>
       </CardHeader>
@@ -29,20 +29,20 @@ export default function RegisterPage() {
       <form action={formAction}>
         <CardContent className="space-y-4">
           {state?.error && (
-            <div className="p-3 text-sm rounded-lg bg-red-950/60 border border-red-800 text-red-200">
+            <div className="p-3 text-sm rounded-lg bg-red-50 border border-red-200 text-red-700">
               {state.error}
             </div>
           )}
 
           {state?.success && (
-            <div className="p-3 text-sm rounded-lg bg-emerald-950/60 border border-emerald-800 text-emerald-200 flex items-start gap-2">
-              <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-400 mt-0.5" />
+            <div className="p-3 text-sm rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-start gap-2">
+              <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-600 mt-0.5" />
               <span>{state.message}</span>
             </div>
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-neutral-300">Correo electrónico</Label>
+            <Label htmlFor="email" className="text-[#1F1F1F] font-medium">Correo electrónico</Label>
             <Input
               id="email"
               name="email"
@@ -50,12 +50,12 @@ export default function RegisterPage() {
               placeholder="dueño@minimercado.com"
               required
               autoComplete="email"
-              className="border-neutral-700 bg-neutral-950 text-white placeholder:text-neutral-500"
+              className="border-neutral-300 bg-white text-[#1F1F1F] placeholder:text-[#9E9E9E] focus:border-[#FE9820] focus:ring-[#FE9820]"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password" className="text-neutral-300">Contraseña</Label>
+            <Label htmlFor="password" className="text-[#1F1F1F] font-medium">Contraseña</Label>
             <Input
               id="password"
               name="password"
@@ -63,12 +63,12 @@ export default function RegisterPage() {
               placeholder="Mínimo 6 caracteres"
               required
               autoComplete="new-password"
-              className="border-neutral-700 bg-neutral-950 text-white placeholder:text-neutral-500"
+              className="border-neutral-300 bg-white text-[#1F1F1F] placeholder:text-[#9E9E9E] focus:border-[#FE9820] focus:ring-[#FE9820]"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="confirmPassword" className="text-neutral-300">Confirmar contraseña</Label>
+            <Label htmlFor="confirmPassword" className="text-[#1F1F1F] font-medium">Confirmar contraseña</Label>
             <Input
               id="confirmPassword"
               name="confirmPassword"
@@ -76,7 +76,7 @@ export default function RegisterPage() {
               placeholder="Repetí la contraseña"
               required
               autoComplete="new-password"
-              className="border-neutral-700 bg-neutral-950 text-white placeholder:text-neutral-500"
+              className="border-neutral-300 bg-white text-[#1F1F1F] placeholder:text-[#9E9E9E] focus:border-[#FE9820] focus:ring-[#FE9820]"
             />
           </div>
         </CardContent>
@@ -85,7 +85,7 @@ export default function RegisterPage() {
           <Button
             type="submit"
             disabled={isPending}
-            className="w-full bg-amber-500 hover:bg-amber-400 text-neutral-950 font-semibold h-10 shadow-lg shadow-amber-500/10"
+            className="w-full bg-[#FE9820] hover:bg-[#FE9820]/90 text-white font-semibold h-11 rounded-xl shadow-md shadow-[#FE9820]/25 transition-all"
           >
             {isPending ? (
               <>
@@ -100,9 +100,9 @@ export default function RegisterPage() {
             )}
           </Button>
 
-          <p className="text-sm text-center text-neutral-400">
+          <p className="text-sm text-center text-[#9E9E9E]">
             ¿Ya tenés una cuenta?{" "}
-            <Link href="/login" className="text-amber-400 hover:text-amber-300 font-medium underline underline-offset-4">
+            <Link href="/login" className="text-[#FE9820] hover:text-[#FE9820]/80 font-medium underline underline-offset-4">
               Iniciá sesión acá
             </Link>
           </p>

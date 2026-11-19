@@ -7,14 +7,14 @@ export default function OnboardingLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="dark min-h-screen flex flex-col justify-center items-center bg-[#3A3A3A] p-4 text-[#F3F3F3]">
+    <div className="min-h-screen flex flex-col justify-center items-center bg-[#F8F9FA] p-4 text-[#1F1F1F]">
       <div className="w-full max-w-lg flex flex-col items-center mb-6 text-center">
         <BrandLogo
           size="lg"
           subtitle="Punto de venta y gestión de stock ágil"
           className="items-center text-center flex-col gap-2 mb-3"
         />
-        <h1 className="text-brand-h1 text-[#F3F3F3]">
+        <h1 className="text-brand-h1 text-[#1F1F1F]">
           Configurá tu primer comercio
         </h1>
         <p className="text-brand-caption text-[#9E9E9E] mt-1 max-w-sm">

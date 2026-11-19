@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation"
 import { signOutAction } from "@/app/(auth)/actions"
 import { BrandIcon, BrandStar } from "@/components/brand/brand-logo"
 import {
-  Store,
   LayoutDashboard,
   ArrowLeftRight,
   Package,
@@ -71,27 +70,27 @@ function NavigationLinks({
             onClick={onItemClick}
             className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-brand-subtitle transition-all ${
               isActive
-                ? "bg-[#FE9820] text-neutral-950 font-semibold shadow-md shadow-[#FE9820]/20"
-                : "text-[#9E9E9E] hover:text-[#F3F3F3] hover:bg-white/5"
+                ? "bg-[#FE9820] text-white font-semibold shadow-md shadow-[#FE9820]/25"
+                : "text-neutral-600 hover:text-[#1F1F1F] hover:bg-neutral-100"
             }`}
           >
             <div className="flex items-center gap-3">
-              <Icon className={`w-5 h-5 ${isActive ? "text-neutral-950" : "text-[#9E9E9E]"}`} />
+              <Icon className={`w-5 h-5 ${isActive ? "text-white" : "text-neutral-500"}`} />
               <span>{item.label}</span>
             </div>
             {isCashRegisterItem ? (
               <span
                 className={`text-[10px] uppercase font-bold px-1.5 py-0.5 rounded tracking-wide flex items-center gap-1 ${
                   isActive
-                    ? "bg-neutral-950 text-neutral-200"
+                    ? "bg-white/20 text-white"
                     : isCashShiftOpen
-                    ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                    : "bg-white/10 text-[#9E9E9E] border border-white/10"
+                    ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                    : "bg-neutral-100 text-neutral-500 border border-neutral-200"
                 }`}
               >
                 <span
                   className={`w-1.5 h-1.5 rounded-full ${
-                    isCashShiftOpen ? "bg-emerald-400 animate-pulse" : "bg-neutral-500"
+                    isCashShiftOpen ? "bg-emerald-500 animate-pulse" : "bg-neutral-400"
                   }`}
                 />
                 {isCashShiftOpen ? "Abierta" : "Cerrada"}
@@ -100,8 +99,8 @@ function NavigationLinks({
               <span
                 className={`text-[10px] uppercase font-bold px-1.5 py-0.5 rounded tracking-wide ${
                   isActive
-                    ? "bg-neutral-950 text-[#FE9820]"
-                    : "bg-[#FE9820]/20 text-[#ECAA49] border border-[#FE9820]/30"
+                    ? "bg-white text-[#FE9820]"
+                    : "bg-[#FE9820]/10 text-[#FE9820] border border-[#FE9820]/20"
                 }`}
               >
                 {item.badge}
@@ -116,19 +115,19 @@ function NavigationLinks({
 
 function BusinessHeader({ business }: { business: Business }) {
   return (
-    <div className="p-4 border-b border-white/10">
+    <div className="p-4 border-b border-neutral-200">
       <div className="flex items-center gap-3">
         <BrandIcon size={38} className="shrink-0" />
         <div className="min-w-0 flex-1">
-          <h2 className="text-sm font-semibold text-[#F3F3F3] truncate flex items-center gap-1" title={business.name}>
+          <h2 className="text-sm font-semibold text-[#1F1F1F] truncate flex items-center gap-1" title={business.name}>
             {business.name}
           </h2>
           <div className="flex items-center gap-1.5 mt-0.5">
             <span className="text-brand-caption text-[#9E9E9E] truncate">
               {business.industry}
             </span>
-            <span className="text-neutral-600">•</span>
-            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-black/20 text-neutral-300">
+            <span className="text-neutral-300">•</span>
+            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-neutral-100 text-neutral-600 border border-neutral-200">
               {business.currency}
             </span>
           </div>
@@ -146,13 +145,13 @@ function UserFooter({
   roleLabel: string
 }) {
   return (
-    <div className="p-3 border-t border-white/10 mt-auto bg-black/20">
+    <div className="p-3 border-t border-neutral-200 mt-auto bg-neutral-50/80">
       <div className="flex items-center justify-between px-2 py-1.5 mb-2">
         <div className="min-w-0">
-          <p className="text-brand-caption font-medium text-[#F3F3F3] truncate max-w-[140px]" title={userEmail}>
+          <p className="text-brand-caption font-medium text-[#1F1F1F] truncate max-w-[140px]" title={userEmail}>
             {userEmail}
           </p>
-          <span className="text-[11px] text-[#ECAA49] font-medium">
+          <span className="text-[11px] text-[#FE9820] font-semibold">
             Rol: {roleLabel}
           </span>
         </div>
@@ -161,7 +160,7 @@ function UserFooter({
       <form action={signOutAction}>
         <button
           type="submit"
-          className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-red-400 hover:text-red-300 hover:bg-red-950/30 rounded-lg transition-colors border border-transparent hover:border-red-900/50"
+          className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors border border-transparent hover:border-red-200"
         >
           <LogOut className="w-4 h-4" />
           <span>Cerrar sesión</span>
@@ -189,9 +188,9 @@ export function DashboardShell({
     }[role] || role
 
   return (
-    <div className="dark min-h-screen bg-[#3A3A3A] text-[#F3F3F3] flex">
+    <div className="min-h-screen bg-[#F8F9FA] text-[#1F1F1F] flex">
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex w-64 flex-col fixed inset-y-0 z-30 bg-[#4D4D4D] border-r border-white/10 backdrop-blur">
+      <aside className="hidden lg:flex w-64 flex-col fixed inset-y-0 z-30 bg-white border-r border-neutral-200 shadow-sm">
         <BusinessHeader business={business} />
         <div className="flex-1 overflow-y-auto">
           <NavigationLinks pathname={pathname} isCashShiftOpen={isCashShiftOpen} />
@@ -203,19 +202,19 @@ export function DashboardShell({
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm"
             onClick={() => setMobileMenuOpen(false)}
           />
-          <div className="fixed inset-y-0 left-0 w-72 bg-[#4D4D4D] border-r border-white/10 flex flex-col z-50">
-            <div className="flex items-center justify-between p-3 border-b border-white/10">
+          <div className="fixed inset-y-0 left-0 w-72 bg-white border-r border-neutral-200 flex flex-col z-50 shadow-2xl">
+            <div className="flex items-center justify-between p-3 border-b border-neutral-200">
               <div className="flex items-center gap-2">
                 <BrandStar className="w-4 h-4 text-[#FE9820]" />
-                <span className="font-semibold text-sm text-[#F3F3F3]">POS Minimercado</span>
+                <span className="font-semibold text-sm text-[#1F1F1F]">POS Minimercado</span>
               </div>
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(false)}
-                className="p-1.5 rounded-lg text-[#9E9E9E] hover:text-[#F3F3F3] hover:bg-white/10"
+                className="p-1.5 rounded-lg text-neutral-400 hover:text-[#1F1F1F] hover:bg-neutral-100"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -236,27 +235,27 @@ export function DashboardShell({
       {/* Main Content Area */}
       <div className="flex-1 lg:pl-64 flex flex-col min-w-0">
         {/* Mobile Header */}
-        <header className="lg:hidden sticky top-0 z-20 flex items-center justify-between px-4 py-3 bg-[#4D4D4D] border-b border-white/10 backdrop-blur">
+        <header className="lg:hidden sticky top-0 z-20 flex items-center justify-between px-4 py-3 bg-white/95 border-b border-neutral-200 backdrop-blur">
           <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={() => setMobileMenuOpen(true)}
-              className="p-2 rounded-lg bg-white/10 text-[#F3F3F3] hover:bg-white/20"
+              className="p-2 rounded-lg bg-neutral-100 text-neutral-700 hover:bg-neutral-200"
             >
               <Menu className="w-5 h-5" />
             </button>
             <div>
-              <h1 className="text-sm font-bold text-[#F3F3F3] truncate max-w-[180px]">
+              <h1 className="text-sm font-bold text-[#1F1F1F] truncate max-w-[180px]">
                 {business.name}
               </h1>
-              <p className="text-[11px] text-[#ECAA49] font-medium">
+              <p className="text-[11px] text-[#FE9820] font-semibold">
                 {business.currency} • {roleLabel}
               </p>
             </div>
           </div>
           <Link
             href="/dashboard/pos"
-            className="px-2.5 py-1.5 rounded-lg bg-[#FE9820] text-neutral-950 font-bold text-xs flex items-center gap-1 shadow-sm"
+            className="px-2.5 py-1.5 rounded-lg bg-[#FE9820] text-white font-bold text-xs flex items-center gap-1 shadow-sm shadow-[#FE9820]/25"
           >
             <ShoppingBag className="w-3.5 h-3.5" />
             <span>POS</span>

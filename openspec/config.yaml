@@ -1,0 +1,10 @@
+schema: spec-driven
+
+context: |
+  POS and inventory management system for minimarkets (Treinta-inspired style) built with:
+  - Next.js (App Router, TypeScript, Server Actions and Server Components)
+  - Tailwind CSS + shadcn/ui (clean aesthetics, mobile-first and desktop responsive, amber/black/slate accents)
+  - Supabase (Auth, PostgreSQL with mandatory RLS on all tables, Storage for product photos, and PL/pgSQL RPC functions for atomic operations)
+  - Zod + React Hook Form for validations
+  - All database tables, columns, and code identifiers in English; user interface in Spanish (Argentina/Latam).
+  - Rule: Every database change must be saved as an ordered .sql file in supabase/migrations/.

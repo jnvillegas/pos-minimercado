@@ -114,27 +114,29 @@ function NavigationGroupList({
                   href={item.href}
                   onClick={onItemClick}
                   title={isCollapsed ? item.label : undefined}
-                  className={`flex items-center ${
+                  className={`group relative flex items-center ${
                     isCollapsed ? "justify-center px-2" : "justify-between px-3.5"
                   } py-2.5 rounded-xl text-sm font-medium transition-all ${
                     isActive
-                      ? "bg-[#FE9820] text-white font-semibold shadow-md shadow-[#FE9820]/25"
-                      : "text-neutral-600 hover:text-[#1F1F1F] hover:bg-neutral-100/80"
+                      ? "text-[#1F1F1F] font-semibold bg-neutral-50/90"
+                      : "text-neutral-500 hover:text-[#1F1F1F] hover:bg-neutral-50/80"
                   }`}
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <Icon className={`w-5 h-5 shrink-0 ${isActive ? "text-white" : "text-neutral-500"}`} />
+                    <Icon
+                      className={`w-5 h-5 shrink-0 transition-colors ${
+                        isActive ? "text-[#FE9820]" : "text-neutral-400 group-hover:text-neutral-600"
+                      }`}
+                    />
                     {!isCollapsed && <span className="truncate">{item.label}</span>}
                   </div>
 
                   {!isCollapsed && (
-                    <>
+                    <div className="flex items-center gap-2">
                       {isCashRegisterItem ? (
                         <span
                           className={`text-[10px] uppercase font-bold px-1.5 py-0.5 rounded tracking-wide flex items-center gap-1 ${
-                            isActive
-                              ? "bg-white/20 text-white"
-                              : isCashShiftOpen
+                            isCashShiftOpen
                               ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
                               : "bg-neutral-100 text-neutral-500 border border-neutral-200"
                           }`}
@@ -150,14 +152,24 @@ function NavigationGroupList({
                         <span
                           className={`text-[10px] uppercase font-bold px-1.5 py-0.5 rounded tracking-wide ${
                             isActive
-                              ? "bg-white text-[#FE9820]"
-                              : "bg-[#FE9820]/10 text-[#FE9820] border border-[#FE9820]/20"
+                              ? "bg-[#FE9820]/15 text-[#FE9820] border border-[#FE9820]/30"
+                              : "bg-neutral-100 text-neutral-500 border border-neutral-200"
                           }`}
                         >
                           {item.badge}
                         </span>
                       ) : null}
-                    </>
+
+                      {/* Right-edge vertical active indicator bar (from reference image) */}
+                      {isActive && (
+                        <span className="w-1 h-5 rounded-full bg-[#FE9820] shrink-0 shadow-xs" />
+                      )}
+                    </div>
+                  )}
+
+                  {/* If collapsed and active, show small right indicator */}
+                  {isCollapsed && isActive && (
+                    <span className="absolute right-1 w-1 h-4 rounded-full bg-[#FE9820]" />
                   )}
                 </Link>
               )

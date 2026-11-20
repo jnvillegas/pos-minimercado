@@ -52,15 +52,19 @@ export async function updateProfileAction(data: ProfileUpdateInput) {
   }
 
   // 2. Sync to auth.users metadata for instant access in server components
-  await supabase.auth.updateUser({
-    data: {
-      full_name: trimmedName,
-      phone: data.phone?.trim() || "",
-      dni_cuil: data.dniCuil?.trim() || "",
-      alias: data.alias?.trim() || "",
-      avatar_url: data.avatarUrl?.trim() || "",
-    },
-  })
+  try {
+    await supabase.auth.updateUser({
+      data: {
+        full_name: trimmedName,
+        phone: data.phone?.trim() || "",
+        dni_cuil: data.dniCuil?.trim() || "",
+        alias: data.alias?.trim() || "",
+        avatar_url: data.avatarUrl?.trim() || "",
+      },
+    })
+  } catch {
+    // Metadata sync fallback
+  }
 
   revalidatePath("/", "layout")
   revalidatePath("/dashboard/profile")

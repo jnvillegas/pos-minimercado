@@ -6,6 +6,7 @@ export interface ActiveBusinessContext {
   user: {
     id: string
     email?: string
+    user_metadata?: Record<string, any>
   }
   business: {
     id: string

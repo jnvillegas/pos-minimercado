@@ -29,6 +29,7 @@ export default async function DashboardLayout({
     <DashboardShell
       business={business}
       userEmail={user.email || ""}
+      userName={user.user_metadata?.full_name || ""}
       role={role}
       isCashShiftOpen={Boolean(openShift)}
       isPlatformAdmin={isPlatformAdmin}

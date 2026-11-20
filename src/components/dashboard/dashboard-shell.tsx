@@ -73,7 +73,6 @@ const NAV_GROUPS: NavGroup[] = [
     title: "Gestión",
     items: [
       { label: "Reportes", href: "/dashboard/reports", icon: BarChart3 },
-      { label: "Configuración", href: "/dashboard/settings", icon: Settings },
     ],
   },
 ]
@@ -249,7 +248,7 @@ export function DashboardShell({
 
         {/* Sidebar Bottom / User Card */}
         <div className="p-3 border-t border-neutral-200 space-y-2 mt-auto bg-neutral-50/50">
-          {!isCollapsed && (
+          {!isCollapsed ? (
             <div className="space-y-0.5 px-1">
               <Link
                 href="/dashboard/settings"
@@ -257,6 +256,31 @@ export function DashboardShell({
               >
                 <HelpCircle className="w-4 h-4" />
                 <span>Centro de Ayuda</span>
+              </Link>
+              <Link
+                href="/dashboard/settings"
+                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                  pathname.startsWith("/dashboard/settings")
+                    ? "text-[#FE9820] font-semibold bg-[#FE9820]/10"
+                    : "text-neutral-500 hover:text-[#1F1F1F] hover:bg-neutral-100"
+                }`}
+              >
+                <Settings className="w-4 h-4" />
+                <span>Configuración</span>
+              </Link>
+            </div>
+          ) : (
+            <div className="space-y-1 flex flex-col items-center">
+              <Link
+                href="/dashboard/settings"
+                title="Configuración"
+                className={`p-2 rounded-lg transition-colors ${
+                  pathname.startsWith("/dashboard/settings")
+                    ? "text-[#FE9820] bg-[#FE9820]/10"
+                    : "text-neutral-500 hover:text-[#1F1F1F] hover:bg-neutral-100"
+                }`}
+              >
+                <Settings className="w-4 h-4" />
               </Link>
             </div>
           )}
@@ -340,7 +364,26 @@ export function DashboardShell({
                 onItemClick={() => setMobileMenuOpen(false)}
               />
             </div>
-            <div className="p-3 border-t border-neutral-200 bg-neutral-50/50">
+            <div className="p-3 border-t border-neutral-200 bg-neutral-50/50 space-y-2">
+              <div className="space-y-0.5">
+                <Link
+                  href="/dashboard/settings"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-medium text-neutral-500 hover:text-[#1F1F1F] hover:bg-neutral-100 transition-colors"
+                >
+                  <HelpCircle className="w-4 h-4" />
+                  <span>Centro de Ayuda</span>
+                </Link>
+                <Link
+                  href="/dashboard/settings"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-medium text-neutral-500 hover:text-[#1F1F1F] hover:bg-neutral-100 transition-colors"
+                >
+                  <Settings className="w-4 h-4" />
+                  <span>Configuración</span>
+                </Link>
+              </div>
+
               <form action={signOutAction}>
                 <button
                   type="submit"

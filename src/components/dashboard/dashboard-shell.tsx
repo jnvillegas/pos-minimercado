@@ -195,6 +195,7 @@ export function DashboardShell({
 }: DashboardShellProps) {
   const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [mobileMoreOpen, setMobileMoreOpen] = useState(false)
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [userDropdownOpen, setUserDropdownOpen] = useState(false)
   const [notifTooltip, setNotifTooltip] = useState(false)
@@ -571,21 +572,23 @@ export function DashboardShell({
       {/* FLOATING MOBILE DOCK (LIGHT GLASS BUBBLE BAR) */}
       <nav
         aria-label="Navegación móvil rápida"
-        className="lg:hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-2rem)] max-w-md bg-white/95 backdrop-blur-md border border-neutral-200/90 shadow-2xl shadow-neutral-900/10 rounded-full px-2 py-1.5 flex items-center justify-around pointer-events-auto print:hidden"
+        className="lg:hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-1.5rem)] max-w-md bg-white/95 backdrop-blur-xl border border-neutral-200/90 shadow-2xl shadow-neutral-900/10 rounded-3xl sm:rounded-full px-2 py-1.5 flex items-center justify-between pointer-events-auto print:hidden"
       >
         {/* 1. Stock / Inventario */}
         {pathname.startsWith("/dashboard/inventory") ? (
           <Link
             href="/dashboard/inventory"
-            className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-[#FE9820] text-neutral-950 font-bold text-xs shadow-md shadow-amber-500/20 transition-all shrink-0"
+            className="flex items-center gap-2 bg-amber-500/15 border border-amber-500/25 p-1 pr-3.5 rounded-full shadow-xs transition-all shrink-0"
           >
-            <Package className="w-4 h-4" />
-            <span>Stock</span>
+            <span className="w-8 h-8 rounded-full bg-[#FE9820] text-white flex items-center justify-center shrink-0 shadow-xs">
+              <Package className="w-4 h-4" />
+            </span>
+            <span className="text-xs font-bold text-amber-900">Stock</span>
           </Link>
         ) : (
           <Link
             href="/dashboard/inventory"
-            className="p-2.5 rounded-full text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 transition-all flex items-center justify-center shrink-0"
+            className="w-10 h-10 rounded-full bg-neutral-100/70 hover:bg-neutral-100 border border-neutral-200/50 flex items-center justify-center text-neutral-600 hover:text-neutral-900 transition-all shrink-0 active:scale-95"
             title="Inventario de Stock"
           >
             <Package className="w-5 h-5" />
@@ -596,20 +599,22 @@ export function DashboardShell({
         {pathname.startsWith("/dashboard/cash-register") ? (
           <Link
             href="/dashboard/cash-register"
-            className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-[#FE9820] text-neutral-950 font-bold text-xs shadow-md shadow-amber-500/20 transition-all shrink-0"
+            className="flex items-center gap-2 bg-amber-500/15 border border-amber-500/25 p-1 pr-3.5 rounded-full shadow-xs transition-all shrink-0"
           >
-            <Landmark className="w-4 h-4" />
-            <span>Caja</span>
+            <span className="w-8 h-8 rounded-full bg-[#FE9820] text-white flex items-center justify-center shrink-0 shadow-xs">
+              <Landmark className="w-4 h-4" />
+            </span>
+            <span className="text-xs font-bold text-amber-900">Caja</span>
           </Link>
         ) : (
           <Link
             href="/dashboard/cash-register"
-            className="relative p-2.5 rounded-full text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 transition-all flex items-center justify-center shrink-0"
+            className="relative w-10 h-10 rounded-full bg-neutral-100/70 hover:bg-neutral-100 border border-neutral-200/50 flex items-center justify-center text-neutral-600 hover:text-neutral-900 transition-all shrink-0 active:scale-95"
             title="Caja y Turnos"
           >
             <Landmark className="w-5 h-5" />
             {isCashShiftOpen && (
-              <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-white" />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-white" />
             )}
           </Link>
         )}
@@ -618,15 +623,17 @@ export function DashboardShell({
         {pathname.startsWith("/dashboard/pos") ? (
           <Link
             href="/dashboard/pos"
-            className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#FE9820] text-neutral-950 font-black text-xs shadow-lg shadow-amber-500/30 ring-2 ring-[#FE9820]/30 transition-all shrink-0 scale-105"
+            className="flex items-center gap-2 bg-amber-500/15 border border-amber-500/30 p-1 pr-4 rounded-full shadow-md shadow-amber-500/20 ring-2 ring-amber-500/20 scale-105 transition-all shrink-0"
           >
-            <ShoppingBag className="w-4 h-4" />
-            <span>POS</span>
+            <span className="w-8 h-8 rounded-full bg-[#FE9820] text-white flex items-center justify-center shrink-0 shadow-xs">
+              <ShoppingBag className="w-4 h-4" />
+            </span>
+            <span className="text-xs font-black text-amber-950">POS</span>
           </Link>
         ) : (
           <Link
             href="/dashboard/pos"
-            className="p-2.5 rounded-full bg-amber-500/10 text-amber-700 hover:bg-amber-500/20 border border-amber-300/70 transition-all flex items-center justify-center shrink-0 shadow-xs active:scale-95"
+            className="w-11 h-11 rounded-full bg-amber-500/15 hover:bg-amber-500/25 border border-amber-300/80 flex items-center justify-center text-amber-700 transition-all shrink-0 shadow-xs active:scale-95"
             title="Punto de Venta"
           >
             <ShoppingBag className="w-5 h-5 text-amber-600" />
@@ -637,47 +644,160 @@ export function DashboardShell({
         {pathname.startsWith("/dashboard/movements") ? (
           <Link
             href="/dashboard/movements"
-            className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-[#FE9820] text-neutral-950 font-bold text-xs shadow-md shadow-amber-500/20 transition-all shrink-0"
+            className="flex items-center gap-2 bg-amber-500/15 border border-amber-500/25 p-1 pr-3.5 rounded-full shadow-xs transition-all shrink-0"
           >
-            <ArrowLeftRight className="w-4 h-4" />
-            <span>Flujo</span>
+            <span className="w-8 h-8 rounded-full bg-[#FE9820] text-white flex items-center justify-center shrink-0 shadow-xs">
+              <ArrowLeftRight className="w-4 h-4" />
+            </span>
+            <span className="text-xs font-bold text-amber-900">Flujo</span>
           </Link>
         ) : (
           <Link
             href="/dashboard/movements"
-            className="p-2.5 rounded-full text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 transition-all flex items-center justify-center shrink-0"
+            className="w-10 h-10 rounded-full bg-neutral-100/70 hover:bg-neutral-100 border border-neutral-200/50 flex items-center justify-center text-neutral-600 hover:text-neutral-900 transition-all shrink-0 active:scale-95"
             title="Movimientos y Flujo Diario"
           >
             <ArrowLeftRight className="w-5 h-5" />
           </Link>
         )}
 
-        {/* 5. Menú (Drawer Trigger) */}
-        {mobileMenuOpen ||
-        (!pathname.startsWith("/dashboard/inventory") &&
-          !pathname.startsWith("/dashboard/cash-register") &&
-          !pathname.startsWith("/dashboard/pos") &&
-          !pathname.startsWith("/dashboard/movements")) ? (
-          <button
-            type="button"
-            onClick={() => setMobileMenuOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-neutral-900 text-white font-bold text-xs shadow-md transition-all shrink-0"
-            title="Más opciones"
-          >
-            <Menu className="w-4 h-4" />
-            <span>Menú</span>
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={() => setMobileMenuOpen(true)}
-            className="p-2.5 rounded-full text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 transition-all flex items-center justify-center shrink-0"
-            title="Abrir menú"
-            aria-label="Abrir menú de navegación"
-          >
-            <Menu className="w-5 h-5" />
-          </button>
-        )}
+        {/* 5. Menú / Más opciones (Desplegable Popover) */}
+        <div className="relative">
+          {mobileMoreOpen ||
+          (!pathname.startsWith("/dashboard/inventory") &&
+            !pathname.startsWith("/dashboard/cash-register") &&
+            !pathname.startsWith("/dashboard/pos") &&
+            !pathname.startsWith("/dashboard/movements")) ? (
+            <button
+              type="button"
+              onClick={() => setMobileMoreOpen(!mobileMoreOpen)}
+              className="flex items-center gap-2 bg-neutral-900 border border-neutral-800 p-1 pr-3 rounded-full shadow-xs transition-all shrink-0 text-white"
+              title="Más opciones"
+              aria-label="Más opciones"
+            >
+              <span className="w-8 h-8 rounded-full bg-white/20 text-white flex items-center justify-center shrink-0">
+                <Menu className="w-4 h-4" />
+              </span>
+              <span className="text-xs font-bold">Más</span>
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setMobileMoreOpen(!mobileMoreOpen)}
+              className="w-10 h-10 rounded-full bg-neutral-100/70 hover:bg-neutral-100 border border-neutral-200/50 flex items-center justify-center text-neutral-600 hover:text-neutral-900 transition-all shrink-0 active:scale-95"
+              title="Abrir opciones adicionales"
+              aria-label="Abrir opciones adicionales"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+          )}
+
+          {/* Popover Desplegable con opciones restantes */}
+          {mobileMoreOpen && (
+            <>
+              {/* Backdrop para cerrar al tocar afuera */}
+              <div
+                className="fixed inset-0 z-40 bg-black/20 backdrop-blur-xs"
+                onClick={() => setMobileMoreOpen(false)}
+              />
+
+              {/* Panel flotante encima del dock */}
+              <div className="absolute bottom-14 right-0 w-64 bg-white/95 backdrop-blur-2xl border border-neutral-200/90 rounded-3xl p-2.5 shadow-2xl z-50 animate-in fade-in zoom-in-95 duration-150 space-y-1">
+                <div className="px-3 py-2 border-b border-neutral-100 flex items-center justify-between">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">
+                    Opciones del Comercio
+                  </span>
+                  <span className="text-[11px] font-semibold text-neutral-600 truncate max-w-[120px]">
+                    {business.name}
+                  </span>
+                </div>
+
+                <Link
+                  href="/dashboard"
+                  onClick={() => setMobileMoreOpen(false)}
+                  className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold transition-colors ${
+                    pathname === "/dashboard"
+                      ? "bg-amber-50 text-amber-900 font-bold"
+                      : "text-neutral-600 hover:text-[#1F1F1F] hover:bg-neutral-100"
+                  }`}
+                >
+                  <LayoutDashboard className="w-4 h-4 text-neutral-500" />
+                  <span>Panel General (Overview)</span>
+                </Link>
+
+                <Link
+                  href="/dashboard/reports"
+                  onClick={() => setMobileMoreOpen(false)}
+                  className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold transition-colors ${
+                    pathname.startsWith("/dashboard/reports")
+                      ? "bg-amber-50 text-amber-900 font-bold"
+                      : "text-neutral-600 hover:text-[#1F1F1F] hover:bg-neutral-100"
+                  }`}
+                >
+                  <BarChart3 className="w-4 h-4 text-neutral-500" />
+                  <span>Reportes y Estadísticas</span>
+                </Link>
+
+                <Link
+                  href="/dashboard/settings"
+                  onClick={() => setMobileMoreOpen(false)}
+                  className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold transition-colors ${
+                    pathname.startsWith("/dashboard/settings")
+                      ? "bg-amber-50 text-amber-900 font-bold"
+                      : "text-neutral-600 hover:text-[#1F1F1F] hover:bg-neutral-100"
+                  }`}
+                >
+                  <Settings className="w-4 h-4 text-neutral-500" />
+                  <span>Configuración del Negocio</span>
+                </Link>
+
+                <Link
+                  href="/dashboard/settings"
+                  onClick={() => setMobileMoreOpen(false)}
+                  className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-neutral-600 hover:text-[#1F1F1F] hover:bg-neutral-100 transition-colors"
+                >
+                  <HelpCircle className="w-4 h-4 text-neutral-400" />
+                  <span>Centro de Ayuda</span>
+                </Link>
+
+                {isPlatformAdmin && (
+                  <Link
+                    href="/admin"
+                    onClick={() => setMobileMoreOpen(false)}
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-purple-700 bg-purple-50/70 hover:bg-purple-100/70 transition-colors"
+                  >
+                    <ShieldAlert className="w-4 h-4 text-purple-600" />
+                    <span>Panel Superadmin</span>
+                  </Link>
+                )}
+
+                {isSupportMode && (
+                  <form action={exitSupportModeAction} className="w-full">
+                    <button
+                      type="submit"
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-amber-800 bg-amber-50 hover:bg-amber-100 transition-colors text-left"
+                    >
+                      <ShieldAlert className="w-4 h-4 text-amber-600" />
+                      <span>Volver al Superadmin</span>
+                    </button>
+                  </form>
+                )}
+
+                <div className="h-px bg-neutral-100 my-1" />
+
+                <form action={signOutAction} className="w-full">
+                  <button
+                    type="submit"
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 transition-colors text-left"
+                  >
+                    <LogOut className="w-4 h-4 text-rose-500" />
+                    <span>Cerrar Sesión</span>
+                  </button>
+                </form>
+              </div>
+            </>
+          )}
+        </div>
       </nav>
     </div>
   )

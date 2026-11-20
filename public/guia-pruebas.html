@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guía Paso a Paso de Pruebas • POS Minimercado</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #FE9820;
+      --primary-dark: #E27E0C;
+      --primary-light: #FFF4E5;
+      --bg: #F8F9FA;
+      --card-bg: #FFFFFF;
+      --text: #1F1F1F;
+      --text-muted: #6B7280;
+      --border: #E5E7EB;
+      --success: #10B981;
+      --success-light: #ECFDF5;
+      --danger: #EF4444;
+      --danger-light: #FEF2F2;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding-bottom: 90px;
+    }
+
+    .container {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 24px 16px;
+    }
+
+    /* Header */
+    .header-card {
+      background: linear-gradient(135deg, #FFF9F2 0%, #FFFFFF 100%);
+      border: 1px solid #FED7AA;
+      border-radius: 24px;
+      padding: 32px 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 20px -2px rgba(254, 152, 32, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      border: 1px solid #FED7AA;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+
+    .header-title {
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .header-title span {
+      color: var(--primary);
+    }
+
+    .header-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      max-width: 620px;
+      margin-bottom: 20px;
+    }
+
+    .tester-input-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .tester-input-row label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .tester-input {
+      padding: 8px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      font-size: 13px;
+      font-family: inherit;
+      outline: none;
+      min-width: 220px;
+      background: #FFFFFF;
+      transition: all 0.2s;
+    }
+
+    .tester-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(254, 152, 32, 0.15);
+    }
+
+    /* Progress Widget */
+    .progress-bar-container {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px 20px;
+      margin-bottom: 28px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    .progress-labels {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .progress-track {
+      height: 10px;
+      background: #E5E7EB;
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #FE9820, #10B981);
+      width: 0%;
+      border-radius: 9999px;
+      transition: width 0.3s ease;
+    }
+
+    /* Phase Section */
+    .phase-block {
+      margin-bottom: 32px;
+    }
+
+    .phase-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+      padding-left: 4px;
+    }
+
+    .phase-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: var(--text);
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 13px;
+    }
+
+    .phase-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .phase-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* Test Cards */
+    .test-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px 20px;
+      margin-bottom: 12px;
+      transition: all 0.2s ease;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+
+    .test-card:hover {
+      border-color: #CBD5E1;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+    }
+
+    .test-card.passed {
+      border-color: #A7F3D0;
+      background: #FAFCFB;
+    }
+
+    .test-card.failed {
+      border-color: #FECACA;
+      background: #FCFAFA;
+    }
+
+    .test-top-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .test-info {
+      flex: 1;
+    }
+
+    .test-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .test-badge-id {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--primary);
+      background: var(--primary-light);
+      padding: 2px 7px;
+      border-radius: 6px;
+    }
+
+    .test-desc {
+      font-size: 13px;
+      color: #4B5563;
+      margin-top: 4px;
+    }
+
+    .test-step-guide {
+      margin-top: 10px;
+      background: #F9FAFB;
+      border-left: 3px solid var(--primary);
+      padding: 10px 14px;
+      border-radius: 4px 8px 8px 4px;
+      font-size: 12px;
+      color: #374151;
+    }
+
+    .test-step-guide ol {
+      padding-left: 18px;
+      margin-top: 4px;
+    }
+
+    .test-step-guide li {
+      margin-bottom: 3px;
+    }
+
+    /* Action Buttons for Tests */
+    .status-buttons {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+      shrink-0;
+    }
+
+    .btn-status {
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid var(--border);
+      background: #FFFFFF;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .btn-status:hover {
+      background: #F3F4F6;
+    }
+
+    .btn-status.btn-pass.active {
+      background: var(--success);
+      color: #FFFFFF;
+      border-color: var(--success);
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+    }
+
+    .btn-status.btn-fail.active {
+      background: var(--danger);
+      color: #FFFFFF;
+      border-color: var(--danger);
+      box-shadow: 0 2px 8px rgba(239, 68, 68, 0.25);
+    }
+
+    /* Comment Box */
+    .test-comment-box {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--border);
+    }
+
+    .test-comment-input {
+      width: 100%;
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      font-size: 12px;
+      font-family: inherit;
+      outline: none;
+      background: #F9FAFB;
+      transition: all 0.2s;
+    }
+
+    .test-comment-input:focus {
+      background: #FFFFFF;
+      border-color: var(--primary);
+    }
+
+    /* Sticky Footer */
+    .sticky-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border);
+      padding: 12px 20px;
+      z-index: 40;
+      box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.05);
+    }
+
+    .footer-inner {
+      max-width: 820px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .btn-export {
+      background: var(--text);
+      color: #FFFFFF;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .btn-export:hover {
+      background: #000000;
+      transform: translateY(-1px);
+    }
+
+    .btn-reset {
+      background: transparent;
+      color: #9CA3AF;
+      border: none;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 6px 10px;
+    }
+
+    .btn-reset:hover {
+      color: var(--danger);
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--text);
+      color: #FFFFFF;
+      padding: 12px 20px;
+      border-radius: 14px;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      z-index: 100;
+      display: none;
+      animation: fadeIn 0.3s;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="toast" class="toast">¡Reporte copiado al portapapeles! Listo para mandar por WhatsApp.</div>
+
+  <div class="container">
+    <!-- Header -->
+    <div class="header-card">
+      <div class="header-badge">Control de Calidad • Experiencia Real</div>
+      <h1 class="header-title">Plan de Pruebas <span>POS Minimercado</span></h1>
+      <p class="header-desc">
+        Esta guía contiene los 12 pasos fundamentales para verificar el sistema. Seguí las instrucciones una por una, marcá con el tilde verde si funcionó bien o con la cruz roja si algo te pareció raro o confuso.
+      </p>
+
+      <div class="tester-input-row">
+        <label for="tester-name">Nombre de quien prueba:</label>
+        <input type="text" id="tester-name" class="tester-input" placeholder="Ej: Lucas / Juan" oninput="saveData()">
+        <span style="font-size: 11px; color: #9CA3AF;">Tus tildes y notas se guardan solas automáticamente.</span>
+      </div>
+    </div>
+
+    <!-- Live Progress -->
+    <div class="progress-bar-container">
+      <div class="progress-labels">
+        <span>Progreso general de pruebas</span>
+        <span id="progress-text" style="color: var(--primary);">0 de 12 pruebas completadas (0%)</span>
+      </div>
+      <div class="progress-track">
+        <div id="progress-fill" class="progress-fill"></div>
+      </div>
+    </div>
+
+    <!-- FASE 1 -->
+    <div class="phase-block">
+      <div class="phase-header">
+        <div class="phase-num">1</div>
+        <div>
+          <h2 class="phase-title">Apertura y Control de Caja</h2>
+          <p class="phase-sub">Cómo se inicia el día de trabajo en el almacén</p>
+        </div>
+      </div>
+
+      <!-- Test 1.1 -->
+      <div class="test-card" id="card-t1">
+        <div class="test-top-row">
+          <div class="test-info">
+            <div class="test-title">
+              <span class="test-badge-id">Paso 1.1</span>
+              <span>Abrir Turno con Fondo Inicial</span>
+            </div>
+            <p class="test-desc">Verificar que permita ingresar la plata con la que arranca la caja.</p>
+            <div class="test-step-guide">
+              <strong>Cómo probarlo:</strong>
+              <ol>
+                <li>En el menú de la izquierda, hacé clic en <strong>"Caja y Turnos"</strong>.</li>
+                <li>Tocá el botón <strong>"Abrir Turno de Caja"</strong>.</li>
+                <li>Escribí <code>5000</code> (como si arrancaras con $5.000 de cambio) y confirmá.</li>
+                <li>Verificá que en el menú el cartelito de caja cambie a verde y diga <strong>"Abierta"</strong> con un punto titilando.</li>
+              </ol>
+            </div>
+          </div>
+          <div class="status-buttons">
+            <button type="button" class="btn-status btn-pass" onclick="setStatus('t1', 'pass')">✅ Pasó</button>
+            <button type="button" class="btn-status btn-fail" onclick="setStatus('t1', 'fail')">❌ Falló</button>
+          </div>
+        </div>
+        <div class="test-comment-box">
+          <input type="text" id="note-t1" class="test-comment-input" placeholder="¿Algo te confundió o anduvo mal? Dejá tu comentario acá..." oninput="saveData()">
+        </div>
+      </div>
+    </div>
+
+    <!-- FASE 2 -->
+    <div class="phase-block">
+      <div class="phase-header">
+        <div class="phase-num">2</div>
+        <div>
+          <h2 class="phase-title">Inventario y Stock de Mercadería</h2>
+          <p class="phase-sub">Control de precios, productos y alertas de faltantes</p>
+        </div>
+      </div>
+
+      <!-- Test 2.1 -->
+      <div class="test-card" id="card-t2">
+        <div class="test-top-row">
+          <div class="test-info">
+            <div class="test-title">
+              <span class="test-badge-id">Paso 2.1</span>
+              <span>Búsqueda Rápida de Productos</span>
+            </div>
+            <p class="test-desc">Probar que el buscador encuentre mercadería al instante.</p>
+            <div class="test-step-guide">
+              <strong>Cómo probarlo:</strong>
+              <ol>
+                <li>Andá a <strong>"Inventario"</strong> en el menú lateral.</li>
+                <li>En el buscador superior escribí <code>Coca</code> o <code>Chocolinas</code>.</li>
+                <li>Comprobá que la tabla filtre en tiempo real sin recargar la página.</li>
+              </ol>
+            </div>
+          </div>
+          <div class="status-buttons">
+            <button type="button" class="btn-status btn-pass" onclick="setStatus('t2', 'pass')">✅ Pasó</button>
+            <button type="button" class="btn-status btn-fail" onclick="setStatus('t2', 'fail')">❌ Falló</button>
+          </div>
+        </div>
+        <div class="test-comment-box">
+          <input type="text" id="note-t2" class="test-comment-input" placeholder="Comentarios..." oninput="saveData()">
+        </div>
+      </div>
+
+      <!-- Test 2.2 -->
+      <div class="test-card" id="card-t3">
+        <div class="test-top-row">
+          <div class="test-info">
+            <div class="test-title">
+              <span class="test-badge-id">Paso 2.2</span>
+              <span>Ajuste Rápido de Stock (+ y -)</span>
+            </div>
+            <p class="test-desc">Sumar y restar unidades directamente desde la tabla.</p>
+            <div class="test-step-guide">
+              <strong>Cómo probarlo:</strong>
+              <ol>
+                <li>En cualquier fila de producto, tocá los botones <code>+</code> y <code>-</code> en la columna de Stock.</li>
+                <li>Fijate si el número cambia al instante y si el color es claro y legible.</li>
+              </ol>
+            </div>
+          </div>
+          <div class="status-buttons">
+            <button type="button" class="btn-status btn-pass" onclick="setStatus('t3', 'pass')">✅ Pasó</button>
+            <button type="button" class="btn-status btn-fail" onclick="setStatus('t3', 'fail')">❌ Falló</button>
+          </div>
+        </div>
+        <div class="test-comment-box">
+          <input type="text" id="note-t3" class="test-comment-input" placeholder="Comentarios..." oninput="saveData()">
+        </div>
+      </div>
+
+      <!-- Test 2.3 -->
+      <div class="test-card" id="card-t4">
+        <div class="test-top-row">
+          <div class="test-info">
+            <div class="test-title">
+              <span class="test-badge-id">Paso 2.3</span>
+              <span>Dar de Alta un Producto Nuevo</span>
+            </div>
+            <p class="test-desc">Crear un artículo desde cero con código y costo.</p>
+            <div class="test-step-guide">
+              <strong>Cómo probarlo:</strong>
+              <ol>
+                <li>Hacé clic en el botón naranja <strong>"+ Nuevo Producto"</strong>.</li>
+                <li>Poné Nombre: <code>Alfajor Triple de Prueba</code>, Código: <code>999001</code>, Costo: <code>500</code>, Venta: <code>1000</code> y Stock: <code>20</code>.</li>
+                <li>Tocá Guardar y verificá que aparezca en la lista con su porcentaje de ganancia calculado.</li>
+              </ol>
+            </div>
+          </div>
+          <div class="status-buttons">
+            <button type="button" class="btn-status btn-pass" onclick="setStatus('t4', 'pass')">✅ Pasó</button>
+            <button type="button" class="btn-status btn-fail" onclick="setStatus('t4', 'fail')">❌ Falló</button>
+          </div>
+        </div>
+        <div class="test-comment-box">
+          <input type="text" id="note-t4" class="test-comment-input" placeholder="Comentarios..." oninput="saveData()">
+        </div>
+      </div>
+    </div>
+
+    <!-- FASE 3 -->
+    <div class="phase-block">
+      <div class="phase-header">
+        <div class="phase-num">3</div>
+        <div>
+          <h2 class="phase-title">Punto de Venta (Cobro en Mostrador)</h2>
+          <p class="phase-sub">El corazón del sistema: rapidez para atender clientes</p>
+        </div>
+      </div>
+
+      <!-- Test 3.1 -->
+      <div class="test-card" id="card-t5">
+        <div class="test-top-row">
+          <div class="test-info">
+            <div class="test-title">
+              <span class="test-badge-id">Paso 3.1</span>
+              <span>Cargar el Carrito Tocando Productos</span>
+            </div>
+            <p class="test-desc">Armar un pedido tocando las tarjetas de artículos.</p>
+            <div class="test-step-guide">
+              <strong>Cómo probarlo:</strong>
+              <ol>
+                <li>Entrá a <strong>"Punto de Venta"</strong> en el menú lateral.</li>
+                <li>Hacé clic en 2 o 3 productos de la grilla.</li>
+                <li>Fijate que se sumen a la columna derecha con el total actualizado.</li>
+              </ol>
+            </div>
+          </div>
+          <div class="status-buttons">
+            <button type="button" class="btn-status btn-pass" onclick="setStatus('t5', 'pass')">✅ Pasó</button>
+            <button type="button" class="btn-status btn-fail" onclick="setStatus('t5', 'fail')">❌ Falló</button>
+          </div>
+        </div>
+        <div class="test-comment-box">
+          <input type="text" id="note-t5" class="test-comment-input" placeholder="Comentarios..." oninput="saveData()">
+        </div>
+      </div>
+
+      <!-- Test 3.2 -->
+      <div class="test-card" id="card-t6">
+        <div class="test-top-row">
+          <div class="test-info">
+            <div class="test-title">
+              <span class="test-badge-id">Paso 3.2</span>
+              <span>Escanear Código de Barras (Cámara o Teclado)</span>
+            </div>
+            <p class="test-desc">Probar el lector con la cámara web o tipear el código directo.</p>
+            <div class="test-step-guide">
+              <strong>Cómo probarlo:</strong>
+              <ol>
+                <li>Tocá el botón negro <strong>"Cámara"</strong> al lado del buscador de código de barras.</li>
+                <li>Verificá que se prenda el visor con la línea naranja animada.</li>
+                <li><em>Opción sin cámara:</em> Escribí en el recuadro <code>7791290003019</code> y apretá Enter (es una Coca-Cola). Comprobá que haga el sonido `beep` y la sume al carrito sola.</li>
+              </ol>
+            </div>
+          </div>
+          <div class="status-buttons">
+            <button type="button" class="btn-status btn-pass" onclick="setStatus('t6', 'pass')">✅ Pasó</button>
+            <button type="button" class="btn-status btn-fail" onclick="setStatus('t6', 'fail')">❌ Falló</button>
+          </div>
+        </div>
+        <div class="test-comment-box">
+          <input type="text" id="note-t6" class="test-comment-input" placeholder="Comentarios..." oninput="saveData()">
+        </div>
+      </div>
+
+      <!-- Test 3.3 -->
+      <div class="test-card" id="card-t7">
+        <div class="test-top-row">
+          <div class="test-info">
+            <div class="test-title">
+              <span class="test-badge-id">Paso 3.3</span>
+              <span>Cobro en Efectivo con Cálculo de Vuelto</span>
+            </div>
+            <p class="test-desc">Probar la ventana de cobro y que calcule bien el cambio.</p>
+            <div class="test-step-guide">
+              <strong>Cómo probarlo:</strong>
+              <ol>
+                <li>Tocá el botón naranja <strong>"Cobrar"</strong> abajo a la derecha.</li>
+                <li>Verificá que el método <strong>"Efectivo"</strong> esté seleccionado.</li>
+                <li>Tocá los botones de billetes rápidos (ej. <code>+$5.000</code> o <code>+$10.000</code>).</li>
+                <li>Fijate que el número verde <strong>"Vuelto a entregar"</strong> dé el cálculo matemático exacto.</li>
+                <li>Tocá <strong>"Confirmar Venta"</strong> y fijate que salga el ticket de venta exitosa.</li>
+              </ol>
+            </div>
+          </div>
+          <div class="status-buttons">
+            <button type="button" class="btn-status btn-pass" onclick="setStatus('t7', 'pass')">✅ Pasó</button>
+            <button type="button" class="btn-status btn-fail" onclick="setStatus('t7', 'fail')">❌ Falló</button>
+          </div>
+        </div>
+        <div class="test-comment-box">
+          <input type="text" id="note-t7" class="test-comment-input" placeholder="Comentarios..." oninput="saveData()">
+        </div>
+      </div>
+
+      <!-- Test 3.4 -->
+      <div class="test-card" id="card-t8">
+        <div class="test-top-row">
+          <div class="test-info">
+            <div class="test-title">
+              <span class="test-badge-id">Paso 3.4</span>
+              <span>Cobro Electrónico (Transferencia / QR / Tarjeta)</span>
+            </div>
+            <p class="test-desc">Registrar una venta cobrada por medios digitales.</p>
+            <div class="test-step-guide">
+              <strong>Cómo probarlo:</strong>
+              <ol>
+                <li>Cargá otro producto en el carrito y tocá <strong>"Cobrar"</strong>.</li>
+                <li>Elegí <strong>"Transferencia / QR"</strong> o <strong>"Tarjeta Débito"</strong>.</li>
+                <li>Fijate que los botones sean claros y que se marque el elegido con borde naranja.</li>
+                <li>Tocá <strong>"Confirmar Venta"</strong>.</li>
+              </ol>
+            </div>
+          </div>
+          <div class="status-buttons">
+            <button type="button" class="btn-status btn-pass" onclick="setStatus('t8', 'pass')">✅ Pasó</button>
+            <button type="button" class="btn-status btn-fail" onclick="setStatus('t8', 'fail')">❌ Falló</button>
+          </div>
+        </div>
+        <div class="test-comment-box">
+          <input type="text" id="note-t8" class="test-comment-input" placeholder="Comentarios..." oninput="saveData()">
+        </div>
+      </div>
+    </div>
+
+    <!-- FASE 4 -->
+    <div class="phase-block">
+      <div class="phase-header">
+        <div class="phase-num">4</div>
+        <div>
+          <h2 class="phase-title">Movimientos y Arqueo de Caja</h2>
+          <p class="phase-sub">El cierre del turno y control contra robos o pérdidas</p>
+        </div>
+      </div>
+
+      <!-- Test 4.1 -->
+      <div class="test-card" id="card-t9">
+        <div class="test-top-row">
+          <div class="test-info">
+            <div class="test-title">
+              <span class="test-badge-id">Paso 4.1</span>
+              <span>Historial de Movimientos</span>
+            </div>
+            <p class="test-desc">Verificar que cada venta haya quedado registrada en la lista de actividad.</p>
+            <div class="test-step-guide">
+              <strong>Cómo probarlo:</strong>
+              <ol>
+                <li>Entrá a <strong>"Movimientos"</strong> en el menú.</li>
+                <li>Comprobá que aparezcan las dos ventas que hiciste recién con sus horas, montos y métodos de pago.</li>
+              </ol>
+            </div>
+          </div>
+          <div class="status-buttons">
+            <button type="button" class="btn-status btn-pass" onclick="setStatus('t9', 'pass')">✅ Pasó</button>
+            <button type="button" class="btn-status btn-fail" onclick="setStatus('t9', 'fail')">❌ Falló</button>
+          </div>
+        </div>
+        <div class="test-comment-box">
+          <input type="text" id="note-t9" class="test-comment-input" placeholder="Comentarios..." oninput="saveData()">
+        </div>
+      </div>
+
+      <!-- Test 4.2 -->
+      <div class="test-card" id="card-t10">
+        <div class="test-top-row">
+          <div class="test-info">
+            <div class="test-title">
+              <span class="test-badge-id">Paso 4.2</span>
+              <span>Cierre de Turno (Conteo de Plata)</span>
+            </div>
+            <p class="test-desc">Hacer el cierre ciego de caja al finalizar la jornada.</p>
+            <div class="test-step-guide">
+              <strong>Cómo probarlo:</strong>
+              <ol>
+                <li>Volvé a <strong>"Caja y Turnos"</strong>.</li>
+                <li>Tocá el botón <strong>"Cerrar Turno de Caja"</strong>.</li>
+                <li>Ingresá la plata real que tendrías en el cajón de billetes (fondo inicial + ventas en efectivo).</li>
+                <li>Confirmá el cierre y verificá que te muestre el informe: si cuadró exacto o si sobró/faltó plata.</li>
+              </ol>
+            </div>
+          </div>
+          <div class="status-buttons">
+            <button type="button" class="btn-status btn-pass" onclick="setStatus('t10', 'pass')">✅ Pasó</button>
+            <button type="button" class="btn-status btn-fail" onclick="setStatus('t10', 'fail')">❌ Falló</button>
+          </div>
+        </div>
+        <div class="test-comment-box">
+          <input type="text" id="note-t10" class="test-comment-input" placeholder="Comentarios..." oninput="saveData()">
+        </div>
+      </div>
+    </div>
+
+    <!-- FASE 5 -->
+    <div class="phase-block">
+      <div class="phase-header">
+        <div class="phase-num">5</div>
+        <div>
+          <h2 class="phase-title">Finanzas y Reportes de Ganancia</h2>
+          <p class="phase-sub">Para que el dueño sepa cuánto ganó en limpio</p>
+        </div>
+      </div>
+
+      <!-- Test 5.1 -->
+      <div class="test-card" id="card-t11">
+        <div class="test-top-row">
+          <div class="test-info">
+            <div class="test-title">
+              <span class="test-badge-id">Paso 5.1</span>
+              <span>Gráficos y Ganancia Neta</span>
+            </div>
+            <p class="test-desc">Comprobar que el reporte calcule el margen de ganancia real.</p>
+            <div class="test-step-guide">
+              <strong>Cómo probarlo:</strong>
+              <ol>
+                <li>Entrá a <strong>"Reportes"</strong> en el menú lateral.</li>
+                <li>Fijate que el gráfico muestre la facturación del día, el costo de mercadería y la **ganancia bruta en pesos**.</li>
+                <li>Comprobá que el diseño sea claro y fácil de entender.</li>
+              </ol>
+            </div>
+          </div>
+          <div class="status-buttons">
+            <button type="button" class="btn-status btn-pass" onclick="setStatus('t11', 'pass')">✅ Pasó</button>
+            <button type="button" class="btn-status btn-fail" onclick="setStatus('t11', 'fail')">❌ Falló</button>
+          </div>
+        </div>
+        <div class="test-comment-box">
+          <input type="text" id="note-t11" class="test-comment-input" placeholder="Comentarios..." oninput="saveData()">
+        </div>
+      </div>
+
+      <!-- Test 5.2 -->
+      <div class="test-card" id="card-t12">
+        <div class="test-top-row">
+          <div class="test-info">
+            <div class="test-title">
+              <span class="test-badge-id">Paso 5.2</span>
+              <span>Navegación Móvil y Celular</span>
+            </div>
+            <p class="test-desc">Ver si se puede usar cómodo desde la pantalla de un celular o tablet.</p>
+            <div class="test-step-guide">
+              <strong>Cómo probarlo:</strong>
+              <ol>
+                <li>Abrí la aplicación achicando la ventana del navegador o directo desde el celular.</li>
+                <li>Tocá el menú hamburguesa arriba a la izquierda.</li>
+                <li>Fijate si los botones se tocan bien con el dedo y no se corta nada.</li>
+              </ol>
+            </div>
+          </div>
+          <div class="status-buttons">
+            <button type="button" class="btn-status btn-pass" onclick="setStatus('t12', 'pass')">✅ Pasó</button>
+            <button type="button" class="btn-status btn-fail" onclick="setStatus('t12', 'fail')">❌ Falló</button>
+          </div>
+        </div>
+        <div class="test-comment-box">
+          <input type="text" id="note-t12" class="test-comment-input" placeholder="Comentarios..." oninput="saveData()">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sticky Footer -->
+  <footer class="sticky-footer">
+    <div class="footer-inner">
+      <div>
+        <button type="button" class="btn-reset" onclick="resetForm()">Reiniciar Pruebas</button>
+      </div>
+
+      <button type="button" class="btn-export" onclick="copyResults()">
+        <span>📋 Copiar Resultados para WhatsApp</span>
+      </button>
+    </div>
+  </footer>
+
+  <script>
+    const TOTAL_TESTS = 12;
+    const testIds = ['t1', 't2', 't3', 't4', 't5', 't6', 't7', 't8', 't9', 't10', 't11', 't12'];
+
+    // Load saved state
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedName = localStorage.getItem('pos_test_name');
+      if (savedName) document.getElementById('tester-name').value = savedName;
+
+      testIds.forEach(id => {
+        const status = localStorage.getItem(`pos_test_${id}_status`);
+        const note = localStorage.getItem(`pos_test_${id}_note`);
+        if (note) document.getElementById(`note-${id}`).value = note;
+        if (status) applyStatusUI(id, status);
+      });
+
+      updateProgress();
+    });
+
+    function setStatus(testId, status) {
+      const current = localStorage.getItem(`pos_test_${testId}_status`);
+      const newStatus = (current === status) ? '' : status; // toggle off if clicked again
+      
+      if (newStatus) {
+        localStorage.setItem(`pos_test_${testId}_status`, newStatus);
+      } else {
+        localStorage.removeItem(`pos_test_${testId}_status`);
+      }
+
+      applyStatusUI(testId, newStatus);
+      updateProgress();
+    }
+
+    function applyStatusUI(testId, status) {
+      const card = document.getElementById(`card-${testId}`);
+      const btnPass = card.querySelector('.btn-pass');
+      const btnFail = card.querySelector('.btn-fail');
+
+      btnPass.classList.remove('active');
+      btnFail.classList.remove('active');
+      card.classList.remove('passed', 'failed');
+
+      if (status === 'pass') {
+        btnPass.classList.add('active');
+        card.classList.add('passed');
+      } else if (status === 'fail') {
+        btnFail.classList.add('active');
+        card.classList.add('failed');
+      }
+    }
+
+    function saveData() {
+      const name = document.getElementById('tester-name').value;
+      localStorage.setItem('pos_test_name', name);
+
+      testIds.forEach(id => {
+        const note = document.getElementById(`note-${id}`).value;
+        localStorage.setItem(`pos_test_${id}_note`, note);
+      });
+    }
+
+    function updateProgress() {
+      let completed = 0;
+      testIds.forEach(id => {
+        if (localStorage.getItem(`pos_test_${id}_status`)) completed++;
+      });
+
+      const pct = Math.round((completed / TOTAL_TESTS) * 100);
+      document.getElementById('progress-fill').style.width = `${pct}%`;
+      document.getElementById('progress-text').innerText = `${completed} de ${TOTAL_TESTS} pruebas completadas (${pct}%)`;
+    }
+
+    function resetForm() {
+      if (!confirm('¿Querés borrar todas las marcas y notas para empezar de nuevo?')) return;
+      localStorage.clear();
+      location.reload();
+    }
+
+    function copyResults() {
+      const name = document.getElementById('tester-name').value || 'Tester Anónimo';
+      let passed = 0;
+      let failed = 0;
+      let pending = 0;
+
+      let detailLines = [];
+
+      testIds.forEach((id, index) => {
+        const status = localStorage.getItem(`pos_test_${id}_status`);
+        const note = document.getElementById(`note-${id}`).value.trim();
+        const card = document.getElementById(`card-${id}`);
+        const title = card.querySelector('.test-title span:last-child').innerText;
+
+        let icon = '⚪';
+        if (status === 'pass') {
+          icon = '✅';
+          passed++;
+        } else if (status === 'fail') {
+          icon = '❌';
+          failed++;
+        } else {
+          pending++;
+        }
+
+        let line = `${icon} Paso ${index + 1}: ${title}`;
+        if (note) line += `\n   ↳ Nota: "${note}"`;
+        detailLines.push(line);
+      });
+
+      const message = `📋 *INFORME DE PRUEBAS - POS MINIMERCADO*\n` +
+        `👤 *Tester:* ${name}\n` +
+        `📊 *Resultado:* ${passed} aprobadas | ${failed} con observación | ${pending} pendientes\n\n` +
+        `*Detalle de pasos:*\n` +
+        detailLines.join('\n\n') +
+        `\n\n_Generado automáticamente desde la Guía Interactiva de Pruebas._`;
+
+      navigator.clipboard.writeText(message).then(() => {
+        const toast = document.getElementById('toast');
+        toast.style.display = 'block';
+        setTimeout(() => {
+          toast.style.display = 'none';
+        }, 4000);
+      });
+    }
+  </script>
+</body>
+</html>

@@ -507,13 +507,7 @@ export function DashboardShell({
 
               {/* Profile Dropdown (Superadmin, Support Mode, Cerrar Sesión) */}
               {profileDropdownOpen && (
-                <>
-                  {/* Backdrop sin blur para que nada se vea borroso */}
-                  <div
-                    className="fixed inset-0 z-40 bg-black/20"
-                    onClick={() => setProfileDropdownOpen(false)}
-                  />
-                  <div className="absolute left-0 mt-2 w-64 bg-white border border-neutral-200 rounded-3xl p-3 shadow-2xl z-50 text-xs space-y-2 animate-in fade-in zoom-in-95 duration-150">
+                <div className="absolute left-0 mt-2 w-64 bg-white border border-neutral-200 rounded-3xl p-3 shadow-2xl z-50 text-xs space-y-2 animate-in fade-in zoom-in-95 duration-150">
                     <div className="flex items-center gap-3 p-2.5 bg-neutral-50 rounded-2xl border border-neutral-100">
                       <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-500 to-[#FE9820] text-neutral-950 font-black text-sm flex items-center justify-center shrink-0 shadow-xs">
                         {userEmail.charAt(0).toUpperCase()}
@@ -561,7 +555,6 @@ export function DashboardShell({
                       </button>
                     </form>
                   </div>
-                </>
               )}
             </div>
 
@@ -643,6 +636,17 @@ export function DashboardShell({
           {children}
         </main>
       </div>
+
+      {/* Invisible Click-away Overlay (100% transparent, outside of transformed containers) */}
+      {(mobileMoreOpen || profileDropdownOpen) && (
+        <div
+          className="fixed inset-0 z-40 bg-transparent print:hidden"
+          onClick={() => {
+            setMobileMoreOpen(false)
+            setProfileDropdownOpen(false)
+          }}
+        />
+      )}
 
       {/* FLOATING MOBILE DOCK (LIGHT GLASS BUBBLE BAR) */}
       <nav
@@ -754,18 +758,10 @@ export function DashboardShell({
 
           {/* Popover Desplegable con opciones restantes */}
           {mobileMoreOpen && (
-            <>
-              {/* Backdrop para cerrar al tocar afuera */}
-              <div
-                className="fixed inset-0 z-40 bg-black/10"
-                onClick={() => setMobileMoreOpen(false)}
-              />
-
-              {/* Panel flotante encima del dock (100% sólido blanco opaco) */}
-              <div
-                style={{ backgroundColor: "#FFFFFF" }}
-                className="absolute bottom-14 right-0 w-60 bg-white border border-neutral-200 rounded-3xl p-2 shadow-2xl z-50 animate-in fade-in zoom-in-95 duration-150 space-y-0.5"
-              >
+            <div
+              style={{ backgroundColor: "#FFFFFF" }}
+              className="absolute bottom-14 right-0 w-60 bg-white border border-neutral-200 rounded-3xl p-2 shadow-2xl z-50 animate-in fade-in zoom-in-95 duration-150 space-y-0.5"
+            >
                 <div className="px-3 py-1.5 border-b border-neutral-100 flex items-center justify-between">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">
                     Opciones
@@ -819,7 +815,6 @@ export function DashboardShell({
                   Centro de Ayuda
                 </Link>
               </div>
-            </>
           )}
         </div>
       </nav>

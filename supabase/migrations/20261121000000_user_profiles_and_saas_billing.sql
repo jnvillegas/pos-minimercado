@@ -15,6 +15,10 @@ create table if not exists public.user_profiles (
 
 create index if not exists idx_user_profiles_id on public.user_profiles(id);
 
+-- Grants
+grant all on public.user_profiles to postgres, authenticated, service_role;
+grant select on public.user_profiles to anon;
+
 -- Enable RLS
 alter table public.user_profiles enable row level security;
 

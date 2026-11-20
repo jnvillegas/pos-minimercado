@@ -1,5 +1,6 @@
 import React from "react"
 import Link from "next/link"
+import { connection } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import {
   ShoppingBag,
@@ -14,6 +15,8 @@ import {
 export const instant = false
 
 export default async function DashboardPage() {
+  await connection()
+
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 

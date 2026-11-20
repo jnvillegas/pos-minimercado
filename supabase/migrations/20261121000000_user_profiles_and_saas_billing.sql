@@ -172,3 +172,58 @@ begin
   );
 end;
 $$;
+
+-- 6. Helper RPC to update my profile atomically
+create or replace function public.update_my_profile(
+  p_full_name text,
+  p_phone text default '',
+  p_dni_cuil text default '',
+  p_alias text default '',
+  p_avatar_url text default ''
+)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_updated record;
+begin
+  if auth.uid() is null then
+    raise exception 'Not authenticated';
+  end if;
+
+  insert into public.user_profiles (
+    id, full_name, phone, dni_cuil, alias, avatar_url, updated_at
+  )
+  values (
+    auth.uid(),
+    coalesce(trim(p_full_name), ''),
+    coalesce(trim(p_phone), ''),
+    coalesce(trim(p_dni_cuil), ''),
+    coalesce(trim(p_alias), ''),
+    coalesce(trim(p_avatar_url), ''),
+    now()
+  )
+  on conflict (id) do update set
+    full_name = excluded.full_name,
+    phone = excluded.phone,
+    dni_cuil = excluded.dni_cuil,
+    alias = excluded.alias,
+    avatar_url = excluded.avatar_url,
+    updated_at = now()
+  returning * into v_updated;
+
+  return jsonb_build_object(
+    'id', v_updated.id,
+    'full_name', v_updated.full_name,
+    'phone', v_updated.phone,
+    'dni_cuil', v_updated.dni_cuil,
+    'alias', v_updated.alias,
+    'avatar_url', v_updated.avatar_url
+  );
+end;
+$$;
+
+grant execute on function public.update_my_profile to authenticated, service_role;
+

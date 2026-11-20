@@ -486,7 +486,10 @@ export function DashboardShell({
             <div className="relative">
               <button
                 type="button"
-                onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+                onClick={() => {
+                  setProfileDropdownOpen(!profileDropdownOpen)
+                  setMobileMoreOpen(false)
+                }}
                 className="flex items-center gap-2 p-1 rounded-2xl hover:bg-neutral-100 transition-all text-left"
                 title="Perfil de Usuario"
                 aria-label="Perfil de Usuario"
@@ -505,8 +508,9 @@ export function DashboardShell({
               {/* Profile Dropdown (Superadmin, Support Mode, Cerrar Sesión) */}
               {profileDropdownOpen && (
                 <>
+                  {/* Backdrop sin blur para que nada se vea borroso */}
                   <div
-                    className="fixed inset-0 z-40 bg-black/10 backdrop-blur-xs"
+                    className="fixed inset-0 z-40 bg-black/20"
                     onClick={() => setProfileDropdownOpen(false)}
                   />
                   <div className="absolute left-0 mt-2 w-64 bg-white border border-neutral-200 rounded-3xl p-3 shadow-2xl z-50 text-xs space-y-2 animate-in fade-in zoom-in-95 duration-150">
@@ -734,14 +738,17 @@ export function DashboardShell({
 
         {/* 5. Menú / Más opciones (Desplegable Popover) */}
         <div className="relative">
-          {mobileMoreOpen ||
-          (!pathname.startsWith("/dashboard/inventory") &&
-            !pathname.startsWith("/dashboard/cash-register") &&
-            !pathname.startsWith("/dashboard/pos") &&
-            !pathname.startsWith("/dashboard/movements")) ? (
+          {/* Solo se muestra como píldora naranja si estás parado en una página secundaria (Overview, Reportes, Configuración) */}
+          {!pathname.startsWith("/dashboard/inventory") &&
+          !pathname.startsWith("/dashboard/cash-register") &&
+          !pathname.startsWith("/dashboard/pos") &&
+          !pathname.startsWith("/dashboard/movements") ? (
             <button
               type="button"
-              onClick={() => setMobileMoreOpen(!mobileMoreOpen)}
+              onClick={() => {
+                setMobileMoreOpen(!mobileMoreOpen)
+                setProfileDropdownOpen(false)
+              }}
               className="flex items-center gap-2 bg-amber-500/15 border border-amber-500/25 p-1 pr-3.5 rounded-full shadow-xs transition-all shrink-0"
               title="Opciones del sistema"
               aria-label="Opciones del sistema"
@@ -754,8 +761,15 @@ export function DashboardShell({
           ) : (
             <button
               type="button"
-              onClick={() => setMobileMoreOpen(!mobileMoreOpen)}
-              className="w-10 h-10 rounded-full bg-neutral-100/70 hover:bg-neutral-100 border border-neutral-200/50 flex items-center justify-center text-neutral-600 hover:text-neutral-900 transition-all shrink-0 active:scale-95"
+              onClick={() => {
+                setMobileMoreOpen(!mobileMoreOpen)
+                setProfileDropdownOpen(false)
+              }}
+              className={`w-10 h-10 rounded-full border transition-all flex items-center justify-center shrink-0 active:scale-95 ${
+                mobileMoreOpen
+                  ? "bg-amber-100/80 border-amber-300 text-amber-800"
+                  : "bg-neutral-100/70 hover:bg-neutral-100 border border-neutral-200/50 text-neutral-600 hover:text-neutral-900"
+              }`}
               title="Abrir opciones adicionales"
               aria-label="Abrir opciones adicionales"
             >

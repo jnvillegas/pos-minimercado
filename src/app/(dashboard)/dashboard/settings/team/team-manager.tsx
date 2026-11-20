@@ -155,13 +155,13 @@ export function TeamManager({
       case "cashier":
         return {
           label: "Cajero",
-          color: "bg-neutral-800 text-neutral-700 border-neutral-300",
+          color: "bg-neutral-100 text-neutral-700 border-neutral-200",
           icon: Users,
         }
       default:
         return {
           label: role,
-          color: "bg-neutral-800 text-neutral-400 border-neutral-300",
+          color: "bg-neutral-100 text-neutral-500 border-neutral-200",
           icon: Users,
         }
     }
@@ -247,7 +247,7 @@ export function TeamManager({
                 return (
                   <tr key={m.id} className="hover:bg-neutral-100/40 transition-colors">
                     <td className="py-3.5 px-4 font-medium text-[#1F1F1F] flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full bg-neutral-800 border border-neutral-300 flex items-center justify-center text-xs font-bold text-[#FE9820]">
+                      <div className="w-8 h-8 rounded-full bg-[#FE9820]/10 border border-[#FE9820]/20 flex items-center justify-center text-xs font-bold text-[#FE9820]">
                         {(m.email || "U").charAt(0).toUpperCase()}
                       </div>
                       <div>
@@ -410,7 +410,7 @@ export function TeamManager({
 
                 <button
                   onClick={() => setIsInviteModalOpen(false)}
-                  className="w-full py-2.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-[#1F1F1F] font-semibold text-xs"
+                  className="w-full py-2.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-700 font-semibold text-xs border border-neutral-200"
                 >
                   Finalizar
                 </button>

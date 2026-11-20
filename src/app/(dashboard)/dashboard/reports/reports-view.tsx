@@ -597,7 +597,7 @@ export function ReportsView({
                               ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30"
                               : margin >= 20
                               ? "bg-[#FE9820]/10 text-[#FE9820] border border-[#FE9820]/30"
-                              : "bg-neutral-800 text-neutral-400"
+                              : "bg-neutral-100 text-neutral-600"
                           }`}
                         >
                           {margin}%

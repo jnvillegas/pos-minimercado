@@ -351,7 +351,7 @@ export function MovementsManager({
               onClick={() => setActiveTab("all")}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                 activeTab === "all"
-                  ? "bg-neutral-800 text-[#1F1F1F] shadow-sm"
+                  ? "bg-white text-[#1F1F1F] shadow-sm border border-neutral-200"
                   : "text-neutral-400 hover:text-[#1F1F1F]"
               }`}
             >
@@ -991,7 +991,7 @@ function TransactionDetailModal({
         <div className="pt-3 border-t border-neutral-200 flex justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-xs font-semibold text-[#1F1F1F] transition-colors"
+            className="px-4 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-xs font-semibold text-neutral-700 border border-neutral-200 transition-colors"
           >
             Cerrar
           </button>

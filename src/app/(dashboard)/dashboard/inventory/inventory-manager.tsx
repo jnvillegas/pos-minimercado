@@ -319,7 +319,7 @@ export function InventoryManager({
             className={`w-12 h-12 rounded-xl border flex items-center justify-center ${
               lowStockCount > 0
                 ? "bg-red-500/10 border-red-500/30 text-red-400"
-                : "bg-neutral-800 border-neutral-300 text-neutral-400"
+                : "bg-neutral-100 border-neutral-200 text-neutral-600"
             }`}
           >
             <AlertTriangle className="w-6 h-6" />
@@ -468,7 +468,7 @@ export function InventoryManager({
                       {/* Product Name & Barcode */}
                       <td className="py-3.5 px-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-neutral-800 border border-neutral-300/80 flex items-center justify-center text-[#FE9820] flex-shrink-0">
+                          <div className="w-10 h-10 rounded-xl bg-[#FE9820]/10 border border-[#FE9820]/20 flex items-center justify-center text-[#FE9820] flex-shrink-0">
                             {p.image_url ? (
                               /* eslint-disable-next-line @next/next/no-img-element */
                               <img
@@ -501,7 +501,7 @@ export function InventoryManager({
                       {/* Category Badge */}
                       <td className="py-3.5 px-4">
                         {p.category_id && categoryMap.has(p.category_id) ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-neutral-800 text-neutral-700 border border-neutral-300">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-neutral-100 text-neutral-700 border border-neutral-200">
                             <Tag className="w-3 h-3 text-amber-500" />
                             {categoryMap.get(p.category_id)}
                           </span>
@@ -528,7 +528,7 @@ export function InventoryManager({
                               ? "bg-emerald-500/10 text-emerald-400"
                               : marginPct >= 20
                               ? "bg-[#FE9820]/10 text-[#FE9820]"
-                              : "bg-neutral-800 text-neutral-400"
+                              : "bg-neutral-100 text-neutral-600"
                           }`}
                         >
                           <TrendingUp className="w-3 h-3" />
@@ -542,7 +542,7 @@ export function InventoryManager({
                           <button
                             onClick={() => handleApplyStockAdjustment(p, -1, "shrinkage")}
                             title="Restar 1 unidad"
-                            className="w-6 h-6 rounded-md bg-neutral-800 hover:bg-neutral-700 text-neutral-400 hover:text-[#1F1F1F] flex items-center justify-center text-xs font-bold transition-colors"
+                            className="w-6 h-6 rounded-md bg-neutral-100 hover:bg-neutral-200 text-neutral-700 hover:text-[#1F1F1F] border border-neutral-200 flex items-center justify-center text-xs font-bold transition-colors"
                           >
                             -
                           </button>
@@ -553,7 +553,7 @@ export function InventoryManager({
                             className={`px-2.5 py-1 rounded-lg text-xs font-bold font-mono border transition-all ${
                               isLowStock
                                 ? "bg-red-500/15 text-red-400 border-red-500/30 hover:border-red-500"
-                                : "bg-neutral-800 text-neutral-800 border-neutral-300 hover:border-neutral-600"
+                                : "bg-neutral-50 text-[#1F1F1F] border-neutral-200 hover:border-neutral-400"
                             }`}
                           >
                             {p.stock}
@@ -565,7 +565,7 @@ export function InventoryManager({
                           <button
                             onClick={() => handleApplyStockAdjustment(p, 1, "intake")}
                             title="Sumar 1 unidad"
-                            className="w-6 h-6 rounded-md bg-neutral-800 hover:bg-neutral-700 text-neutral-400 hover:text-[#1F1F1F] flex items-center justify-center text-xs font-bold transition-colors"
+                            className="w-6 h-6 rounded-md bg-neutral-100 hover:bg-neutral-200 text-neutral-700 hover:text-[#1F1F1F] border border-neutral-200 flex items-center justify-center text-xs font-bold transition-colors"
                           >
                             +
                           </button>
@@ -1167,7 +1167,7 @@ function QuickStockModal({
                     handleQuickAdd(amt)
                     setReason("intake")
                   }}
-                  className="py-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-xs font-mono font-bold text-neutral-800 transition-colors"
+                  className="py-1 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-xs font-mono font-bold text-neutral-700 transition-colors"
                 >
                   +{amt}
                 </button>
@@ -1182,7 +1182,7 @@ function QuickStockModal({
                     handleQuickAdd(amt)
                     setReason("shrinkage")
                   }}
-                  className="py-1 rounded-lg bg-neutral-800 hover:bg-red-950/60 text-xs font-mono font-bold text-red-400 transition-colors"
+                  className="py-1 rounded-lg bg-red-50 hover:bg-red-100 text-xs font-mono font-bold text-red-600 border border-red-200 transition-colors"
                 >
                   {amt}
                 </button>

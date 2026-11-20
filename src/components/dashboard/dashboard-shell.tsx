@@ -563,10 +563,122 @@ export function DashboardShell({
         </header>
 
         {/* PAGE CONTENT */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto pb-24 lg:pb-8">
           {children}
         </main>
       </div>
+
+      {/* FLOATING MOBILE DOCK (LIGHT GLASS BUBBLE BAR) */}
+      <nav
+        aria-label="Navegación móvil rápida"
+        className="lg:hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-2rem)] max-w-md bg-white/95 backdrop-blur-md border border-neutral-200/90 shadow-2xl shadow-neutral-900/10 rounded-full px-2 py-1.5 flex items-center justify-around pointer-events-auto print:hidden"
+      >
+        {/* 1. Stock / Inventario */}
+        {pathname.startsWith("/dashboard/inventory") ? (
+          <Link
+            href="/dashboard/inventory"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-[#FE9820] text-neutral-950 font-bold text-xs shadow-md shadow-amber-500/20 transition-all shrink-0"
+          >
+            <Package className="w-4 h-4" />
+            <span>Stock</span>
+          </Link>
+        ) : (
+          <Link
+            href="/dashboard/inventory"
+            className="p-2.5 rounded-full text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 transition-all flex items-center justify-center shrink-0"
+            title="Inventario de Stock"
+          >
+            <Package className="w-5 h-5" />
+          </Link>
+        )}
+
+        {/* 2. Caja y Turnos */}
+        {pathname.startsWith("/dashboard/cash-register") ? (
+          <Link
+            href="/dashboard/cash-register"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-[#FE9820] text-neutral-950 font-bold text-xs shadow-md shadow-amber-500/20 transition-all shrink-0"
+          >
+            <Landmark className="w-4 h-4" />
+            <span>Caja</span>
+          </Link>
+        ) : (
+          <Link
+            href="/dashboard/cash-register"
+            className="relative p-2.5 rounded-full text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 transition-all flex items-center justify-center shrink-0"
+            title="Caja y Turnos"
+          >
+            <Landmark className="w-5 h-5" />
+            {isCashShiftOpen && (
+              <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-white" />
+            )}
+          </Link>
+        )}
+
+        {/* 3. POS - HERO CENTER ACTION */}
+        {pathname.startsWith("/dashboard/pos") ? (
+          <Link
+            href="/dashboard/pos"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#FE9820] text-neutral-950 font-black text-xs shadow-lg shadow-amber-500/30 ring-2 ring-[#FE9820]/30 transition-all shrink-0 scale-105"
+          >
+            <ShoppingBag className="w-4 h-4" />
+            <span>POS</span>
+          </Link>
+        ) : (
+          <Link
+            href="/dashboard/pos"
+            className="p-2.5 rounded-full bg-amber-500/10 text-amber-700 hover:bg-amber-500/20 border border-amber-300/70 transition-all flex items-center justify-center shrink-0 shadow-xs active:scale-95"
+            title="Punto de Venta"
+          >
+            <ShoppingBag className="w-5 h-5 text-amber-600" />
+          </Link>
+        )}
+
+        {/* 4. Movimientos / Flujo */}
+        {pathname.startsWith("/dashboard/movements") ? (
+          <Link
+            href="/dashboard/movements"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-[#FE9820] text-neutral-950 font-bold text-xs shadow-md shadow-amber-500/20 transition-all shrink-0"
+          >
+            <ArrowLeftRight className="w-4 h-4" />
+            <span>Flujo</span>
+          </Link>
+        ) : (
+          <Link
+            href="/dashboard/movements"
+            className="p-2.5 rounded-full text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 transition-all flex items-center justify-center shrink-0"
+            title="Movimientos y Flujo Diario"
+          >
+            <ArrowLeftRight className="w-5 h-5" />
+          </Link>
+        )}
+
+        {/* 5. Menú (Drawer Trigger) */}
+        {mobileMenuOpen ||
+        (!pathname.startsWith("/dashboard/inventory") &&
+          !pathname.startsWith("/dashboard/cash-register") &&
+          !pathname.startsWith("/dashboard/pos") &&
+          !pathname.startsWith("/dashboard/movements")) ? (
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-neutral-900 text-white font-bold text-xs shadow-md transition-all shrink-0"
+            title="Más opciones"
+          >
+            <Menu className="w-4 h-4" />
+            <span>Menú</span>
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(true)}
+            className="p-2.5 rounded-full text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 transition-all flex items-center justify-center shrink-0"
+            title="Abrir menú"
+            aria-label="Abrir menú de navegación"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+        )}
+      </nav>
     </div>
   )
 }

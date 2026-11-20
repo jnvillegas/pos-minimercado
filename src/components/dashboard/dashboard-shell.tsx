@@ -4,6 +4,7 @@ import React, { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { signOutAction } from "@/app/(auth)/actions"
+import { exitSupportModeAction } from "@/app/(admin)/admin/actions"
 import { BrandIcon, BrandStar } from "@/components/brand/brand-logo"
 import {
   LayoutDashboard,
@@ -24,6 +25,7 @@ import {
   Store,
   PanelLeftClose,
   PanelLeftOpen,
+  ShieldAlert,
 } from "lucide-react"
 
 interface Business {
@@ -38,6 +40,8 @@ interface DashboardShellProps {
   userEmail: string
   role: string
   isCashShiftOpen?: boolean
+  isPlatformAdmin?: boolean
+  isSupportMode?: boolean
   children: React.ReactNode
 }
 
@@ -185,6 +189,8 @@ export function DashboardShell({
   userEmail,
   role,
   isCashShiftOpen = false,
+  isPlatformAdmin = false,
+  isSupportMode = false,
   children,
 }: DashboardShellProps) {
   const pathname = usePathname()
@@ -321,6 +327,30 @@ export function DashboardShell({
                     Rol: {roleLabel} • {business.currency}
                   </p>
                 </div>
+
+                {isPlatformAdmin && (
+                  <Link
+                    href="/admin"
+                    onClick={() => setUserDropdownOpen(false)}
+                    className="w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold text-purple-700 hover:bg-purple-50 rounded-lg transition-colors"
+                  >
+                    <ShieldAlert className="w-4 h-4 text-purple-600" />
+                    <span>Panel Superadmin</span>
+                  </Link>
+                )}
+
+                {isSupportMode && (
+                  <form action={exitSupportModeAction}>
+                    <button
+                      type="submit"
+                      className="w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold text-amber-700 hover:bg-amber-50 rounded-lg transition-colors"
+                    >
+                      <LogOut className="w-4 h-4 text-amber-600" />
+                      <span>Salir de Modo Soporte</span>
+                    </button>
+                  </form>
+                )}
+
                 <form action={signOutAction}>
                   <button
                     type="submit"
@@ -384,6 +414,29 @@ export function DashboardShell({
                 </Link>
               </div>
 
+              {isPlatformAdmin && (
+                <Link
+                  href="/admin"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold text-purple-700 hover:bg-purple-50 rounded-lg transition-colors"
+                >
+                  <ShieldAlert className="w-4 h-4 text-purple-600" />
+                  <span>Panel Superadmin</span>
+                </Link>
+              )}
+
+              {isSupportMode && (
+                <form action={exitSupportModeAction}>
+                  <button
+                    type="submit"
+                    className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-semibold text-amber-700 hover:bg-amber-50 rounded-lg transition-colors"
+                  >
+                    <LogOut className="w-4 h-4 text-amber-600" />
+                    <span>Salir de Modo Soporte</span>
+                  </button>
+                </form>
+              )}
+
               <form action={signOutAction}>
                 <button
                   type="submit"
@@ -404,6 +457,26 @@ export function DashboardShell({
           isCollapsed ? "lg:pl-20" : "lg:pl-64"
         }`}
       >
+        {/* Support Mode Notification Banner */}
+        {isSupportMode && (
+          <div className="bg-amber-500 text-white px-4 py-2 flex items-center justify-between text-xs font-semibold shadow-xs z-30">
+            <div className="flex items-center gap-2">
+              <ShieldAlert className="w-4 h-4 shrink-0" />
+              <span>
+                Modo Soporte Plataforma activo: inspeccionando comercio <strong>{business.name}</strong>
+              </span>
+            </div>
+            <form action={exitSupportModeAction}>
+              <button
+                type="submit"
+                className="px-2.5 py-1 bg-white text-amber-900 rounded-lg text-xs font-bold hover:bg-amber-50 transition-colors shadow-xs"
+              >
+                Volver al Superadmin
+              </button>
+            </form>
+          </div>
+        )}
+
         {/* DESKTOP & MOBILE TOP BAR */}
         <header className="sticky top-0 z-20 h-16 bg-white/90 backdrop-blur border-b border-neutral-200/80 px-4 sm:px-8 flex items-center justify-between">
           {/* Left Side: Mobile Hamburger & Page Context */}

@@ -21,6 +21,7 @@ export async function requirePlatformAdmin() {
   // Fallback for initial platform bootstrap
   const isOwnerEmail =
     user.email === "dueño@minimercado.com" ||
+    user.email === "jnvillegas86@gmail.com" ||
     user.email === "jnvillegas85@gmail.com"
 
   if (!adminRecord && !isOwnerEmail) {

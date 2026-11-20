@@ -1407,7 +1407,7 @@ begin
   from (
     select business_id from public.sales where created_at >= current_date
     union
-    select business_id from public.cash_shifts where started_at >= current_date or status = 'open'
+    select business_id from public.cash_shifts where opened_at >= current_date or status = 'open'
   ) active_t;
 
   select coalesce(sum(total_amount), 0), count(*)

@@ -30,6 +30,7 @@ export default async function DashboardLayout({
 
   const isOwnerEmail =
     user.email === "dueño@minimercado.com" ||
+    user.email === "jnvillegas86@gmail.com" ||
     user.email === "jnvillegas85@gmail.com"
 
   const isPlatformAdmin = Boolean(adminRecord || isOwnerEmail)

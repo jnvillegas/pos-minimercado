@@ -26,7 +26,19 @@ export default async function ProfilePage() {
   let profileData: UserProfileData
 
   if (!rpcError && rpcData) {
-    profileData = rpcData as UserProfileData
+    const r = rpcData as UserProfileData
+    profileData = {
+      ...r,
+      full_name:
+        r.full_name ||
+        user.user_metadata?.full_name ||
+        user.email?.split("@")[0] ||
+        "",
+      phone: r.phone || user.user_metadata?.phone || "",
+      dni_cuil: r.dni_cuil || user.user_metadata?.dni_cuil || "",
+      alias: r.alias || user.user_metadata?.alias || "",
+      avatar_url: r.avatar_url || user.user_metadata?.avatar_url || "",
+    }
   } else {
     // Fallback: Fetch directly from tables
     const { data: userProfile } = await supabase

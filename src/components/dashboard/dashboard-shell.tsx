@@ -196,6 +196,7 @@ export function DashboardShell({
   const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [mobileMoreOpen, setMobileMoreOpen] = useState(false)
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false)
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [userDropdownOpen, setUserDropdownOpen] = useState(false)
   const [notifTooltip, setNotifTooltip] = useState(false)
@@ -480,17 +481,87 @@ export function DashboardShell({
 
         {/* DESKTOP & MOBILE TOP BAR */}
         <header className="sticky top-0 z-20 h-16 bg-white/90 backdrop-blur border-b border-neutral-200/80 px-4 sm:px-8 flex items-center justify-between">
-          {/* Left Side: Mobile Hamburger & Page Context */}
+          {/* Left Side: User Profile Avatar & Greeting (Image 2 style) + Page Context */}
           <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() => setMobileMenuOpen(true)}
-              className="lg:hidden p-2 rounded-xl bg-neutral-100 text-neutral-700 hover:bg-neutral-200"
-            >
-              <Menu className="w-5 h-5" />
-            </button>
-            <div className="hidden sm:flex items-center gap-2 text-xs text-neutral-500 font-medium">
-              <span>POS Minimercado</span>
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+                className="flex items-center gap-2 p-1 rounded-2xl hover:bg-neutral-100 transition-all text-left"
+                title="Perfil de Usuario"
+                aria-label="Perfil de Usuario"
+              >
+                <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-amber-500 to-[#FE9820] text-neutral-950 font-black text-xs flex items-center justify-center shrink-0 shadow-xs ring-2 ring-amber-100">
+                  {userEmail.charAt(0).toUpperCase()}
+                </div>
+                <div className="block">
+                  <div className="text-[10px] text-neutral-400 font-medium leading-none">Hola,</div>
+                  <div className="text-xs font-bold text-[#1F1F1F] leading-tight truncate max-w-[110px] sm:max-w-[160px]">
+                    {userEmail.split("@")[0]}
+                  </div>
+                </div>
+              </button>
+
+              {/* Profile Dropdown (Superadmin, Support Mode, Cerrar Sesión) */}
+              {profileDropdownOpen && (
+                <>
+                  <div
+                    className="fixed inset-0 z-40 bg-black/10 backdrop-blur-xs"
+                    onClick={() => setProfileDropdownOpen(false)}
+                  />
+                  <div className="absolute left-0 mt-2 w-64 bg-white border border-neutral-200 rounded-3xl p-3 shadow-2xl z-50 text-xs space-y-2 animate-in fade-in zoom-in-95 duration-150">
+                    <div className="flex items-center gap-3 p-2.5 bg-neutral-50 rounded-2xl border border-neutral-100">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-500 to-[#FE9820] text-neutral-950 font-black text-sm flex items-center justify-center shrink-0 shadow-xs">
+                        {userEmail.charAt(0).toUpperCase()}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="font-bold text-[#1F1F1F] truncate">{userEmail}</div>
+                        <div className="text-[11px] text-neutral-500 font-medium capitalize">
+                          {roleLabel} • {business.name}
+                        </div>
+                      </div>
+                    </div>
+
+                    {isPlatformAdmin && (
+                      <Link
+                        href="/admin"
+                        onClick={() => setProfileDropdownOpen(false)}
+                        className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-bold text-purple-700 bg-purple-50/70 hover:bg-purple-100/70 transition-colors"
+                      >
+                        <ShieldAlert className="w-4 h-4 text-purple-600" />
+                        <span>Panel Superadmin</span>
+                      </Link>
+                    )}
+
+                    {isSupportMode && (
+                      <form action={exitSupportModeAction} className="w-full">
+                        <button
+                          type="submit"
+                          className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-bold text-amber-800 bg-amber-50 hover:bg-amber-100 transition-colors text-left"
+                        >
+                          <ShieldAlert className="w-4 h-4 text-amber-600" />
+                          <span>Volver al Superadmin</span>
+                        </button>
+                      </form>
+                    )}
+
+                    <div className="h-px bg-neutral-100 my-1" />
+
+                    <form action={signOutAction} className="w-full">
+                      <button
+                        type="submit"
+                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-bold text-rose-600 hover:bg-rose-50 transition-colors text-left"
+                      >
+                        <LogOut className="w-4 h-4 text-rose-500" />
+                        <span>Cerrar Sesión</span>
+                      </button>
+                    </form>
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div className="hidden sm:flex items-center gap-2 text-xs text-neutral-400 font-medium">
               <span>/</span>
               <span className="text-[#1F1F1F] font-semibold capitalize">
                 {pathname.replace("/dashboard", "").replace("/", "") || "Panel General"}
@@ -701,13 +772,13 @@ export function DashboardShell({
                 onClick={() => setMobileMoreOpen(false)}
               />
 
-              {/* Panel flotante encima del dock */}
-              <div className="absolute bottom-14 right-0 w-64 bg-white/95 backdrop-blur-2xl border border-neutral-200/90 rounded-3xl p-2.5 shadow-2xl z-50 animate-in fade-in zoom-in-95 duration-150 space-y-1">
-                <div className="px-3 py-2 border-b border-neutral-100 flex items-center justify-between">
+              {/* Panel flotante encima del dock (100% opaco para evitar transparencias) */}
+              <div className="absolute bottom-14 right-0 w-60 bg-white border border-neutral-200 rounded-3xl p-2 shadow-2xl z-50 animate-in fade-in zoom-in-95 duration-150 space-y-0.5">
+                <div className="px-3 py-1.5 border-b border-neutral-100 flex items-center justify-between">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">
-                    Opciones del Comercio
+                    Opciones
                   </span>
-                  <span className="text-[11px] font-semibold text-neutral-600 truncate max-w-[120px]">
+                  <span className="text-[11px] font-semibold text-neutral-500 truncate max-w-[120px]">
                     {business.name}
                   </span>
                 </div>
@@ -715,85 +786,46 @@ export function DashboardShell({
                 <Link
                   href="/dashboard"
                   onClick={() => setMobileMoreOpen(false)}
-                  className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold transition-colors ${
+                  className={`block px-3.5 py-2.5 rounded-2xl text-xs font-semibold transition-colors ${
                     pathname === "/dashboard"
                       ? "bg-amber-50 text-amber-900 font-bold"
-                      : "text-neutral-600 hover:text-[#1F1F1F] hover:bg-neutral-100"
+                      : "text-neutral-700 hover:text-[#1F1F1F] hover:bg-neutral-50"
                   }`}
                 >
-                  <LayoutDashboard className="w-4 h-4 text-neutral-500" />
-                  <span>Panel General (Overview)</span>
+                  Panel General
                 </Link>
 
                 <Link
                   href="/dashboard/reports"
                   onClick={() => setMobileMoreOpen(false)}
-                  className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold transition-colors ${
+                  className={`block px-3.5 py-2.5 rounded-2xl text-xs font-semibold transition-colors ${
                     pathname.startsWith("/dashboard/reports")
                       ? "bg-amber-50 text-amber-900 font-bold"
-                      : "text-neutral-600 hover:text-[#1F1F1F] hover:bg-neutral-100"
+                      : "text-neutral-700 hover:text-[#1F1F1F] hover:bg-neutral-50"
                   }`}
                 >
-                  <BarChart3 className="w-4 h-4 text-neutral-500" />
-                  <span>Reportes y Estadísticas</span>
+                  Reportes y Estadísticas
                 </Link>
 
                 <Link
                   href="/dashboard/settings"
                   onClick={() => setMobileMoreOpen(false)}
-                  className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold transition-colors ${
+                  className={`block px-3.5 py-2.5 rounded-2xl text-xs font-semibold transition-colors ${
                     pathname.startsWith("/dashboard/settings")
                       ? "bg-amber-50 text-amber-900 font-bold"
-                      : "text-neutral-600 hover:text-[#1F1F1F] hover:bg-neutral-100"
+                      : "text-neutral-700 hover:text-[#1F1F1F] hover:bg-neutral-50"
                   }`}
                 >
-                  <Settings className="w-4 h-4 text-neutral-500" />
-                  <span>Configuración del Negocio</span>
+                  Configuración del Negocio
                 </Link>
 
                 <Link
                   href="/dashboard/settings"
                   onClick={() => setMobileMoreOpen(false)}
-                  className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-neutral-600 hover:text-[#1F1F1F] hover:bg-neutral-100 transition-colors"
+                  className="block px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-neutral-500 hover:text-[#1F1F1F] hover:bg-neutral-50 transition-colors"
                 >
-                  <HelpCircle className="w-4 h-4 text-neutral-400" />
-                  <span>Centro de Ayuda</span>
+                  Centro de Ayuda
                 </Link>
-
-                {isPlatformAdmin && (
-                  <Link
-                    href="/admin"
-                    onClick={() => setMobileMoreOpen(false)}
-                    className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-purple-700 bg-purple-50/70 hover:bg-purple-100/70 transition-colors"
-                  >
-                    <ShieldAlert className="w-4 h-4 text-purple-600" />
-                    <span>Panel Superadmin</span>
-                  </Link>
-                )}
-
-                {isSupportMode && (
-                  <form action={exitSupportModeAction} className="w-full">
-                    <button
-                      type="submit"
-                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-amber-800 bg-amber-50 hover:bg-amber-100 transition-colors text-left"
-                    >
-                      <ShieldAlert className="w-4 h-4 text-amber-600" />
-                      <span>Volver al Superadmin</span>
-                    </button>
-                  </form>
-                )}
-
-                <div className="h-px bg-neutral-100 my-1" />
-
-                <form action={signOutAction} className="w-full">
-                  <button
-                    type="submit"
-                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 transition-colors text-left"
-                  >
-                    <LogOut className="w-4 h-4 text-rose-500" />
-                    <span>Cerrar Sesión</span>
-                  </button>
-                </form>
               </div>
             </>
           )}

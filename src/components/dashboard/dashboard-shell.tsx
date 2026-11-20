@@ -606,17 +606,17 @@ export function DashboardShell({
               )}
             </div>
 
-            {/* Quick Action 2: Quick POS / Ticket shortcut */}
+            {/* Quick Action 2: Quick POS / Ticket shortcut (Desktop only) */}
             <Link
               href="/dashboard/pos"
-              className="p-2 rounded-xl border border-neutral-200/80 bg-white hover:bg-neutral-50 text-neutral-600 hover:text-[#1F1F1F] transition-all"
+              className="hidden sm:flex p-2 rounded-xl border border-neutral-200/80 bg-white hover:bg-neutral-50 text-neutral-600 hover:text-[#1F1F1F] transition-all"
               title="Abrir terminal de ventas"
             >
               <Printer className="w-4 h-4" />
             </Link>
 
-            {/* Store / Business Switcher Pill Button */}
-            <div className="relative">
+            {/* Store / Business Switcher Pill Button (Desktop only) */}
+            <div className="relative hidden sm:block">
               <button
                 type="button"
                 onClick={() => setUserDropdownOpen(!userDropdownOpen)}
@@ -643,7 +643,7 @@ export function DashboardShell({
       {/* FLOATING MOBILE DOCK (LIGHT GLASS BUBBLE BAR) */}
       <nav
         aria-label="Navegación móvil rápida"
-        className="lg:hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-1.5rem)] max-w-md bg-white/95 backdrop-blur-xl border border-neutral-200/90 shadow-2xl shadow-neutral-900/10 rounded-3xl sm:rounded-full px-2 py-1.5 flex items-center justify-between pointer-events-auto print:hidden"
+        className="lg:hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-1.5rem)] max-w-md bg-white border border-neutral-200/90 shadow-2xl shadow-neutral-900/10 rounded-3xl sm:rounded-full px-2 py-1.5 flex items-center justify-between pointer-events-auto print:hidden"
       >
         {/* 1. Stock / Inventario */}
         {pathname.startsWith("/dashboard/inventory") ? (
@@ -742,14 +742,14 @@ export function DashboardShell({
             <button
               type="button"
               onClick={() => setMobileMoreOpen(!mobileMoreOpen)}
-              className="flex items-center gap-2 bg-neutral-900 border border-neutral-800 p-1 pr-3 rounded-full shadow-xs transition-all shrink-0 text-white"
-              title="Más opciones"
-              aria-label="Más opciones"
+              className="flex items-center gap-2 bg-amber-500/15 border border-amber-500/25 p-1 pr-3.5 rounded-full shadow-xs transition-all shrink-0"
+              title="Opciones del sistema"
+              aria-label="Opciones del sistema"
             >
-              <span className="w-8 h-8 rounded-full bg-white/20 text-white flex items-center justify-center shrink-0">
+              <span className="w-8 h-8 rounded-full bg-[#FE9820] text-white flex items-center justify-center shrink-0 shadow-xs">
                 <Menu className="w-4 h-4" />
               </span>
-              <span className="text-xs font-bold">Más</span>
+              <span className="text-xs font-bold text-amber-900">Menú</span>
             </button>
           ) : (
             <button
@@ -766,9 +766,9 @@ export function DashboardShell({
           {/* Popover Desplegable con opciones restantes */}
           {mobileMoreOpen && (
             <>
-              {/* Backdrop para cerrar al tocar afuera */}
+              {/* Backdrop para cerrar al tocar afuera (sin blur para evitar efectos sucios en el dock) */}
               <div
-                className="fixed inset-0 z-40 bg-black/20 backdrop-blur-xs"
+                className="fixed inset-0 z-40 bg-black/20"
                 onClick={() => setMobileMoreOpen(false)}
               />
 

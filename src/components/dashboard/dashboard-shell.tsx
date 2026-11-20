@@ -623,20 +623,20 @@ export function DashboardShell({
         {pathname.startsWith("/dashboard/pos") ? (
           <Link
             href="/dashboard/pos"
-            className="flex items-center gap-2 bg-amber-500/15 border border-amber-500/30 p-1 pr-4 rounded-full shadow-md shadow-amber-500/20 ring-2 ring-amber-500/20 scale-105 transition-all shrink-0"
+            className="flex items-center gap-2 bg-amber-500/15 border border-amber-500/25 p-1 pr-3.5 rounded-full shadow-xs transition-all shrink-0"
           >
             <span className="w-8 h-8 rounded-full bg-[#FE9820] text-white flex items-center justify-center shrink-0 shadow-xs">
               <ShoppingBag className="w-4 h-4" />
             </span>
-            <span className="text-xs font-black text-amber-950">POS</span>
+            <span className="text-xs font-bold text-amber-900">POS</span>
           </Link>
         ) : (
           <Link
             href="/dashboard/pos"
-            className="w-11 h-11 rounded-full bg-amber-500/15 hover:bg-amber-500/25 border border-amber-300/80 flex items-center justify-center text-amber-700 transition-all shrink-0 shadow-xs active:scale-95"
+            className="w-10 h-10 rounded-full bg-neutral-100/70 hover:bg-neutral-100 border border-neutral-200/50 flex items-center justify-center text-neutral-600 hover:text-neutral-900 transition-all shrink-0 active:scale-95"
             title="Punto de Venta"
           >
-            <ShoppingBag className="w-5 h-5 text-amber-600" />
+            <ShoppingBag className="w-5 h-5" />
           </Link>
         )}
 

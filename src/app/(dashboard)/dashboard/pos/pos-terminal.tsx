@@ -2,8 +2,10 @@
 
 import React, { useState, useRef, useEffect, useTransition } from "react"
 import { processSaleAction, CartItemPayload } from "./actions"
+import { CameraScannerModal } from "@/components/pos/camera-scanner-modal"
 import {
   Barcode,
+  Camera,
   Search,
   Plus,
   Minus,
@@ -62,6 +64,7 @@ export function PosTerminal({
   const [selectedCategory, setSelectedCategory] = useState<string>("all")
   const [barcodeInput, setBarcodeInput] = useState("")
   const [barcodeAlert, setBarcodeAlert] = useState<string | null>(null)
+  const [isCameraScannerOpen, setIsCameraScannerOpen] = useState(false)
 
   // Discounts
   const [discountType, setDiscountType] = useState<"percentage" | "fixed">("percentage")
@@ -157,21 +160,106 @@ export function PosTerminal({
     setCheckoutError(null)
   }
 
-  // Handle USB barcode scanner Enter key
-  const handleBarcodeSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    const code = barcodeInput.trim()
-    if (!code) return
+  // Web Audio synthesizer beep for barcode scan feedback
+  const playBeepSound = (success: boolean) => {
+    try {
+      const AudioCtx =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext })
+          .webkitAudioContext
+      if (!AudioCtx) return
+      const ctx = new AudioCtx()
+      const osc = ctx.createOscillator()
+      const gain = ctx.createGain()
+      osc.type = "sine"
+      osc.frequency.setValueAtTime(success ? 880 : 300, ctx.currentTime)
+      gain.gain.setValueAtTime(0.12, ctx.currentTime)
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1)
+      osc.connect(gain)
+      gain.connect(ctx.destination)
+      osc.start()
+      osc.stop(ctx.currentTime + 0.1)
+    } catch {
+      // Audio autoplay policy fallback
+    }
+  }
 
-    const matched = products.find((p) => p.barcode === code)
+  // Unified barcode processor (used by USB pistol, Camera scanner, and Manual enter)
+  const processBarcode = (code: string): boolean => {
+    const trimmed = code.trim()
+    if (!trimmed) return false
+
+    // Match exact barcode or barcode stripping leading zeroes (common in EAN/UPC barcodes)
+    const cleanScanned = trimmed.replace(/^0+/, "")
+    const matched = products.find(
+      (p) =>
+        p.barcode === trimmed ||
+        (p.barcode && p.barcode.replace(/^0+/, "") === cleanScanned)
+    )
+
     if (matched) {
       addToCart(matched)
       setBarcodeInput("")
       setBarcodeAlert(null)
+      playBeepSound(true)
+      return true
     } else {
-      setBarcodeAlert(`No se encontró ningún producto con el código: ${code}`)
+      setBarcodeAlert(`No se encontró ningún producto con el código: ${trimmed}`)
       setBarcodeInput("")
+      playBeepSound(false)
+      return false
     }
+  }
+
+  // Global keydown listener for USB & Bluetooth barcode scanners (works even without focus)
+  useEffect(() => {
+    let buffer = ""
+    let lastKeyTime = 0
+
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      // Do not intercept if user is typing in modals, note inputs, or other text controls
+      const target = e.target as HTMLElement | null
+      const isOtherInput =
+        target &&
+        target !== barcodeInputRef.current &&
+        (target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.isContentEditable)
+
+      if (isOtherInput) return
+
+      const now = Date.now()
+
+      if (e.key === "Enter") {
+        if (buffer.length >= 3) {
+          e.preventDefault()
+          const scannedCode = buffer.trim()
+          buffer = ""
+          processBarcode(scannedCode)
+        } else {
+          buffer = ""
+        }
+        return
+      }
+
+      // Barcode guns send rapid character bursts (< 80ms between keystrokes)
+      if (e.key.length === 1) {
+        if (now - lastKeyTime > 120) {
+          buffer = "" // Reset if slow human typing
+        }
+        buffer += e.key
+        lastKeyTime = now
+      }
+    }
+
+    window.addEventListener("keydown", handleGlobalKeyDown)
+    return () => window.removeEventListener("keydown", handleGlobalKeyDown)
+  }, [products])
+
+  // Handle USB barcode scanner Enter key
+  const handleBarcodeSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    processBarcode(barcodeInput)
   }
 
   // Financial calculations
@@ -246,37 +334,49 @@ export function PosTerminal({
     <div className="flex flex-col lg:flex-row gap-6 min-h-[calc(100vh-8rem)]">
       {/* LEFT COLUMN: Barcode Scanner, Search & Catalog Grid */}
       <div className="flex-1 flex flex-col space-y-4 min-w-0">
-        {/* USB Barcode Scanner Input */}
+        {/* Barcode Scanner Inputs: USB Hardware Pistol + Mobile/Webcam Camera */}
         <div className="relative">
-          <form onSubmit={handleBarcodeSubmit} className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#FE9820]">
-              <Barcode className="w-5 h-5" />
-            </div>
-            <input
-              ref={barcodeInputRef}
-              type="text"
-              value={barcodeInput}
-              onChange={(e) => setBarcodeInput(e.target.value)}
-              placeholder="Escanear con pistola lectora USB (o tipear código + Enter)..."
-              className="w-full pl-11 pr-24 py-3 bg-white border-2 border-neutral-200 focus:border-[#FE9820] rounded-xl text-[#1F1F1F] placeholder:text-[#9E9E9E] text-sm outline-none transition-all shadow-inner"
-            />
-            <div className="absolute inset-y-0 right-1.5 flex items-center">
-              <span className="text-[10px] font-mono uppercase bg-neutral-100 text-neutral-600 px-2 py-1 rounded border border-neutral-200">
-                Pistola USB
-              </span>
-            </div>
-          </form>
+          <div className="flex items-center gap-2">
+            <form onSubmit={handleBarcodeSubmit} className="relative flex-1">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#FE9820]">
+                <Barcode className="w-5 h-5" />
+              </div>
+              <input
+                ref={barcodeInputRef}
+                type="text"
+                value={barcodeInput}
+                onChange={(e) => setBarcodeInput(e.target.value)}
+                placeholder="Escanear con pistola USB / Bluetooth (o tipear código + Enter)..."
+                className="w-full pl-11 pr-24 py-3 bg-white border-2 border-neutral-200 focus:border-[#FE9820] rounded-xl text-[#1F1F1F] placeholder:text-[#9E9E9E] text-sm outline-none transition-all shadow-inner"
+              />
+              <div className="absolute inset-y-0 right-1.5 flex items-center">
+                <span className="text-[10px] font-mono uppercase bg-neutral-100 text-neutral-600 px-2 py-1 rounded border border-neutral-200">
+                  Pistola USB
+                </span>
+              </div>
+            </form>
+
+            <button
+              type="button"
+              onClick={() => setIsCameraScannerOpen(true)}
+              className="flex items-center gap-2 px-4 py-3 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-xs shadow-xs transition-colors shrink-0"
+              title="Abrir cámara para escanear con el celular o notebook"
+            >
+              <Camera className="w-4 h-4 text-[#FE9820]" />
+              <span className="hidden sm:inline">Cámara</span>
+            </button>
+          </div>
 
           {barcodeAlert && (
-            <div className="mt-2 p-3 text-xs rounded-xl bg-amber-950/60 border border-amber-800/80 text-amber-200 flex items-center justify-between">
+            <div className="mt-2 p-3 text-xs rounded-xl bg-amber-50 border border-amber-200 text-amber-900 flex items-center justify-between shadow-xs">
               <div className="flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
+                <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
                 <span>{barcodeAlert}</span>
               </div>
               <button
                 type="button"
                 onClick={() => setBarcodeAlert(null)}
-                className="text-neutral-400 hover:text-white"
+                className="text-neutral-400 hover:text-neutral-700 p-1"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -817,6 +917,13 @@ export function PosTerminal({
           </div>
         </div>
       )}
+
+      {/* Camera Barcode Scanner Modal */}
+      <CameraScannerModal
+        isOpen={isCameraScannerOpen}
+        onClose={() => setIsCameraScannerOpen(false)}
+        onScan={processBarcode}
+      />
     </div>
   )
 }

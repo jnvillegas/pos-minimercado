@@ -12,6 +12,14 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "POS Minimercado",
   description: "Punto de venta y gestión de stock ágil",
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

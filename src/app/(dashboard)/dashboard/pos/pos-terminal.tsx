@@ -629,14 +629,14 @@ export function PosTerminal({
 
       {/* MODAL 1: Discount Dialog */}
       {showDiscountModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="w-full max-w-sm bg-white border border-neutral-200 rounded-2xl p-5 shadow-2xl text-[#1F1F1F] space-y-4">
-            <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="w-full max-w-sm bg-white border border-neutral-200 rounded-3xl p-6 shadow-2xl text-[#1F1F1F] space-y-4">
+            <div className="flex items-center justify-between border-b border-neutral-100 pb-3">
               <h4 className="font-bold text-[#1F1F1F] text-base">Descuento Global</h4>
               <button
                 type="button"
                 onClick={() => setShowDiscountModal(false)}
-                className="text-neutral-400 hover:text-white"
+                className="text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 p-1 rounded-lg transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -646,10 +646,10 @@ export function PosTerminal({
               <button
                 type="button"
                 onClick={() => setDiscountType("percentage")}
-                className={`py-2 rounded-lg font-bold text-xs border ${
+                className={`py-2.5 rounded-xl font-bold text-xs border transition-all ${
                   discountType === "percentage"
-                    ? "bg-amber-500 text-neutral-950 border-amber-500"
-                    : "bg-neutral-950 text-neutral-400 border-neutral-800"
+                    ? "bg-[#FE9820]/15 text-[#1F1F1F] border-[#FE9820] ring-1 ring-[#FE9820]"
+                    : "bg-white text-neutral-600 border-neutral-200 hover:bg-neutral-50"
                 }`}
               >
                 Porcentaje (%)
@@ -657,10 +657,10 @@ export function PosTerminal({
               <button
                 type="button"
                 onClick={() => setDiscountType("fixed")}
-                className={`py-2 rounded-lg font-bold text-xs border ${
+                className={`py-2.5 rounded-xl font-bold text-xs border transition-all ${
                   discountType === "fixed"
-                    ? "bg-amber-500 text-neutral-950 border-amber-500"
-                    : "bg-neutral-950 text-neutral-400 border-neutral-800"
+                    ? "bg-[#FE9820]/15 text-[#1F1F1F] border-[#FE9820] ring-1 ring-[#FE9820]"
+                    : "bg-white text-neutral-600 border-neutral-200 hover:bg-neutral-50"
                 }`}
               >
                 Monto fijo ($)
@@ -668,7 +668,7 @@ export function PosTerminal({
             </div>
 
             <div>
-              <label className="text-xs text-neutral-400 mb-1 block">
+              <label className="text-xs font-semibold text-neutral-600 mb-1.5 block">
                 {discountType === "percentage" ? "Porcentaje de descuento" : "Importe de descuento en pesos"}
               </label>
               <input
@@ -677,7 +677,7 @@ export function PosTerminal({
                 value={discountValue || ""}
                 onChange={(e) => setDiscountValue(Number(e.target.value))}
                 placeholder={discountType === "percentage" ? "Ej. 10%" : "Ej. 500"}
-                className="w-full p-2.5 bg-neutral-950 border border-neutral-700 rounded-xl text-white font-bold text-lg outline-none focus:border-amber-500"
+                className="w-full p-3 bg-neutral-50 border border-neutral-200 focus:bg-white focus:border-[#FE9820] rounded-xl text-[#1F1F1F] font-bold text-lg outline-none transition-all"
                 autoFocus
               />
             </div>
@@ -685,7 +685,7 @@ export function PosTerminal({
             <button
               type="button"
               onClick={() => setShowDiscountModal(false)}
-              className="w-full py-2.5 rounded-xl bg-amber-500 text-neutral-950 font-bold text-sm shadow-md"
+              className="w-full py-3 rounded-xl bg-[#FE9820] hover:bg-[#FE9820]/90 text-white font-bold text-sm shadow-xs transition-colors"
             >
               Aplicar Descuento
             </button>
@@ -695,9 +695,9 @@ export function PosTerminal({
 
       {/* MODAL 2: Checkout & Payment Modal ("Cobrar") */}
       {checkoutOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
-          <div className="w-full max-w-lg bg-white border border-neutral-200 rounded-3xl p-6 shadow-2xl text-[#1F1F1F] space-y-5">
-            <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="w-full max-w-lg bg-white border border-neutral-200 rounded-3xl p-6 sm:p-7 shadow-2xl text-[#1F1F1F] space-y-5 animate-fadeIn">
+            <div className="flex items-center justify-between border-b border-neutral-100 pb-3">
               <div>
                 <h3 className="font-extrabold text-[#1F1F1F] text-xl">Confirmar Cobro</h3>
                 <p className="text-xs text-neutral-400">Seleccioná el método de pago</p>
@@ -705,23 +705,24 @@ export function PosTerminal({
               <button
                 type="button"
                 onClick={() => setCheckoutOpen(false)}
-                className="text-neutral-400 hover:text-white p-1 rounded-lg"
+                className="text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 p-1.5 rounded-lg transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {checkoutError && (
-              <div className="p-3 rounded-xl bg-red-950/60 border border-red-800 text-red-200 text-xs">
-                {checkoutError}
+              <div className="p-3.5 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                <span>{checkoutError}</span>
               </div>
             )}
 
             {/* Total Highlight */}
-            <div className="p-4 rounded-2xl bg-neutral-50 border border-[#FE9820]/30 flex items-center justify-between">
-              <span className="text-sm text-neutral-400 font-medium">Total de la venta:</span>
-              <span className="text-3xl font-black text-amber-400">
-                ${total.toLocaleString("es-AR")} <span className="text-xs text-neutral-500">{currency}</span>
+            <div className="p-4 rounded-2xl bg-neutral-50/80 border border-[#FE9820]/30 flex items-center justify-between">
+              <span className="text-xs sm:text-sm text-neutral-500 font-semibold">Total de la venta:</span>
+              <span className="text-3xl font-black text-[#FE9820]">
+                ${total.toLocaleString("es-AR")} <span className="text-xs text-neutral-500 font-bold">{currency}</span>
               </span>
             </div>
 
@@ -740,13 +741,13 @@ export function PosTerminal({
                     key={m.id}
                     type="button"
                     onClick={() => setPaymentMethod(m.id as typeof paymentMethod)}
-                    className={`p-3 rounded-xl border flex items-center gap-2.5 font-bold text-xs transition-all ${
+                    className={`p-3.5 rounded-xl border flex items-center gap-2.5 font-bold text-xs transition-all ${
                       isSelected
-                        ? "bg-amber-500/15 border-amber-500 text-white ring-1 ring-amber-500"
-                        : "bg-neutral-950 border-neutral-800 text-neutral-400 hover:border-neutral-700"
+                        ? "bg-[#FE9820]/10 border-[#FE9820] text-[#1F1F1F] ring-1 ring-[#FE9820] shadow-xs"
+                        : "bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50 hover:border-neutral-300"
                     }`}
                   >
-                    <Icon className={`w-4 h-4 ${isSelected ? "text-amber-400" : "text-neutral-400"}`} />
+                    <Icon className={`w-4 h-4 ${isSelected ? "text-[#FE9820]" : "text-neutral-400"}`} />
                     <span>{m.label}</span>
                   </button>
                 )
@@ -755,12 +756,12 @@ export function PosTerminal({
 
             {/* Cash Mode: Tendered Amount & Change Calculation */}
             {paymentMethod === "cash" && (
-              <div className="p-4 rounded-2xl bg-neutral-50 border border-neutral-200 space-y-3">
+              <div className="p-4 rounded-2xl bg-neutral-50/70 border border-neutral-200 space-y-3">
                 <div className="flex items-center justify-between">
-                  <label className="text-xs font-semibold text-neutral-300">
+                  <label className="text-xs font-semibold text-neutral-700">
                     Monto recibido en efectivo
                   </label>
-                  <span className="text-xs text-neutral-400">
+                  <span className="text-xs text-neutral-400 font-medium">
                     Mínimo: ${total.toLocaleString("es-AR")}
                   </span>
                 </div>
@@ -771,7 +772,7 @@ export function PosTerminal({
                   value={amountTendered || ""}
                   onChange={(e) => setAmountTendered(Number(e.target.value))}
                   placeholder="Ingrese el monto recibido"
-                  className="w-full p-3 rounded-xl bg-white border border-neutral-300 font-black text-2xl text-[#1F1F1F] outline-none focus:border-amber-500"
+                  className="w-full p-3 rounded-xl bg-white border border-neutral-200 focus:border-[#FE9820] font-black text-2xl text-[#1F1F1F] outline-none shadow-inner transition-colors"
                 />
 
                 {/* Quick Bill Chips */}
@@ -779,7 +780,7 @@ export function PosTerminal({
                   <button
                     type="button"
                     onClick={() => setAmountTendered(total)}
-                    className="text-xs px-2.5 py-1 rounded-lg bg-neutral-100 border border-neutral-200 text-neutral-700 hover:border-amber-500"
+                    className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-white border border-neutral-200 text-neutral-700 hover:border-[#FE9820] shadow-2xs"
                   >
                     Exacto
                   </button>
@@ -788,7 +789,7 @@ export function PosTerminal({
                       key={bill}
                       type="button"
                       onClick={() => setAmountTendered((prev) => prev + bill)}
-                      className="text-xs px-2 py-1 rounded-lg bg-neutral-100 border border-neutral-200 text-[#FE9820] font-mono hover:border-amber-500"
+                      className="text-xs font-bold px-2.5 py-1 rounded-lg bg-white border border-neutral-200 text-[#FE9820] hover:border-[#FE9820] shadow-2xs"
                     >
                       +${bill.toLocaleString("es-AR")}
                     </button>
@@ -796,11 +797,11 @@ export function PosTerminal({
                 </div>
 
                 {/* Dynamic Change Banner */}
-                <div className="pt-2 border-t border-neutral-800 flex items-center justify-between">
-                  <span className="text-xs font-bold text-neutral-400">VUELTO A ENTREGAR:</span>
+                <div className="pt-2.5 border-t border-neutral-200 flex items-center justify-between">
+                  <span className="text-xs font-bold text-neutral-500 uppercase tracking-wider">Vuelto a entregar:</span>
                   <span
                     className={`text-xl font-black ${
-                      changeDue > 0 ? "text-emerald-400" : "text-neutral-400"
+                      changeDue > 0 ? "text-emerald-600" : "text-neutral-500"
                     }`}
                   >
                     ${changeDue.toLocaleString("es-AR")}
@@ -815,7 +816,7 @@ export function PosTerminal({
                 type="button"
                 disabled={isPending}
                 onClick={() => setCheckoutOpen(false)}
-                className="flex-1 py-3 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-700 font-semibold text-sm transition-colors"
+                className="flex-1 py-3.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-700 font-bold text-xs transition-colors"
               >
                 Cancelar
               </button>
@@ -824,7 +825,7 @@ export function PosTerminal({
                 type="button"
                 disabled={isPending}
                 onClick={handleConfirmSale}
-                className="flex-1 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-neutral-950 font-black text-sm flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 transition-all cursor-pointer"
+                className="flex-1 py-3.5 rounded-xl bg-[#FE9820] hover:bg-[#FE9820]/90 disabled:opacity-50 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-orange-500/20 transition-all cursor-pointer"
               >
                 {isPending ? (
                   <>
@@ -845,11 +846,11 @@ export function PosTerminal({
 
       {/* MODAL 3: Post-Sale Receipt & Ticket Modal */}
       {completedSale && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
-          <div className="w-full max-w-sm bg-white border border-neutral-200 rounded-3xl p-6 shadow-2xl text-[#1F1F1F] space-y-5 text-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="w-full max-w-sm bg-white border border-neutral-200 rounded-3xl p-6 shadow-2xl text-[#1F1F1F] space-y-5 text-center animate-fadeIn">
             {/* Printable Ticket Area */}
             <div id="thermal-receipt" className="space-y-4">
-              <div className="w-14 h-14 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 mx-auto flex items-center justify-center">
+              <div className="w-14 h-14 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-600 mx-auto flex items-center justify-center shadow-xs">
                 <CheckCircle2 className="w-8 h-8" />
               </div>
 
@@ -865,29 +866,29 @@ export function PosTerminal({
 
               {/* Vuelto Highlight */}
               {completedSale.changeDue > 0 && (
-                <div className="p-3 rounded-xl bg-emerald-950/60 border border-emerald-800 text-emerald-300">
-                  <div className="text-[11px] font-medium">Vuelto a entregar:</div>
-                  <div className="text-2xl font-black">
+                <div className="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800">
+                  <div className="text-[11px] font-semibold text-emerald-700">Vuelto a entregar:</div>
+                  <div className="text-2xl font-black text-emerald-700">
                     ${completedSale.changeDue.toLocaleString("es-AR")}
                   </div>
                 </div>
               )}
 
               {/* Items Summary */}
-              <div className="p-3 rounded-xl bg-neutral-50 border border-neutral-200/80 text-left text-xs space-y-1.5 max-h-36 overflow-y-auto">
+              <div className="p-3.5 rounded-2xl bg-neutral-50 border border-neutral-200 text-left text-xs space-y-2 max-h-36 overflow-y-auto">
                 {completedSale.items.map((item) => (
-                  <div key={item.product_id} className="flex justify-between text-neutral-300">
-                    <span className="truncate pr-2">
+                  <div key={item.product_id} className="flex justify-between text-neutral-700">
+                    <span className="truncate pr-2 font-medium">
                       {item.quantity}x {item.product_name}
                     </span>
-                    <span className="font-mono shrink-0">
+                    <span className="font-mono font-semibold shrink-0">
                       ${(item.quantity * item.unit_price).toLocaleString("es-AR")}
                     </span>
                   </div>
                 ))}
-                <div className="pt-2 border-t border-neutral-800 flex justify-between font-bold text-white text-sm">
+                <div className="pt-2 border-t border-neutral-200 flex justify-between font-bold text-[#1F1F1F] text-sm">
                   <span>TOTAL:</span>
-                  <span className="text-amber-400">
+                  <span className="text-[#FE9820]">
                     ${completedSale.total.toLocaleString("es-AR")}
                   </span>
                 </div>
@@ -899,7 +900,7 @@ export function PosTerminal({
               <button
                 type="button"
                 onClick={() => window.print()}
-                className="w-full py-2.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-800 font-semibold text-xs flex items-center justify-center gap-2 transition-colors border border-neutral-200"
+                className="w-full py-2.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-800 font-bold text-xs flex items-center justify-center gap-2 transition-colors border border-neutral-200 shadow-xs"
               >
                 <Printer className="w-4 h-4" />
                 <span>Imprimir Ticket</span>
@@ -908,7 +909,7 @@ export function PosTerminal({
               <button
                 type="button"
                 onClick={handleNewSale}
-                className="w-full py-3.5 rounded-xl bg-[#FE9820] hover:bg-[#FE9820]/90 text-white font-black text-sm flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 transition-all cursor-pointer"
+                className="w-full py-3.5 rounded-xl bg-[#FE9820] hover:bg-[#FE9820]/90 text-white font-black text-sm flex items-center justify-center gap-2 shadow-md shadow-orange-500/20 transition-all cursor-pointer"
               >
                 <RotateCcw className="w-4 h-4" />
                 <span>Nueva Venta (Enter / Espacio)</span>

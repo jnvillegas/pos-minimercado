@@ -90,11 +90,6 @@ export function PosTerminal({
 
   const barcodeInputRef = useRef<HTMLInputElement>(null)
 
-  // Keep barcode input autofocused
-  useEffect(() => {
-    barcodeInputRef.current?.focus()
-  }, [completedSale, checkoutOpen])
-
   // Filter products by search and category
   const filteredProducts = products.filter((p) => {
     const matchesCategory =
@@ -325,9 +320,6 @@ export function PosTerminal({
   const handleNewSale = () => {
     setCompletedSale(null)
     clearCart()
-    setTimeout(() => {
-      barcodeInputRef.current?.focus()
-    }, 100)
   }
 
   return (

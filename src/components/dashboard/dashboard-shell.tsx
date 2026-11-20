@@ -647,6 +647,7 @@ export function DashboardShell({
       {/* FLOATING MOBILE DOCK (LIGHT GLASS BUBBLE BAR) */}
       <nav
         aria-label="Navegación móvil rápida"
+        style={{ backgroundColor: "#FFFFFF" }}
         className="lg:hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-1.5rem)] max-w-md bg-white border border-neutral-200/90 shadow-2xl shadow-neutral-900/10 rounded-3xl sm:rounded-full px-2 py-1.5 flex items-center justify-between pointer-events-auto print:hidden"
       >
         {/* 1. Stock / Inventario */}
@@ -738,56 +739,33 @@ export function DashboardShell({
 
         {/* 5. Menú / Más opciones (Desplegable Popover) */}
         <div className="relative">
-          {/* Solo se muestra como píldora naranja si estás parado en una página secundaria (Overview, Reportes, Configuración) */}
-          {!pathname.startsWith("/dashboard/inventory") &&
-          !pathname.startsWith("/dashboard/cash-register") &&
-          !pathname.startsWith("/dashboard/pos") &&
-          !pathname.startsWith("/dashboard/movements") ? (
-            <button
-              type="button"
-              onClick={() => {
-                setMobileMoreOpen(!mobileMoreOpen)
-                setProfileDropdownOpen(false)
-              }}
-              className="flex items-center gap-2 bg-amber-500/15 border border-amber-500/25 p-1 pr-3.5 rounded-full shadow-xs transition-all shrink-0"
-              title="Opciones del sistema"
-              aria-label="Opciones del sistema"
-            >
-              <span className="w-8 h-8 rounded-full bg-[#FE9820] text-white flex items-center justify-center shrink-0 shadow-xs">
-                <Menu className="w-4 h-4" />
-              </span>
-              <span className="text-xs font-bold text-amber-900">Menú</span>
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={() => {
-                setMobileMoreOpen(!mobileMoreOpen)
-                setProfileDropdownOpen(false)
-              }}
-              className={`w-10 h-10 rounded-full border transition-all flex items-center justify-center shrink-0 active:scale-95 ${
-                mobileMoreOpen
-                  ? "bg-amber-100/80 border-amber-300 text-amber-800"
-                  : "bg-neutral-100/70 hover:bg-neutral-100 border border-neutral-200/50 text-neutral-600 hover:text-neutral-900"
-              }`}
-              title="Abrir opciones adicionales"
-              aria-label="Abrir opciones adicionales"
-            >
-              <Menu className="w-5 h-5" />
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={() => {
+              setMobileMoreOpen(!mobileMoreOpen)
+              setProfileDropdownOpen(false)
+            }}
+            className="w-10 h-10 rounded-full bg-neutral-100/70 hover:bg-neutral-100 border border-neutral-200/50 text-neutral-600 hover:text-neutral-900 transition-all flex items-center justify-center shrink-0 active:scale-95"
+            title="Abrir opciones adicionales"
+            aria-label="Abrir opciones adicionales"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
 
           {/* Popover Desplegable con opciones restantes */}
           {mobileMoreOpen && (
             <>
-              {/* Backdrop para cerrar al tocar afuera (sin blur para evitar efectos sucios en el dock) */}
+              {/* Backdrop para cerrar al tocar afuera */}
               <div
-                className="fixed inset-0 z-40 bg-black/20"
+                className="fixed inset-0 z-40 bg-black/10"
                 onClick={() => setMobileMoreOpen(false)}
               />
 
-              {/* Panel flotante encima del dock (100% opaco para evitar transparencias) */}
-              <div className="absolute bottom-14 right-0 w-60 bg-white border border-neutral-200 rounded-3xl p-2 shadow-2xl z-50 animate-in fade-in zoom-in-95 duration-150 space-y-0.5">
+              {/* Panel flotante encima del dock (100% sólido blanco opaco) */}
+              <div
+                style={{ backgroundColor: "#FFFFFF" }}
+                className="absolute bottom-14 right-0 w-60 bg-white border border-neutral-200 rounded-3xl p-2 shadow-2xl z-50 animate-in fade-in zoom-in-95 duration-150 space-y-0.5"
+              >
                 <div className="px-3 py-1.5 border-b border-neutral-100 flex items-center justify-between">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">
                     Opciones

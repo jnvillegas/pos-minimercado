@@ -199,15 +199,15 @@ export function MovementsManager({
   const getPaymentLabel = (method: string) => {
     switch (method) {
       case "cash":
-        return { label: "Efectivo", icon: Banknote, color: "text-emerald-400" }
+        return { label: "Efectivo", icon: Banknote, color: "text-emerald-600" }
       case "transfer":
-        return { label: "Transferencia", icon: ArrowUpRight, color: "text-blue-400" }
+        return { label: "Transferencia", icon: ArrowUpRight, color: "text-blue-600" }
       case "debit_card":
-        return { label: "Débito", icon: CreditCard, color: "text-purple-400" }
+        return { label: "Débito", icon: CreditCard, color: "text-purple-600" }
       case "credit_card":
-        return { label: "Crédito", icon: CreditCard, color: "text-[#FE9820]" }
+        return { label: "Crédito", icon: CreditCard, color: "text-amber-600" }
       default:
-        return { label: method, icon: DollarSign, color: "text-neutral-400" }
+        return { label: method, icon: DollarSign, color: "text-neutral-500" }
     }
   }
 
@@ -248,29 +248,32 @@ export function MovementsManager({
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="grid grid-cols-3 gap-2 w-full sm:flex sm:items-center sm:gap-2.5 sm:w-auto">
           <Link
             href="/dashboard/pos"
-            className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-[#1F1F1F] font-bold text-xs shadow-md shadow-emerald-600/20 flex items-center gap-2 transition-all"
+            className="px-2.5 sm:px-4 py-2.5 rounded-xl bg-amber-50/80 hover:bg-amber-100/90 border border-amber-200/70 text-amber-900 font-bold text-xs shadow-xs flex items-center justify-center gap-1.5 transition-all text-center"
           >
-            <ShoppingBag className="w-4 h-4" />
-            <span>+ Nueva Venta (POS)</span>
+            <ShoppingBag className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#FE9820] shrink-0" />
+            <span className="hidden sm:inline">+ Nueva Venta (POS)</span>
+            <span className="sm:hidden font-semibold">Venta</span>
           </Link>
 
           <button
             onClick={() => handleOpenModal("income")}
-            className="px-3.5 py-2.5 rounded-xl bg-white border border-neutral-200 text-xs font-semibold text-emerald-400 hover:text-emerald-300 hover:border-emerald-500/40 transition-all flex items-center gap-1.5"
+            className="px-2.5 sm:px-4 py-2.5 rounded-xl bg-emerald-50/80 hover:bg-emerald-100/90 border border-emerald-200/70 text-emerald-900 font-bold text-xs shadow-xs flex items-center justify-center gap-1.5 transition-all text-center"
           >
-            <ArrowDownLeft className="w-4 h-4 text-emerald-400" />
-            <span>+ Ingreso</span>
+            <ArrowDownLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600 shrink-0" />
+            <span className="hidden sm:inline">+ Ingreso</span>
+            <span className="sm:hidden font-semibold">Ingreso</span>
           </button>
 
           <button
             onClick={() => handleOpenModal("expense")}
-            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-neutral-950 font-bold text-xs shadow-md shadow-amber-500/20 flex items-center gap-2 transition-all"
+            className="px-2.5 sm:px-4 py-2.5 rounded-xl bg-rose-50/80 hover:bg-rose-100/90 border border-rose-200/70 text-rose-900 font-bold text-xs shadow-xs flex items-center justify-center gap-1.5 transition-all text-center"
           >
-            <Plus className="w-4 h-4 stroke-[3]" />
-            <span>+ Nuevo Gasto</span>
+            <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-600 stroke-[2.5] shrink-0" />
+            <span className="hidden sm:inline">+ Nuevo Gasto</span>
+            <span className="sm:hidden font-semibold">Gasto</span>
           </button>
         </div>
       </div>
@@ -285,7 +288,7 @@ export function MovementsManager({
             </p>
             <h3
               className={`text-2xl font-black font-mono mt-1 ${
-                netBalance >= 0 ? "text-emerald-400" : "text-red-400"
+                netBalance >= 0 ? "text-emerald-700" : "text-rose-700"
               }`}
             >
               {netBalance >= 0 && "+"}
@@ -294,10 +297,10 @@ export function MovementsManager({
             <p className="text-xs text-neutral-500 mt-1">Ingresos menos gastos</p>
           </div>
           <div
-            className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+            className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
               netBalance >= 0
-                ? "bg-emerald-500/10 border border-emerald-500/20 text-emerald-400"
-                : "bg-red-500/10 border border-red-500/20 text-red-400"
+                ? "bg-emerald-50 border border-emerald-100 text-emerald-600"
+                : "bg-rose-50 border border-rose-100 text-rose-600"
             }`}
           >
             {netBalance >= 0 ? (
@@ -314,12 +317,12 @@ export function MovementsManager({
             <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider">
               Ingresos Totales
             </p>
-            <h3 className="text-2xl font-black font-mono text-emerald-400 mt-1">
+            <h3 className="text-2xl font-black font-mono text-emerald-700 mt-1">
               +{formatMoney(totalIncome)}
             </h3>
             <p className="text-xs text-neutral-500 mt-1">Ventas y cobranzas del período</p>
           </div>
-          <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+          <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600">
             <ArrowDownLeft className="w-6 h-6" />
           </div>
         </div>
@@ -330,12 +333,12 @@ export function MovementsManager({
             <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider">
               Gastos y Egresos
             </p>
-            <h3 className="text-2xl font-black font-mono text-red-400 mt-1">
+            <h3 className="text-2xl font-black font-mono text-rose-700 mt-1">
               -{formatMoney(totalExpense)}
             </h3>
             <p className="text-xs text-neutral-500 mt-1">Proveedores, servicios y retiros</p>
           </div>
-          <div className="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400">
+          <div className="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-100 flex items-center justify-center text-rose-600">
             <ArrowUpRight className="w-6 h-6" />
           </div>
         </div>
@@ -361,8 +364,8 @@ export function MovementsManager({
               onClick={() => setActiveTab("income")}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
                 activeTab === "income"
-                  ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                  : "text-neutral-400 hover:text-emerald-400"
+                  ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                  : "text-neutral-400 hover:text-emerald-600"
               }`}
             >
               <ArrowDownLeft className="w-3.5 h-3.5" />
@@ -372,8 +375,8 @@ export function MovementsManager({
               onClick={() => setActiveTab("expense")}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
                 activeTab === "expense"
-                  ? "bg-red-500/20 text-red-400 border border-red-500/30"
-                  : "text-neutral-400 hover:text-red-400"
+                  ? "bg-rose-50 text-rose-700 border border-rose-200"
+                  : "text-neutral-400 hover:text-rose-600"
               }`}
             >
               <ArrowUpRight className="w-3.5 h-3.5" />
@@ -456,7 +459,7 @@ export function MovementsManager({
                 <th className="py-3 px-4 text-right">Acción</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-neutral-800/60">
+            <tbody className="divide-y divide-neutral-100">
               {filteredItems.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="py-12 text-center text-neutral-500">
@@ -478,7 +481,7 @@ export function MovementsManager({
                   return (
                     <tr
                       key={item.id}
-                      className="hover:bg-neutral-100/40 transition-colors group"
+                      className="hover:bg-neutral-50/70 transition-colors group"
                     >
                       {/* Date */}
                       <td className="py-3.5 px-4 whitespace-nowrap text-xs text-neutral-400">
@@ -490,14 +493,14 @@ export function MovementsManager({
                         <span
                           className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold ${
                             isIncome
-                              ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30"
-                              : "bg-red-500/10 text-red-400 border border-red-500/30"
+                              ? "bg-emerald-50 text-emerald-700 border border-emerald-200/60"
+                              : "bg-rose-50 text-rose-700 border border-rose-200/60"
                           }`}
                         >
                           {isIncome ? (
-                            <ArrowDownLeft className="w-3 h-3" />
+                            <ArrowDownLeft className="w-3 h-3 text-emerald-600" />
                           ) : (
-                            <ArrowUpRight className="w-3 h-3" />
+                            <ArrowUpRight className="w-3 h-3 text-rose-600" />
                           )}
                           <span>{item.category}</span>
                         </span>
@@ -534,7 +537,7 @@ export function MovementsManager({
                       {/* Amount */}
                       <td
                         className={`py-3.5 px-4 text-right font-mono font-bold whitespace-nowrap ${
-                          isIncome ? "text-emerald-400" : "text-red-400"
+                          isIncome ? "text-emerald-700" : "text-rose-700"
                         }`}
                       >
                         {isIncome ? "+" : "-"}
@@ -555,7 +558,7 @@ export function MovementsManager({
                             <button
                               onClick={() => handleDeleteMovement(item)}
                               title="Eliminar gasto/ingreso"
-                              className="p-1.5 rounded-lg text-neutral-500 hover:text-red-400 hover:bg-neutral-100 transition-colors"
+                              className="p-1.5 rounded-lg text-neutral-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
@@ -688,14 +691,14 @@ function MovementFormModal({
             <div
               className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                 type === "expense"
-                  ? "bg-red-500/10 border border-red-500/30 text-red-400"
-                  : "bg-emerald-500/10 border border-emerald-500/30 text-emerald-400"
+                  ? "bg-rose-50 border border-rose-200 text-rose-600"
+                  : "bg-emerald-50 border border-emerald-200 text-emerald-600"
               }`}
             >
               {type === "expense" ? (
-                <ArrowUpRight className="w-4 h-4" />
+                <ArrowUpRight className="w-4 h-4 text-rose-600" />
               ) : (
-                <ArrowDownLeft className="w-4 h-4" />
+                <ArrowDownLeft className="w-4 h-4 text-emerald-600" />
               )}
             </div>
             <h3 className="font-bold text-[#1F1F1F] text-base">
@@ -709,7 +712,7 @@ function MovementFormModal({
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <div className="p-3 rounded-xl bg-red-500/15 border border-red-500/30 text-red-400 text-xs">
+            <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs">
               {error}
             </div>
           )}
@@ -846,10 +849,10 @@ function MovementFormModal({
             <button
               type="submit"
               disabled={loading}
-              className={`px-5 py-2 rounded-xl text-neutral-950 font-bold text-xs shadow-md disabled:opacity-50 flex items-center gap-1.5 ${
+              className={`px-5 py-2.5 rounded-xl text-white font-bold text-xs shadow-xs disabled:opacity-50 flex items-center gap-1.5 transition-all ${
                 type === "expense"
-                  ? "bg-red-500 hover:bg-red-400 text-[#1F1F1F] shadow-red-500/20"
-                  : "bg-emerald-500 hover:bg-emerald-400 text-neutral-950 shadow-emerald-500/20"
+                  ? "bg-rose-600 hover:bg-rose-700"
+                  : "bg-emerald-600 hover:bg-emerald-700"
               }`}
             >
               {loading && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
@@ -909,7 +912,7 @@ function TransactionDetailModal({
           <p className="text-xs text-neutral-400 mb-1">{item.concept}</p>
           <p
             className={`text-3xl font-black font-mono ${
-              isIncome ? "text-emerald-400" : "text-red-400"
+              isIncome ? "text-emerald-700" : "text-rose-700"
             }`}
           >
             {isIncome ? "+" : "-"}
@@ -918,8 +921,8 @@ function TransactionDetailModal({
           <span
             className={`inline-flex items-center gap-1 mt-2 px-2.5 py-0.5 rounded-full text-xs font-semibold ${
               isIncome
-                ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30"
-                : "bg-red-500/10 text-red-400 border border-red-500/30"
+                ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                : "bg-rose-50 text-rose-700 border border-rose-200"
             }`}
           >
             {item.category}
@@ -970,7 +973,7 @@ function TransactionDetailModal({
                       <th className="p-2 text-right">Subtotal</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-neutral-800 text-neutral-700">
+                  <tbody className="divide-y divide-neutral-100 text-neutral-700">
                     {item.items.map((line, idx) => (
                       <tr key={idx}>
                         <td className="p-2 font-medium text-[#1F1F1F]">{line.product_name}</td>

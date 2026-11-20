@@ -1,8 +1,8 @@
 import React from "react"
-import { redirect } from "next/navigation"
 import { connection } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { requireOwner } from "@/lib/auth/rbac"
+import { getActiveBusinessContext } from "@/lib/auth/business-context"
 import {
   TeamManager,
   MemberRecord,
@@ -13,38 +13,9 @@ export const instant = false
 
 export default async function TeamSettingsPage() {
   await connection()
+  const { user, business } = await getActiveBusinessContext()
 
   const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    redirect("/login")
-  }
-
-  // Fetch active business
-  const { data: members } = await supabase
-    .from("business_members")
-    .select(`
-      role,
-      businesses (
-        id,
-        name,
-        currency
-      )
-    `)
-    .eq("user_id", user.id)
-    .limit(1)
-
-  const membership = members?.[0]
-  const business = Array.isArray(membership?.businesses)
-    ? membership?.businesses[0]
-    : membership?.businesses
-
-  if (!business) {
-    redirect("/onboarding")
-  }
 
   // RBAC: strictly owner only
   await requireOwner(business.id)

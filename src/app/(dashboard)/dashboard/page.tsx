@@ -2,6 +2,7 @@ import React from "react"
 import Link from "next/link"
 import { connection } from "next/server"
 import { createClient } from "@/lib/supabase/server"
+import { getActiveBusinessContext } from "@/lib/auth/business-context"
 import {
   ShoppingBag,
   Package,
@@ -17,28 +18,7 @@ export const instant = false
 export default async function DashboardPage() {
   await connection()
 
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
-  const { data: members } = await supabase
-    .from("business_members")
-    .select(`
-      role,
-      businesses (
-        id,
-        name,
-        industry,
-        currency,
-        created_at
-      )
-    `)
-    .eq("user_id", user?.id)
-    .limit(1)
-
-  const membership = members?.[0]
-  const business = Array.isArray(membership?.businesses)
-    ? membership?.businesses[0]
-    : membership?.businesses
+  const { business } = await getActiveBusinessContext()
 
   return (
     <div className="space-y-6">

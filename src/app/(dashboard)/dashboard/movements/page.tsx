@@ -25,7 +25,7 @@ export default async function MovementsPage() {
     .maybeSingle()
 
   // Fetch POS Sales with line items
-  const { data: rawSales } = await supabase
+  const { data: rawSales, error: salesError } = await supabase
     .from("sales")
     .select(`
       id,
@@ -38,20 +38,28 @@ export default async function MovementsPage() {
         product_name,
         quantity,
         unit_price,
-        total_price
+        subtotal
       )
     `)
     .eq("business_id", business.id)
     .order("created_at", { ascending: false })
     .limit(100)
 
+  if (salesError) {
+    console.error("Error fetching sales for movements:", salesError)
+  }
+
   // Fetch manual cash movements
-  const { data: rawMovements } = await supabase
+  const { data: rawMovements, error: movementsError } = await supabase
     .from("cash_movements")
     .select("*")
     .eq("business_id", business.id)
     .order("created_at", { ascending: false })
     .limit(100)
+
+  if (movementsError) {
+    console.error("Error fetching movements for movements page:", movementsError)
+  }
 
   // Build unified items
   const saleItems: UnifiedActivityItem[] = (rawSales || []).map((s) => ({
@@ -69,12 +77,12 @@ export default async function MovementsPage() {
         product_name: string
         quantity: number | string
         unit_price: number | string
-        total_price: number | string
+        subtotal: number | string
       }) => ({
         product_name: item.product_name,
         quantity: Number(item.quantity),
         unit_price: Number(item.unit_price),
-        total_price: Number(item.total_price),
+        total_price: Number(item.subtotal),
       })
     ),
   }))

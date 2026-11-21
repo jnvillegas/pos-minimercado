@@ -62,8 +62,15 @@ export async function updatePlanTemplateAction(
       .select("id")
 
     if (tableError) {
+      const rawMsg = tableError.message || rpcError?.message || ""
+      if (rawMsg.includes("schema cache")) {
+        return {
+          error:
+            "Falta ejecutar la migración en Supabase Cloud. Copiá y ejecutá el script 'REMOTE_DEPLOY_LATEST.sql' en el SQL Editor de tu panel de Supabase.",
+        }
+      }
       return {
-        error: `Error al actualizar parámetros del plan: ${tableError.message || rpcError?.message}`,
+        error: `Error al actualizar parámetros del plan: ${rawMsg}`,
       }
     }
 
@@ -137,8 +144,15 @@ export async function assignBusinessSubscriptionAction(
       .select("id")
 
     if (tableError) {
+      const rawMsg = tableError.message || rpcError?.message || ""
+      if (rawMsg.includes("schema cache")) {
+        return {
+          error:
+            "Falta ejecutar la migración en Supabase Cloud. Copiá y ejecutá el script 'REMOTE_DEPLOY_LATEST.sql' en el SQL Editor de tu panel de Supabase.",
+        }
+      }
       return {
-        error: `Error al asignar suscripción: ${tableError.message || rpcError?.message}`,
+        error: `Error al asignar suscripción: ${rawMsg}`,
       }
     }
 

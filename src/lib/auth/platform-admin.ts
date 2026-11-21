@@ -28,5 +28,14 @@ export async function requirePlatformAdmin() {
     redirect("/dashboard")
   }
 
+  // If user is authorized by email but not yet in platform_admins, auto-register via RPC
+  if (!adminRecord && isOwnerEmail) {
+    try {
+      await supabase.rpc("is_platform_admin")
+    } catch {
+      // Ignore background registration error
+    }
+  }
+
   return { user, role: adminRecord?.role || "superadmin" }
 }

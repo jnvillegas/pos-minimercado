@@ -56,6 +56,21 @@ interface SubscriptionsViewProps {
   initialBusinesses: BusinessSubscriptionSummary[]
 }
 
+function parseCurrency(val: string | number): number {
+  if (typeof val === "number") return isNaN(val) ? 0 : val
+  const cleaned = val.replace(/[^\d.,]/g, "")
+  if (cleaned.includes(".") && cleaned.includes(",")) {
+    return parseFloat(cleaned.replace(/\./g, "").replace(",", ".")) || 0
+  }
+  if ((cleaned.match(/\./g) || []).length === 1 && !cleaned.includes(",")) {
+    const parts = cleaned.split(".")
+    if (parts[1].length === 3) {
+      return parseFloat(cleaned.replace(/\./g, "")) || 0
+    }
+  }
+  return parseFloat(cleaned.replace(",", ".")) || 0
+}
+
 export function SubscriptionsView({
   initialPlans,
   initialBusinesses,
@@ -67,13 +82,14 @@ export function SubscriptionsView({
   const [editingPlan, setEditingPlan] = useState<SubscriptionPlanItem | null>(null)
   const [isClientsModalOpen, setIsClientsModalOpen] = useState(false)
 
-  // Notification feedback
+  // Notification feedback (Top-level toast)
   const [notification, setNotification] = useState<{
     type: "success" | "error"
     message: string
   } | null>(null)
 
   const [isPending, startTransition] = useTransition()
+  const [actionError, setActionError] = useState<string | null>(null)
 
   const showToast = (message: string, isError = false) => {
     setNotification({
@@ -82,7 +98,7 @@ export function SubscriptionsView({
     })
     setTimeout(() => {
       setNotification(null)
-    }, 4500)
+    }, 5000)
   }
 
   // Calculate live dynamic metrics
@@ -104,10 +120,12 @@ export function SubscriptionsView({
   // Save Plan Template Changes
   const handleSavePlanTemplate = (updated: PlanUpdateInput) => {
     if (!editingPlan) return
+    setActionError(null)
 
     startTransition(async () => {
       const res = await updatePlanTemplateAction(editingPlan.id, updated)
       if (res.error) {
+        setActionError(res.error)
         showToast(res.error, true)
       } else {
         setPlans((prev) =>
@@ -137,6 +155,7 @@ export function SubscriptionsView({
     customPrice: number,
     notes: string
   ) => {
+    setActionError(null)
     startTransition(async () => {
       const res = await assignBusinessSubscriptionAction({
         businessId,
@@ -145,6 +164,7 @@ export function SubscriptionsView({
         notes,
       })
       if (res.error) {
+        setActionError(res.error)
         showToast(res.error, true)
       } else {
         setBusinesses((prev) =>
@@ -159,20 +179,21 @@ export function SubscriptionsView({
               : b
           )
         )
-        showToast("Suscripción de comercio actualizada con éxito")
+        showToast("Suscripción de comercio guardada con éxito")
+        setIsClientsModalOpen(false)
       }
     })
   }
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto pb-16">
-      {/* Toast Notification */}
+      {/* Toast Notification (Always on top with z-[100]) */}
       {notification && (
         <div
-          className={`fixed top-4 right-4 z-50 p-4 rounded-2xl border shadow-xl flex items-center gap-3 transition-all animate-in fade-in slide-in-from-top-2 ${
+          className={`fixed top-4 right-4 z-[100] p-4 rounded-2xl border shadow-2xl flex items-center gap-3 transition-all animate-in fade-in slide-in-from-top-2 ${
             notification.type === "success"
-              ? "bg-emerald-50 border-emerald-200 text-emerald-800"
-              : "bg-rose-50 border-rose-200 text-rose-800"
+              ? "bg-emerald-50 border-emerald-300 text-emerald-800"
+              : "bg-rose-50 border-rose-300 text-rose-800"
           }`}
         >
           {notification.type === "success" ? (
@@ -180,7 +201,7 @@ export function SubscriptionsView({
           ) : (
             <AlertCircle className="w-5 h-5 text-rose-600 shrink-0" />
           )}
-          <span className="text-xs font-semibold">{notification.message}</span>
+          <span className="text-xs font-bold">{notification.message}</span>
         </div>
       )}
 
@@ -197,7 +218,10 @@ export function SubscriptionsView({
 
         <button
           type="button"
-          onClick={() => setIsClientsModalOpen(true)}
+          onClick={() => {
+            setActionError(null)
+            setIsClientsModalOpen(true)
+          }}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
         >
           <Users className="w-4 h-4" />
@@ -341,7 +365,10 @@ export function SubscriptionsView({
                 {plan.id === "custom" ? (
                   <button
                     type="button"
-                    onClick={() => setIsClientsModalOpen(true)}
+                    onClick={() => {
+                      setActionError(null)
+                      setIsClientsModalOpen(true)
+                    }}
                     className="w-full py-2.5 rounded-xl font-bold text-xs bg-amber-500 hover:bg-amber-600 text-neutral-950 transition-all flex items-center justify-center gap-2 shadow-xs cursor-pointer"
                   >
                     <Settings2 className="w-3.5 h-3.5" />
@@ -350,7 +377,10 @@ export function SubscriptionsView({
                 ) : (
                   <button
                     type="button"
-                    onClick={() => setEditingPlan(plan)}
+                    onClick={() => {
+                      setActionError(null)
+                      setEditingPlan(plan)
+                    }}
                     className={`w-full py-2.5 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-2 cursor-pointer ${
                       plan.highlight
                         ? "bg-purple-600 hover:bg-purple-700 text-white shadow-xs"
@@ -372,7 +402,11 @@ export function SubscriptionsView({
         <PlanConfigModal
           plan={editingPlan}
           isPending={isPending}
-          onClose={() => setEditingPlan(null)}
+          externalError={actionError}
+          onClose={() => {
+            setActionError(null)
+            setEditingPlan(null)
+          }}
           onSave={handleSavePlanTemplate}
         />
       )}
@@ -383,7 +417,11 @@ export function SubscriptionsView({
           businesses={businesses}
           plans={plans}
           isPending={isPending}
-          onClose={() => setIsClientsModalOpen(false)}
+          externalError={actionError}
+          onClose={() => {
+            setActionError(null)
+            setIsClientsModalOpen(false)
+          }}
           onSaveBusiness={handleSaveBusinessSubscription}
         />
       )}
@@ -397,11 +435,13 @@ export function SubscriptionsView({
 function PlanConfigModal({
   plan,
   isPending,
+  externalError,
   onClose,
   onSave,
 }: {
   plan: SubscriptionPlanItem
   isPending: boolean
+  externalError: string | null
   onClose: () => void
   onSave: (data: PlanUpdateInput) => void
 }) {
@@ -427,7 +467,7 @@ function PlanConfigModal({
     onSave({
       name,
       subtitle,
-      price: Number(price) || 0,
+      price: parseCurrency(price),
       badge,
       features,
     })
@@ -450,10 +490,18 @@ function PlanConfigModal({
               </p>
             </div>
           </div>
-          <button onClick={onClose} className="p-1 rounded-lg text-neutral-400 hover:text-[#1F1F1F] hover:bg-neutral-100">
+          <button onClick={onClose} className="p-1 rounded-lg text-neutral-400 hover:text-[#1F1F1F] hover:bg-neutral-100 cursor-pointer">
             <X className="w-5 h-5" />
           </button>
         </div>
+
+        {/* Inline Error if action fails */}
+        {externalError && (
+          <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-start gap-2.5">
+            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+            <span className="font-medium">{externalError}</span>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
@@ -485,15 +533,16 @@ function PlanConfigModal({
             <div className="relative">
               <DollarSign className="w-4 h-4 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
-                type="number"
-                min="0"
-                step="500"
+                type="text"
+                inputMode="numeric"
                 required
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
+                placeholder="15000"
                 className="w-full pl-9 pr-3 py-2 rounded-xl bg-neutral-50 border border-neutral-200 text-sm font-mono font-bold text-[#1F1F1F] focus:outline-none focus:border-purple-500"
               />
             </div>
+            <p className="text-[10px] text-neutral-400">Podés escribir números directos (ej: 25000).</p>
           </div>
 
           <div className="space-y-1">
@@ -523,7 +572,7 @@ function PlanConfigModal({
                   <button
                     type="button"
                     onClick={() => handleRemoveFeature(idx)}
-                    className="text-neutral-400 hover:text-rose-600 p-1"
+                    className="text-neutral-400 hover:text-rose-600 p-1 cursor-pointer"
                     title="Eliminar ítem"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -549,7 +598,7 @@ function PlanConfigModal({
               <button
                 type="button"
                 onClick={handleAddFeature}
-                className="px-3 py-1.5 rounded-xl bg-neutral-200 hover:bg-neutral-300 text-neutral-800 font-bold text-xs flex items-center gap-1 transition-all"
+                className="px-3 py-1.5 rounded-xl bg-neutral-200 hover:bg-neutral-300 text-neutral-800 font-bold text-xs flex items-center gap-1 transition-all cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>Agregar</span>
@@ -561,7 +610,7 @@ function PlanConfigModal({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl border border-neutral-200 text-neutral-600 hover:bg-neutral-50 text-xs font-semibold"
+              className="px-4 py-2 rounded-xl border border-neutral-200 text-neutral-600 hover:bg-neutral-50 text-xs font-semibold cursor-pointer"
             >
               Cancelar
             </button>
@@ -587,12 +636,14 @@ function BusinessSubscriptionsModal({
   businesses,
   plans,
   isPending,
+  externalError,
   onClose,
   onSaveBusiness,
 }: {
   businesses: BusinessSubscriptionSummary[]
   plans: SubscriptionPlanItem[]
   isPending: boolean
+  externalError: string | null
   onClose: () => void
   onSaveBusiness: (
     businessId: string,
@@ -624,7 +675,7 @@ function BusinessSubscriptionsModal({
     onSaveBusiness(
       selectedBiz.id,
       selectedPlan,
-      Number(customPrice) || 0,
+      parseCurrency(customPrice),
       notes
     )
   }
@@ -646,10 +697,18 @@ function BusinessSubscriptionsModal({
               </p>
             </div>
           </div>
-          <button onClick={onClose} className="p-1 rounded-lg text-neutral-400 hover:text-[#1F1F1F] hover:bg-neutral-100">
+          <button onClick={onClose} className="p-1 rounded-lg text-neutral-400 hover:text-[#1F1F1F] hover:bg-neutral-100 cursor-pointer">
             <X className="w-5 h-5" />
           </button>
         </div>
+
+        {/* Inline Error */}
+        {externalError && (
+          <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-start gap-2.5">
+            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+            <span className="font-medium">{externalError}</span>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Left: Businesses List */}
@@ -663,7 +722,7 @@ function BusinessSubscriptionsModal({
                   key={b.id}
                   type="button"
                   onClick={() => handleSelectBusiness(b)}
-                  className={`w-full p-2.5 rounded-xl text-left transition-all ${
+                  className={`w-full p-2.5 rounded-xl text-left transition-all cursor-pointer ${
                     b.id === selectedBizId
                       ? "bg-purple-50 border border-purple-200 shadow-xs"
                       : "hover:bg-neutral-50 border border-transparent"
@@ -732,7 +791,7 @@ function BusinessSubscriptionsModal({
                             setCustomPrice(String(p?.price || 25000))
                           }
                         }}
-                        className={`p-3 rounded-2xl border text-center transition-all ${
+                        className={`p-3 rounded-2xl border text-center transition-all cursor-pointer ${
                           selectedPlan === t.id
                             ? t.id === "custom"
                               ? "bg-amber-50 border-amber-300 ring-2 ring-amber-400/30"
@@ -764,11 +823,11 @@ function BusinessSubscriptionsModal({
                   <div className="relative">
                     <DollarSign className="w-4 h-4 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
                     <input
-                      type="number"
-                      min="0"
-                      step="500"
+                      type="text"
+                      inputMode="numeric"
                       value={customPrice}
                       onChange={(e) => setCustomPrice(e.target.value)}
+                      placeholder="25000"
                       className={`w-full pl-9 pr-3 py-2.5 rounded-xl border text-sm font-mono font-bold focus:outline-none transition-all ${
                         selectedPlan === "custom"
                           ? "bg-amber-50/40 border-amber-300 text-amber-950 focus:border-amber-500"

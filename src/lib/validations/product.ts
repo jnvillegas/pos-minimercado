@@ -6,6 +6,20 @@ export const categorySchema = z.object({
 
 export type CategoryInput = z.infer<typeof categorySchema>;
 
+export const supplierSchema = z.object({
+  name: z.string().trim().min(1, "El nombre del proveedor es obligatorio").max(100, "Máximo 100 caracteres"),
+  contact_name: z.string().trim().max(100).optional().default(""),
+  phone: z.string().trim().max(40).optional().default(""),
+  email: z.string().trim().email("Email inválido").optional().or(z.literal("")).default(""),
+  cuit: z.string().trim().max(30).optional().default(""),
+  delivery_days: z.string().trim().max(100).optional().default(""),
+  payment_info: z.string().trim().max(250).optional().default(""),
+  notes: z.string().trim().max(500).optional().default(""),
+  is_active: z.boolean().default(true),
+});
+
+export type SupplierInput = z.infer<typeof supplierSchema>;
+
 export const productSchema = z.object({
   name: z.string().trim().min(1, "El nombre del producto es obligatorio").max(150, "Máximo 150 caracteres"),
   barcode: z
@@ -17,6 +31,11 @@ export const productSchema = z.object({
   category_id: z
     .string()
     .uuid("Categoría inválida")
+    .nullable()
+    .optional(),
+  supplier_id: z
+    .string()
+    .uuid("Proveedor inválido")
     .nullable()
     .optional(),
   cost_price: z.coerce
@@ -52,14 +71,13 @@ export const stockAdjustmentSchema = z.object({
 
 export type StockAdjustmentInput = z.infer<typeof stockAdjustmentSchema>;
 
-export const spreadsheetProductRowSchema = z.object({
-  name: z.string().trim().min(1, "Nombre obligatorio"),
-  barcode: z.string().trim().optional().nullable(),
-  category: z.string().trim().optional().nullable(),
-  cost_price: z.coerce.number().min(0).default(0),
-  sale_price: z.coerce.number().min(0.01, "Precio de venta requerido"),
-  stock: z.coerce.number().min(0).default(0),
-  min_stock: z.coerce.number().min(0).default(5),
-});
-
-export type SpreadsheetProductRow = z.infer<typeof spreadsheetProductRowSchema>;
+export interface SpreadsheetProductRow {
+  name: string;
+  barcode?: string | null;
+  category?: string | null;
+  supplier?: string | null;
+  cost_price: number;
+  sale_price: number;
+  stock: number;
+  min_stock: number;
+}

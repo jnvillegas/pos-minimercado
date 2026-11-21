@@ -25,11 +25,12 @@ export async function createProductAction(input: ProductInput, businessId: strin
 
   const barcode = parsed.data.barcode?.trim() || null
 
-  const productData = {
+  const productData: Record<string, unknown> = {
     business_id: businessId,
     name: parsed.data.name,
     barcode,
     category_id: parsed.data.category_id || null,
+    supplier_id: parsed.data.supplier_id || null,
     cost_price: parsed.data.cost_price,
     sale_price: parsed.data.sale_price,
     stock: parsed.data.stock,
@@ -105,10 +106,11 @@ export async function updateProductAction(
     return { error: "No autenticado" }
   }
 
-  const updateData = {
+  const updateData: Record<string, unknown> = {
     name: parsed.data.name,
     barcode: parsed.data.barcode || null,
     category_id: parsed.data.category_id || null,
+    supplier_id: parsed.data.supplier_id || null,
     cost_price: parsed.data.cost_price,
     sale_price: parsed.data.sale_price,
     stock: parsed.data.stock,

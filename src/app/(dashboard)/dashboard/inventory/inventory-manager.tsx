@@ -20,7 +20,9 @@ import {
   RefreshCw,
   Tag,
   Sparkles,
+  Truck,
 } from "lucide-react"
+import Link from "next/link"
 import * as XLSX from "xlsx"
 import {
   createProductAction,
@@ -37,6 +39,7 @@ export interface ProductRecord {
   name: string
   barcode: string | null
   category_id: string | null
+  supplier_id: string | null
   cost_price: number
   sale_price: number
   stock: number
@@ -50,9 +53,15 @@ export interface CategoryRecord {
   name: string
 }
 
+export interface SupplierRecordOption {
+  id: string
+  name: string
+}
+
 interface InventoryManagerProps {
   initialProducts: ProductRecord[]
   initialCategories: CategoryRecord[]
+  initialSuppliers?: SupplierRecordOption[]
   businessId: string
   currency: string
 }
@@ -60,14 +69,34 @@ interface InventoryManagerProps {
 export function InventoryManager({
   initialProducts,
   initialCategories,
+  initialSuppliers = [],
   businessId,
   currency,
 }: InventoryManagerProps) {
   const [products, setProducts] = useState<ProductRecord[]>(initialProducts)
   const [categories, setCategories] = useState<CategoryRecord[]>(initialCategories)
+  const [suppliers] = useState<SupplierRecordOption[]>(initialSuppliers || [])
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState<string>("all")
+  const [selectedSupplier, setSelectedSupplier] = useState<string>("all")
   const [showLowStockOnly, setShowLowStockOnly] = useState(false)
+
+  // Sync supplier from URL param ?supplier=xxx
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search)
+      const supp = params.get("supplier")
+      if (supp) {
+        setSelectedSupplier(supp)
+      }
+    }
+  }, [])
+
+  const supplierMap = useMemo(() => {
+    const map = new Map<string, string>()
+    suppliers.forEach((s) => map.set(s.id, s.name))
+    return map
+  }, [suppliers])
 
   // Modals
   const [isProductModalOpen, setIsProductModalOpen] = useState(false)
@@ -121,6 +150,10 @@ export function InventoryManager({
     return products.filter((p) => {
       // Category filter
       if (selectedCategory !== "all" && p.category_id !== selectedCategory) {
+        return false
+      }
+      // Supplier filter
+      if (selectedSupplier !== "all" && p.supplier_id !== selectedSupplier) {
         return false
       }
       // Low stock filter
@@ -366,6 +399,23 @@ export function InventoryManager({
               ))}
             </select>
 
+            {/* Supplier Filter */}
+            {suppliers.length > 0 && (
+              <select
+                value={selectedSupplier}
+                onChange={(e) => setSelectedSupplier(e.target.value)}
+                aria-label="Filtrar por proveedor"
+                className="px-3 py-2.5 rounded-xl bg-neutral-50 border border-neutral-200 text-sm text-neutral-800 focus:outline-none focus:border-purple-500 cursor-pointer"
+              >
+                <option value="all">Todos los Proveedores</option>
+                {suppliers.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name}
+                  </option>
+                ))}
+              </select>
+            )}
+
             {/* Quick Low Stock Toggle */}
             <button
               onClick={() => setShowLowStockOnly((prev) => !prev)}
@@ -498,16 +548,25 @@ export function InventoryManager({
                         </div>
                       </td>
 
-                      {/* Category Badge */}
+                      {/* Category & Supplier Badge */}
                       <td className="py-3.5 px-4">
-                        {p.category_id && categoryMap.has(p.category_id) ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-neutral-100 text-neutral-700 border border-neutral-200">
-                            <Tag className="w-3 h-3 text-amber-500" />
-                            {categoryMap.get(p.category_id)}
-                          </span>
-                        ) : (
-                          <span className="text-xs text-neutral-600">General</span>
-                        )}
+                        <div className="flex flex-col gap-1 items-start">
+                          {p.category_id && categoryMap.has(p.category_id) ? (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-neutral-100 text-neutral-700 border border-neutral-200">
+                              <Tag className="w-3 h-3 text-amber-500" />
+                              {categoryMap.get(p.category_id)}
+                            </span>
+                          ) : (
+                            <span className="text-xs text-neutral-400">General</span>
+                          )}
+
+                          {p.supplier_id && supplierMap.has(p.supplier_id) && (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-purple-50 text-purple-700 border border-purple-100">
+                              <Truck className="w-2.5 h-2.5 text-purple-500" />
+                              <span>{supplierMap.get(p.supplier_id)}</span>
+                            </span>
+                          )}
+                        </div>
                       </td>
 
                       {/* Cost Price */}
@@ -610,6 +669,7 @@ export function InventoryManager({
         <ProductFormModal
           product={editingProduct}
           categories={categories}
+          suppliers={suppliers}
           businessId={businessId}
           onClose={() => setIsProductModalOpen(false)}
           onSaved={(savedProduct, isNew) => {
@@ -675,6 +735,7 @@ export function InventoryManager({
 function ProductFormModal({
   product,
   categories,
+  suppliers,
   businessId,
   onClose,
   onSaved,
@@ -682,6 +743,7 @@ function ProductFormModal({
 }: {
   product: ProductRecord | null
   categories: CategoryRecord[]
+  suppliers: SupplierRecordOption[]
   businessId: string
   onClose: () => void
   onSaved: (product: ProductRecord, isNew: boolean) => void
@@ -692,6 +754,7 @@ function ProductFormModal({
   const [name, setName] = useState(product?.name || "")
   const [barcode, setBarcode] = useState(product?.barcode || "")
   const [categoryId, setCategoryId] = useState(product?.category_id || "")
+  const [supplierId, setSupplierId] = useState(product?.supplier_id || "")
   const [costPrice, setCostPrice] = useState(product?.cost_price?.toString() || "0")
   const [salePrice, setSalePrice] = useState(product?.sale_price?.toString() || "")
   const [stock, setStock] = useState(product?.stock?.toString() || "0")
@@ -726,6 +789,7 @@ function ProductFormModal({
       name: name.trim(),
       barcode: barcode.trim() || null,
       category_id: categoryId || null,
+      supplier_id: supplierId || null,
       cost_price: numCost,
       sale_price: numSale,
       stock: parseFloat(stock) || 0,
@@ -748,6 +812,7 @@ function ProductFormModal({
               sale_price: numSale,
               stock: payload.stock,
               min_stock: payload.min_stock,
+              supplier_id: payload.supplier_id || null,
             },
             false
           )
@@ -763,6 +828,7 @@ function ProductFormModal({
               name: res.data.name,
               barcode: res.data.barcode,
               category_id: res.data.category_id,
+              supplier_id: res.data.supplier_id || payload.supplier_id || null,
               cost_price: Number(res.data.cost_price),
               sale_price: Number(res.data.sale_price),
               stock: Number(res.data.stock),
@@ -880,6 +946,33 @@ function ProductFormModal({
               {categories.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Supplier Selector with Direct Link */}
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <label className="text-xs font-medium text-neutral-700">Proveedor / Distribuidor</label>
+              <Link
+                href="/dashboard/suppliers"
+                target="_blank"
+                className="text-[11px] text-[#FE9820] hover:underline flex items-center gap-1"
+              >
+                <Truck className="w-3 h-3" />
+                Gestionar proveedores
+              </Link>
+            </div>
+            <select
+              value={supplierId}
+              onChange={(e) => setSupplierId(e.target.value)}
+              className="w-full px-3 py-2 rounded-xl bg-neutral-50 border border-neutral-200 text-sm text-neutral-800 focus:outline-none focus:border-[#FE9820]"
+            >
+              <option value="">Sin Proveedor Asignado</option>
+              {suppliers.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.name}
                 </option>
               ))}
             </select>

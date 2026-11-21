@@ -27,6 +27,7 @@ import {
   PanelLeftOpen,
   ShieldAlert,
   User,
+  Truck,
 } from "lucide-react"
 
 interface Business {
@@ -66,6 +67,7 @@ const NAV_GROUPS: NavGroup[] = [
       { label: "Overview", href: "/dashboard", icon: LayoutDashboard },
       { label: "Punto de Venta", href: "/dashboard/pos", icon: ShoppingBag, badge: "POS" },
       { label: "Inventario", href: "/dashboard/inventory", icon: Package },
+      { label: "Proveedores", href: "/dashboard/suppliers", icon: Truck },
     ],
   },
   {

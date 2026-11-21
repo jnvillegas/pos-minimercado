@@ -13,23 +13,48 @@ export const instant = false
 
 export default async function AdminSubscriptionsPage() {
   await connection()
-  await requirePlatformAdmin()
+  const { user } = await requirePlatformAdmin()
 
   const supabase = await createClient()
 
-  // 1. Fetch plans catalog from DB
-  const { data: plansData } = await supabase
-    .from("platform_subscription_plans")
-    .select("*")
-    .order("created_at", { ascending: true })
+  // 1. Fetch plans catalog from DB (safely returns null on missing remote table)
+  let plansData: Record<string, unknown>[] | null = null
+  try {
+    const res = await supabase
+      .from("platform_subscription_plans")
+      .select("*")
+      .order("created_at", { ascending: true })
+    plansData = res.data as Record<string, unknown>[] | null
+  } catch {
+    plansData = null
+  }
+
+  // Superadmin user_metadata fallback (100% resilient across cloud & local)
+  const metaPlans =
+    (user.user_metadata?.platform_subscription_plans as Record<
+      string,
+      Partial<SubscriptionPlanItem>
+    >) || {}
+
+  const metaBizSubs =
+    (user.user_metadata?.platform_business_subscriptions as Record<
+      string,
+      { planId?: string; customPrice?: number; notes?: string; status?: string }
+    >) || {}
 
   // 2. Fetch businesses with subscription info
-  const { data: bizData } = await supabase
-    .from("businesses")
-    .select(
-      "id, name, industry, subscription_plan, subscription_price, subscription_status, subscription_notes"
-    )
-    .order("created_at", { ascending: false })
+  let bizData: Record<string, unknown>[] | null = null
+  try {
+    const res = await supabase
+      .from("businesses")
+      .select(
+        "id, name, industry, subscription_plan, subscription_price, subscription_status, subscription_notes"
+      )
+      .order("created_at", { ascending: false })
+    bizData = res.data as Record<string, unknown>[] | null
+  } catch {
+    bizData = null
+  }
 
   // Get owner emails from platform action
   const { businesses: platformBiz } = await fetchPlatformDataAction().catch(() => ({
@@ -43,9 +68,19 @@ export default async function AdminSubscriptionsPage() {
     }
   })
 
-  // Format businesses for view
-  const formattedBusinesses: BusinessSubscriptionSummary[] = (bizData || []).map((b) => {
-    let plan = (b.subscription_plan || "basic").toLowerCase() as "basic" | "full" | "custom"
+  // Format businesses for view (merging DB + metadata fallback)
+  const rawBizList: Record<string, unknown>[] =
+    bizData && bizData.length > 0 ? bizData : (platformBiz as unknown as Record<string, unknown>[])
+
+  const formattedBusinesses: BusinessSubscriptionSummary[] = rawBizList.map((b) => {
+    const bizId = String(b.id)
+    const metaSub = metaBizSubs[bizId]
+
+    let rawPlan =
+      metaSub?.planId ||
+      ("subscription_plan" in b ? String(b.subscription_plan) : "basic") ||
+      "basic"
+    let plan = rawPlan.toLowerCase() as "basic" | "full" | "custom"
     if (plan === ("pro" as string)) plan = "full"
     if (plan === ("free" as string)) plan = "basic"
     if (plan === ("enterprise" as string)) plan = "custom"
@@ -53,19 +88,41 @@ export default async function AdminSubscriptionsPage() {
       plan = "basic"
     }
 
+    const price =
+      metaSub?.customPrice !== undefined
+        ? Number(metaSub.customPrice)
+        : "subscription_price" in b && b.subscription_price !== undefined
+        ? Number(b.subscription_price)
+        : plan === "full"
+        ? 25000
+        : 12000
+
+    const notes =
+      metaSub?.notes !== undefined
+        ? metaSub.notes
+        : "subscription_notes" in b && b.subscription_notes
+        ? String(b.subscription_notes)
+        : ""
+
+    const status =
+      metaSub?.status ||
+      ("subscription_status" in b && b.subscription_status
+        ? String(b.subscription_status)
+        : "active")
+
     return {
-      id: String(b.id),
+      id: bizId,
       name: String(b.name || "Comercio"),
-      owner_email: ownerMap.get(String(b.id)) || "Sin email registrado",
+      owner_email: ownerMap.get(bizId) || ("owner_email" in b ? String(b.owner_email) : "Sin email"),
       industry: String(b.industry || "Comercio"),
       subscription_plan: plan,
-      subscription_price: Number(b.subscription_price || 0),
-      subscription_status: String(b.subscription_status || "active"),
-      subscription_notes: String(b.subscription_notes || ""),
+      subscription_price: price,
+      subscription_status: status,
+      subscription_notes: notes,
     }
   })
 
-  // Default plans fallback in case DB is not yet populated
+  // Default plans baseline
   const defaultPlans: SubscriptionPlanItem[] = [
     {
       id: "basic",
@@ -122,30 +179,36 @@ export default async function AdminSubscriptionsPage() {
     },
   ]
 
-  let formattedPlans: SubscriptionPlanItem[] = defaultPlans
-  if (plansData && plansData.length > 0) {
-    formattedPlans = (["basic", "full", "custom"] as const).map((planKey) => {
-      const found = plansData.find((p) => p.id === planKey)
+  // Merge DB + Superadmin metadata + Fallback
+  const formattedPlans: SubscriptionPlanItem[] = (["basic", "full", "custom"] as const).map(
+    (planKey) => {
+      const dbPlan = plansData?.find((p) => p.id === planKey)
+      const meta = metaPlans[planKey]
       const fallback = defaultPlans.find((p) => p.id === planKey)!
-      if (!found) return fallback
 
-      const features = Array.isArray(found.features)
-        ? (found.features as string[])
+      const name = String(meta?.name || dbPlan?.name || fallback.name)
+      const subtitle = String(meta?.subtitle || dbPlan?.subtitle || fallback.subtitle)
+      const price = Number(meta?.price ?? dbPlan?.price ?? fallback.price)
+      const badge = String(meta?.badge || dbPlan?.badge || fallback.badge)
+      const features = Array.isArray(meta?.features)
+        ? (meta.features as string[])
+        : Array.isArray(dbPlan?.features)
+        ? (dbPlan.features as string[])
         : fallback.features
 
       return {
         id: planKey,
-        name: String(found.name || fallback.name),
-        subtitle: String(found.subtitle || fallback.subtitle),
-        price: Number(found.price ?? fallback.price),
-        period_label: String(found.period_label || fallback.period_label),
-        badge: String(found.badge || fallback.badge),
-        highlight: Boolean(found.highlight),
+        name,
+        subtitle,
+        price,
+        period_label: String(dbPlan?.period_label || fallback.period_label),
+        badge,
+        highlight: Boolean(dbPlan?.highlight ?? fallback.highlight),
         features,
         assigned_count: formattedBusinesses.filter((b) => b.subscription_plan === planKey).length,
       }
-    })
-  }
+    }
+  )
 
   return (
     <SubscriptionsView

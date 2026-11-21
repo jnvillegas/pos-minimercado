@@ -23,10 +23,12 @@ export async function createProductAction(input: ProductInput, businessId: strin
     return { error: "No autenticado" }
   }
 
+  const barcode = parsed.data.barcode?.trim() || null
+
   const productData = {
     business_id: businessId,
     name: parsed.data.name,
-    barcode: parsed.data.barcode || null,
+    barcode,
     category_id: parsed.data.category_id || null,
     cost_price: parsed.data.cost_price,
     sale_price: parsed.data.sale_price,
@@ -34,6 +36,39 @@ export async function createProductAction(input: ProductInput, businessId: strin
     min_stock: parsed.data.min_stock,
     image_url: parsed.data.image_url || null,
     is_active: parsed.data.is_active,
+  }
+
+  // If barcode provided, check if a soft-deleted product exists with this barcode
+  if (barcode) {
+    const { data: existingInactive } = await supabase
+      .from("products")
+      .select("id")
+      .eq("business_id", businessId)
+      .eq("barcode", barcode)
+      .eq("is_active", false)
+      .maybeSingle()
+
+    if (existingInactive) {
+      // Reactivate and update with new details
+      const { data, error } = await supabase
+        .from("products")
+        .update({
+          ...productData,
+          is_active: true,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", existingInactive.id)
+        .select()
+        .single()
+
+      if (error) {
+        return { error: error.message || "Error al reactivar el producto" }
+      }
+
+      revalidatePath("/dashboard/inventory")
+      revalidatePath("/dashboard/pos")
+      return { success: true, data }
+    }
   }
 
   const { data, error } = await supabase
@@ -110,15 +145,34 @@ export async function deleteProductAction(productId: string, businessId: string)
     return { error: "No autenticado" }
   }
 
-  // Soft delete by marking is_active = false
-  const { error } = await supabase
-    .from("products")
-    .update({ is_active: false, updated_at: new Date().toISOString() })
-    .eq("id", productId)
-    .eq("business_id", businessId)
+  // Check if product has any sales history
+  const { count } = await supabase
+    .from("sale_items")
+    .select("id", { count: "exact", head: true })
+    .eq("product_id", productId)
 
-  if (error) {
-    return { error: error.message || "Error al eliminar el producto" }
+  if (!count || count === 0) {
+    // Zero sales: Hard delete cleanly to free the barcode and clear test items
+    const { error } = await supabase
+      .from("products")
+      .delete()
+      .eq("id", productId)
+      .eq("business_id", businessId)
+
+    if (error) {
+      return { error: error.message || "Error al eliminar el producto" }
+    }
+  } else {
+    // Has sales history: Soft delete to preserve ticket integrity
+    const { error } = await supabase
+      .from("products")
+      .update({ is_active: false, updated_at: new Date().toISOString() })
+      .eq("id", productId)
+      .eq("business_id", businessId)
+
+    if (error) {
+      return { error: error.message || "Error al archivar el producto" }
+    }
   }
 
   revalidatePath("/dashboard/inventory")

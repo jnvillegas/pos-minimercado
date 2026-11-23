@@ -38,19 +38,51 @@ export async function processSaleAction(input: ProcessSaleInput) {
     return { error: "Debe seleccionar un cliente para registrar una venta a crédito / fiado" }
   }
 
-  const { data, error } = await supabase.rpc("create_sale", {
+  const rpcParams: Record<string, unknown> = {
     p_business_id: input.businessId,
     p_items: input.items,
     p_payment_method: input.paymentMethod,
     p_discount_amount: input.discountAmount || 0,
     p_discount_type: input.discountType || null,
     p_amount_tendered: input.amountTendered || null,
-    p_customer_id: input.customerId || null,
-  })
+  }
+
+  if (input.customerId) {
+    rpcParams.p_customer_id = input.customerId
+  }
+
+  let { data, error } = await supabase.rpc("create_sale", rpcParams)
 
   if (error) {
-    return {
-      error: error.message || "Error al registrar la venta",
+    // If PostgREST fails because create_sale signature with p_customer_id doesn't exist on remote DB yet
+    if (
+      error.message?.includes("create_sale") &&
+      (error.message?.includes("schema cache") || error.code === "PGRST202")
+    ) {
+      if (input.paymentMethod === "credit") {
+        return {
+          error:
+            "Falta ejecutar la migración en Supabase Cloud. Copiá y ejecutá el script 'REMOTE_DEPLOY_LATEST.sql' en el SQL Editor de tu panel de Supabase para habilitar las ventas a crédito / fiado.",
+        }
+      }
+
+      // Retry without p_customer_id for non-credit sales
+      const fallback = await supabase.rpc("create_sale", {
+        p_business_id: input.businessId,
+        p_items: input.items,
+        p_payment_method: input.paymentMethod,
+        p_discount_amount: input.discountAmount || 0,
+        p_discount_type: input.discountType || null,
+        p_amount_tendered: input.amountTendered || null,
+      })
+      data = fallback.data
+      error = fallback.error
+    }
+
+    if (error) {
+      return {
+        error: error.message || "Error al registrar la venta",
+      }
     }
   }
 

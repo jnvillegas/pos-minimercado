@@ -2,13 +2,13 @@ import React from "react"
 import { connection } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { getActiveBusinessContext } from "@/lib/auth/business-context"
-import { PosTerminal, ProductItem, CategoryItem } from "./pos-terminal"
+import { PosTerminal, ProductItem, CategoryItem, CustomerPosItem } from "./pos-terminal"
 
 export const instant = false
 
 export default async function PosPage() {
   await connection()
-  const { business } = await getActiveBusinessContext()
+  const { business, user } = await getActiveBusinessContext()
 
   const supabase = await createClient()
 
@@ -26,6 +26,61 @@ export default async function PosPage() {
     .eq("business_id", business.id)
     .eq("is_active", true)
     .order("name", { ascending: true })
+
+  // Fetch active customers for credit / fiado sales
+  let dbCustomers: CustomerPosItem[] = []
+  try {
+    const { data: rawCustomers } = await supabase
+      .from("customers")
+      .select("id, name, phone, dni_cuil, current_debt, credit_limit")
+      .eq("business_id", business.id)
+      .eq("is_active", true)
+      .order("name", { ascending: true })
+
+    if (rawCustomers) {
+      dbCustomers = rawCustomers.map((c) => ({
+        id: c.id,
+        name: c.name,
+        phone: c.phone || "",
+        dni_cuil: c.dni_cuil || "",
+        current_debt: Number(c.current_debt || 0),
+        credit_limit: Number(c.credit_limit || 0),
+      }))
+    }
+  } catch {
+    dbCustomers = []
+  }
+
+  // Fallback to user metadata
+  const metaCustomers =
+    (user?.user_metadata?.[`business_customers_${business.id}`] as Array<{
+      id: string
+      name: string
+      phone?: string
+      dni_cuil?: string
+      current_debt?: number
+      credit_limit?: number
+      is_active?: boolean
+    }>) || []
+
+  const combinedMap = new Map<string, CustomerPosItem>()
+  metaCustomers
+    .filter((c) => c.is_active !== false)
+    .forEach((c) => {
+      combinedMap.set(c.id, {
+        id: c.id,
+        name: c.name,
+        phone: c.phone || "",
+        dni_cuil: c.dni_cuil || "",
+        current_debt: Number(c.current_debt || 0),
+        credit_limit: Number(c.credit_limit || 0),
+      })
+    })
+  dbCustomers.forEach((c) => combinedMap.set(c.id, c))
+
+  const customers: CustomerPosItem[] = Array.from(combinedMap.values()).sort((a, b) =>
+    a.name.localeCompare(b.name, "es", { sensitivity: "base" })
+  )
 
   const products: ProductItem[] = (rawProducts || []).map((p) => ({
     id: p.id,
@@ -46,9 +101,10 @@ export default async function PosPage() {
     <PosTerminal
       businessId={business.id}
       businessName={business.name}
-      currency={business.currency}
+      currency={business.currency || "ARS"}
       initialProducts={products}
       categories={categories}
+      initialCustomers={customers}
     />
   )
 }

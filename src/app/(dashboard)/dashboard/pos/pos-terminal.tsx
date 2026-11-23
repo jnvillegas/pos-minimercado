@@ -21,6 +21,9 @@ import {
   Percent,
   X,
   Loader2,
+  Wallet,
+  Users,
+  MessageSquare,
 } from "lucide-react"
 
 export interface ProductItem {
@@ -39,6 +42,15 @@ export interface CategoryItem {
   name: string
 }
 
+export interface CustomerPosItem {
+  id: string
+  name: string
+  phone: string
+  dni_cuil: string
+  current_debt: number
+  credit_limit: number
+}
+
 interface CartItem extends CartItemPayload {
   maxStock: number
 }
@@ -49,6 +61,7 @@ interface PosTerminalProps {
   currency: string
   initialProducts: ProductItem[]
   categories: CategoryItem[]
+  initialCustomers?: CustomerPosItem[]
 }
 
 export function PosTerminal({
@@ -57,8 +70,10 @@ export function PosTerminal({
   currency,
   initialProducts,
   categories,
+  initialCustomers = [],
 }: PosTerminalProps) {
   const [products] = useState<ProductItem[]>(initialProducts)
+  const [customers] = useState<CustomerPosItem[]>(initialCustomers)
   const [cart, setCart] = useState<CartItem[]>([])
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState<string>("all")
@@ -73,7 +88,9 @@ export function PosTerminal({
 
   // Checkout modal
   const [checkoutOpen, setCheckoutOpen] = useState(false)
-  const [paymentMethod, setPaymentMethod] = useState<"cash" | "transfer" | "debit_card" | "credit_card">("cash")
+  const [paymentMethod, setPaymentMethod] = useState<"cash" | "transfer" | "debit_card" | "credit_card" | "credit">("cash")
+  const [selectedCustomerId, setSelectedCustomerId] = useState<string>("")
+  const [customerSearchQuery, setCustomerSearchQuery] = useState<string>("")
   const [amountTendered, setAmountTendered] = useState<number>(0)
   const [isPending, startTransition] = useTransition()
   const [checkoutError, setCheckoutError] = useState<string | null>(null)
@@ -85,10 +102,24 @@ export function PosTerminal({
     changeDue: number
     items: CartItem[]
     paymentMethod: string
+    customerName?: string
+    customerPhone?: string
+    newDebt?: number
     timestamp: string
   } | null>(null)
 
   const barcodeInputRef = useRef<HTMLInputElement>(null)
+
+  // Filter customers for credit / fiado search
+  const filteredCustomers = customers.filter((c) => {
+    const q = customerSearchQuery.toLowerCase().trim()
+    if (!q) return true
+    return (
+      c.name.toLowerCase().includes(q) ||
+      (c.phone && c.phone.toLowerCase().includes(q)) ||
+      (c.dni_cuil && c.dni_cuil.toLowerCase().includes(q))
+    )
+  })
 
   // Filter products by search and category
   const filteredProducts = products.filter((p) => {
@@ -269,6 +300,8 @@ export function PosTerminal({
 
   const handleOpenCheckout = () => {
     setAmountTendered(total)
+    setSelectedCustomerId("")
+    setCustomerSearchQuery("")
     setCheckoutError(null)
     setCheckoutOpen(true)
   }
@@ -277,6 +310,10 @@ export function PosTerminal({
     if (cart.length === 0) return
     if (paymentMethod === "cash" && amountTendered < total) {
       setCheckoutError("El monto recibido no puede ser menor al total.")
+      return
+    }
+    if (paymentMethod === "credit" && !selectedCustomerId) {
+      setCheckoutError("Debe seleccionar un cliente para registrar la venta a cuenta corriente (fiado).")
       return
     }
 
@@ -295,6 +332,7 @@ export function PosTerminal({
         discountAmount,
         discountType: discountAmount > 0 ? discountType : null,
         amountTendered: paymentMethod === "cash" ? amountTendered : null,
+        customerId: paymentMethod === "credit" ? selectedCustomerId : null,
       })
 
       if (res.error) {
@@ -303,12 +341,19 @@ export function PosTerminal({
       }
 
       // Success
+      const selCustomer = customers.find((c) => c.id === selectedCustomerId)
       setCompletedSale({
         saleId: (res.data as { sale_id: string })?.sale_id || "TICKET-001",
         total,
         changeDue: (res.data as { change_due: number })?.change_due ?? changeDue,
         items: [...cart],
         paymentMethod,
+        customerName: paymentMethod === "credit" ? selCustomer?.name : undefined,
+        customerPhone: paymentMethod === "credit" ? selCustomer?.phone : undefined,
+        newDebt:
+          paymentMethod === "credit"
+            ? Number((res.data as any)?.new_debt) || Number(selCustomer?.current_debt || 0) + total
+            : undefined,
         timestamp: new Date().toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" }),
       })
 
@@ -719,12 +764,13 @@ export function PosTerminal({
             </div>
 
             {/* Payment Method Selector */}
-            <div className="grid grid-cols-2 gap-2.5">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {[
                 { id: "cash", label: "Efectivo", icon: Banknote },
                 { id: "transfer", label: "Transferencia / QR", icon: QrCode },
                 { id: "debit_card", label: "Tarjeta Débito", icon: CreditCard },
                 { id: "credit_card", label: "Tarjeta Crédito", icon: CreditCard },
+                { id: "credit", label: "Fiado / Cta. Cte.", icon: Wallet, isCredit: true },
               ].map((m) => {
                 const Icon = m.icon
                 const isSelected = paymentMethod === m.id
@@ -732,19 +778,201 @@ export function PosTerminal({
                   <button
                     key={m.id}
                     type="button"
-                    onClick={() => setPaymentMethod(m.id as typeof paymentMethod)}
-                    className={`p-3.5 rounded-xl border flex items-center gap-2.5 font-bold text-xs transition-all ${
+                    onClick={() => {
+                      setPaymentMethod(m.id as typeof paymentMethod)
+                      setCheckoutError(null)
+                    }}
+                    className={`p-3 rounded-xl border flex items-center gap-2 font-bold text-xs transition-all ${
                       isSelected
-                        ? "bg-[#FE9820]/10 border-[#FE9820] text-[#1F1F1F] ring-1 ring-[#FE9820] shadow-xs"
+                        ? m.isCredit
+                          ? "bg-purple-50 border-purple-500 text-purple-900 ring-1 ring-purple-500 shadow-xs"
+                          : "bg-[#FE9820]/10 border-[#FE9820] text-[#1F1F1F] ring-1 ring-[#FE9820] shadow-xs"
                         : "bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50 hover:border-neutral-300"
-                    }`}
+                    } ${m.isCredit ? "col-span-2 sm:col-span-1" : ""}`}
                   >
-                    <Icon className={`w-4 h-4 ${isSelected ? "text-[#FE9820]" : "text-neutral-400"}`} />
-                    <span>{m.label}</span>
+                    <Icon
+                      className={`w-4 h-4 shrink-0 ${
+                        isSelected
+                          ? m.isCredit
+                            ? "text-purple-600"
+                            : "text-[#FE9820]"
+                          : "text-neutral-400"
+                      }`}
+                    />
+                    <span className="truncate">{m.label}</span>
                   </button>
                 )
               })}
             </div>
+
+            {/* Credit / Fiado Mode: Select Customer */}
+            {paymentMethod === "credit" && (
+              <div className="p-4 rounded-2xl bg-purple-50/70 border border-purple-200 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Users className="w-4 h-4 text-purple-700" />
+                    <label className="text-xs font-bold text-purple-950">
+                      Cliente de Cuenta Corriente (Fiado)
+                    </label>
+                  </div>
+                  {selectedCustomerId && (
+                    <button
+                      type="button"
+                      onClick={() => setSelectedCustomerId("")}
+                      className="text-[11px] font-semibold text-purple-700 hover:text-purple-900 underline cursor-pointer"
+                    >
+                      Cambiar cliente
+                    </button>
+                  )}
+                </div>
+
+                {!selectedCustomerId ? (
+                  <div className="space-y-2">
+                    <div className="relative">
+                      <Search className="w-3.5 h-3.5 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                      <input
+                        type="text"
+                        value={customerSearchQuery}
+                        onChange={(e) => setCustomerSearchQuery(e.target.value)}
+                        placeholder="Buscar por nombre, teléfono o DNI..."
+                        className="w-full pl-8 pr-3 py-2 bg-white border border-purple-200 rounded-xl text-xs text-[#1F1F1F] placeholder:text-neutral-400 outline-none focus:border-purple-500 shadow-2xs"
+                      />
+                    </div>
+
+                    <div className="max-h-40 overflow-y-auto space-y-1 pr-1 divide-y divide-purple-100">
+                      {filteredCustomers.length === 0 ? (
+                        <div className="py-4 text-center text-xs text-neutral-500">
+                          {customers.length === 0 ? (
+                            <div className="space-y-1">
+                              <p className="font-semibold text-neutral-700">No hay clientes dados de alta</p>
+                              <a
+                                href="/dashboard/customers"
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-purple-700 font-bold hover:underline inline-flex items-center gap-1"
+                              >
+                                Crear clientes en el módulo Clientes →
+                              </a>
+                            </div>
+                          ) : (
+                            <p>No se encontraron clientes con "{customerSearchQuery}"</p>
+                          )}
+                        </div>
+                      ) : (
+                        filteredCustomers.map((c) => {
+                          const hasDebt = c.current_debt > 0
+                          const exceedsLimit =
+                            c.credit_limit > 0 && c.current_debt + total > c.credit_limit
+
+                          return (
+                            <button
+                              key={c.id}
+                              type="button"
+                              onClick={() => {
+                                setSelectedCustomerId(c.id)
+                                setCheckoutError(null)
+                              }}
+                              className="w-full text-left p-2 rounded-xl hover:bg-white/80 transition-colors flex items-center justify-between gap-2 group border border-transparent hover:border-purple-200 cursor-pointer"
+                            >
+                              <div className="min-w-0">
+                                <div className="font-bold text-xs text-neutral-800 group-hover:text-purple-900 truncate">
+                                  {c.name}
+                                </div>
+                                <div className="text-[10px] text-neutral-500 flex items-center gap-2">
+                                  {c.phone && <span>📞 {c.phone}</span>}
+                                  {c.dni_cuil && <span>DNI: {c.dni_cuil}</span>}
+                                </div>
+                              </div>
+
+                              <div className="text-right shrink-0">
+                                <div className="text-[9px] font-medium text-neutral-500">Deuda actual:</div>
+                                <div
+                                  className={`text-xs font-black ${
+                                    hasDebt ? "text-amber-700" : "text-emerald-700"
+                                  }`}
+                                >
+                                  ${c.current_debt.toLocaleString("es-AR")}
+                                </div>
+                                {exceedsLimit && (
+                                  <span className="text-[9px] font-bold text-red-600 uppercase">
+                                    Excede límite
+                                  </span>
+                                )}
+                              </div>
+                            </button>
+                          )
+                        })
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  (() => {
+                    const sel = customers.find((c) => c.id === selectedCustomerId)
+                    if (!sel) return null
+                    const newDebt = sel.current_debt + total
+                    const exceeds = sel.credit_limit > 0 && newDebt > sel.credit_limit
+
+                    return (
+                      <div className="space-y-2">
+                        <div className="p-3 bg-white rounded-xl border border-purple-200 shadow-2xs space-y-2">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <div className="w-8 h-8 rounded-lg bg-purple-100 text-purple-700 font-black text-xs flex items-center justify-center">
+                                {sel.name.slice(0, 2).toUpperCase()}
+                              </div>
+                              <div>
+                                <h4 className="font-black text-xs text-neutral-900">{sel.name}</h4>
+                                <p className="text-[10px] text-neutral-500">
+                                  {sel.phone || "Sin teléfono"} {sel.dni_cuil ? `• DNI ${sel.dni_cuil}` : ""}
+                                </p>
+                              </div>
+                            </div>
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-100 text-purple-800">
+                              Seleccionado
+                            </span>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-2 pt-2 border-t border-neutral-100 text-[11px]">
+                            <div className="p-2 rounded-lg bg-neutral-50 border border-neutral-100">
+                              <span className="text-neutral-500 block text-[10px]">Deuda actual</span>
+                              <span className="font-bold text-neutral-800">
+                                ${sel.current_debt.toLocaleString("es-AR")}
+                              </span>
+                            </div>
+                            <div className="p-2 rounded-lg bg-purple-100/60 border border-purple-200">
+                              <span className="text-purple-900 block text-[10px] font-semibold">
+                                Nueva deuda tras venta
+                              </span>
+                              <span className="font-black text-purple-900 text-xs">
+                                ${newDebt.toLocaleString("es-AR")}
+                              </span>
+                            </div>
+                          </div>
+
+                          {sel.credit_limit > 0 && (
+                            <div className="flex items-center justify-between text-[10px] pt-1 text-neutral-500 font-medium">
+                              <span>Límite de crédito asignado:</span>
+                              <span className="font-bold text-neutral-700">
+                                ${sel.credit_limit.toLocaleString("es-AR")}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+
+                        {exceeds && (
+                          <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-300 text-amber-800 text-[11px] font-semibold flex items-start gap-2">
+                            <AlertCircle className="w-4 h-4 shrink-0 text-amber-600 mt-0.5" />
+                            <span>
+                              Aviso: La nueva deuda (${newDebt.toLocaleString("es-AR")}) superará el límite de crédito (${sel.credit_limit.toLocaleString("es-AR")}).
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })()
+                )}
+              </div>
+            )}
 
             {/* Cash Mode: Tendered Amount & Change Calculation */}
             {paymentMethod === "cash" && (
@@ -856,6 +1084,29 @@ export function PosTerminal({
                 </span>
               </div>
 
+              {/* Credit / Fiado Pill */}
+              {completedSale.paymentMethod === "credit" && (
+                <div className="p-3 rounded-2xl bg-purple-50 border border-purple-200 text-purple-900 text-xs text-left space-y-1">
+                  <div className="flex items-center justify-between font-bold">
+                    <span className="flex items-center gap-1.5">
+                      <Wallet className="w-3.5 h-3.5 text-purple-700" />
+                      Cuenta Corriente (Fiado)
+                    </span>
+                    <span className="text-[10px] bg-purple-200/70 text-purple-800 px-2 py-0.5 rounded-full font-semibold">
+                      Pendiente
+                    </span>
+                  </div>
+                  <p className="text-purple-800 text-[11px]">
+                    Cliente: <strong className="font-extrabold">{completedSale.customerName}</strong>
+                  </p>
+                  {completedSale.newDebt !== undefined && (
+                    <p className="text-[10px] text-purple-700 font-semibold">
+                      Deuda acumulada: ${completedSale.newDebt.toLocaleString("es-AR")}
+                    </p>
+                  )}
+                </div>
+              )}
+
               {/* Vuelto Highlight */}
               {completedSale.changeDue > 0 && (
                 <div className="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800">
@@ -889,6 +1140,20 @@ export function PosTerminal({
 
             {/* Actions: Print & Next Sale */}
             <div className="space-y-2">
+              {completedSale.paymentMethod === "credit" && completedSale.customerPhone && (
+                <a
+                  href={`https://wa.me/${completedSale.customerPhone.replace(/\D/g, "")}?text=${encodeURIComponent(
+                    `¡Hola ${completedSale.customerName || ""}! Te enviamos el comprobante de tu compra fiada por $${completedSale.total.toLocaleString("es-AR")} en ${businessName}.\nTicket #${completedSale.saleId.slice(0, 8)}.\n¡Muchas gracias!`
+                  )}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 transition-colors shadow-xs"
+                >
+                  <MessageSquare className="w-4 h-4" />
+                  <span>Enviar Ticket por WhatsApp</span>
+                </a>
+              )}
+
               <button
                 type="button"
                 onClick={() => window.print()}

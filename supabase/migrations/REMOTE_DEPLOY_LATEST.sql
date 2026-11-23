@@ -342,3 +342,107 @@ create index if not exists idx_products_business_supplier on public.products(bus
 
 -- 3. Reload PostgREST schema cache
 notify pgrst, 'reload schema';
+-- Migration: 20261123000000_customers_and_credit.sql
+-- Description: Customers directory, customer account movements (Fiado / Cuenta Corriente), and POS integration
+
+-- 1. Create customers table
+create table if not exists public.customers (
+  id uuid primary key default gen_random_uuid(),
+  business_id uuid not null references public.businesses(id) on delete cascade,
+  name text not null,
+  phone text not null default '',
+  email text not null default '',
+  dni_cuil text not null default '',
+  address text not null default '',
+  current_debt numeric(12, 2) not null default 0.00,
+  credit_limit numeric(12, 2) not null default 0.00,
+  notes text not null default '',
+  is_active boolean not null default true,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists idx_customers_business_active on public.customers(business_id, is_active);
+create index if not exists idx_customers_business_name on public.customers(business_id, name);
+create index if not exists idx_customers_business_debt on public.customers(business_id) where current_debt > 0;
+
+-- Grants & RLS for customers
+grant all on public.customers to postgres, authenticated, service_role;
+alter table public.customers enable row level security;
+
+drop policy if exists "Staff can view customers for their business" on public.customers;
+create policy "Staff can view customers for their business"
+  on public.customers for select
+  to authenticated
+  using (
+    business_id in (select public.get_user_business_ids())
+    or public.is_platform_admin()
+  );
+
+drop policy if exists "Staff can manage customers for their business" on public.customers;
+create policy "Staff can manage customers for their business"
+  on public.customers for all
+  to authenticated
+  using (
+    business_id in (select public.get_user_business_ids())
+    or public.is_platform_admin()
+  )
+  with check (
+    business_id in (select public.get_user_business_ids())
+    or public.is_platform_admin()
+  );
+
+-- 2. Create customer_account_movements table (Historial de Cuenta Corriente)
+create table if not exists public.customer_account_movements (
+  id uuid primary key default gen_random_uuid(),
+  business_id uuid not null references public.businesses(id) on delete cascade,
+  customer_id uuid not null references public.customers(id) on delete cascade,
+  user_id uuid not null references auth.users(id),
+  shift_id uuid references public.cash_shifts(id) on delete set null,
+  sale_id uuid references public.sales(id) on delete set null,
+  type text not null check (type in ('charge', 'payment', 'adjustment')),
+  amount numeric(12, 2) not null,
+  balance_after numeric(12, 2) not null default 0.00,
+  payment_method text check (payment_method is null or payment_method in ('cash', 'transfer', 'debit_card', 'other')),
+  notes text not null default '',
+  created_at timestamptz not null default now()
+);
+
+create index if not exists idx_cam_customer_created on public.customer_account_movements(customer_id, created_at desc);
+create index if not exists idx_cam_business_created on public.customer_account_movements(business_id, created_at desc);
+
+-- Grants & RLS for customer_account_movements
+grant all on public.customer_account_movements to postgres, authenticated, service_role;
+alter table public.customer_account_movements enable row level security;
+
+drop policy if exists "Staff can view customer movements for their business" on public.customer_account_movements;
+create policy "Staff can view customer movements for their business"
+  on public.customer_account_movements for select
+  to authenticated
+  using (
+    business_id in (select public.get_user_business_ids())
+    or public.is_platform_admin()
+  );
+
+drop policy if exists "Staff can insert customer movements for their business" on public.customer_account_movements;
+create policy "Staff can insert customer movements for their business"
+  on public.customer_account_movements for insert
+  to authenticated
+  with check (
+    business_id in (select public.get_user_business_ids())
+    or public.is_platform_admin()
+  );
+
+-- 3. Modify sales table to link to customer and allow 'credit' (fiado) payment method
+alter table public.sales
+  add column if not exists customer_id uuid references public.customers(id) on delete set null;
+
+create index if not exists idx_sales_customer_id on public.sales(customer_id);
+
+-- Update sales payment_method check constraint to allow 'credit'
+alter table public.sales drop constraint if exists sales_payment_method_check;
+alter table public.sales add constraint sales_payment_method_check
+  check (payment_method in ('cash', 'transfer', 'debit_card', 'credit_card', 'credit'));
+
+-- 4. Reload PostgREST schema cache
+notify pgrst, 'reload schema';

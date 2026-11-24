@@ -78,6 +78,31 @@ export default async function PosPage() {
     })
   dbCustomers.forEach((c) => combinedMap.set(c.id, c))
 
+  // Auto-sync missing metadata customers to PostgreSQL table now that table exists
+  const missingInDb = metaCustomers.filter((mc) => !dbCustomers.some((dc) => dc.id === mc.id))
+  if (missingInDb.length > 0) {
+    try {
+      await supabase.from("customers").upsert(
+        missingInDb.map((c) => ({
+          id: c.id,
+          business_id: business.id,
+          name: c.name,
+          phone: c.phone || "",
+          email: "",
+          dni_cuil: c.dni_cuil || "",
+          address: "",
+          current_debt: Number(c.current_debt || 0),
+          credit_limit: Number(c.credit_limit || 0),
+          notes: "",
+          is_active: c.is_active ?? true,
+        })),
+        { onConflict: "id" }
+      )
+    } catch {
+      // Non-blocking
+    }
+  }
+
   const customers: CustomerPosItem[] = Array.from(combinedMap.values()).sort((a, b) =>
     a.name.localeCompare(b.name, "es", { sensitivity: "base" })
   )

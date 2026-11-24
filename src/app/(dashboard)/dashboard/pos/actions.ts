@@ -49,13 +49,102 @@ export async function processSaleAction(input: ProcessSaleInput) {
 
   if (input.customerId) {
     rpcParams.p_customer_id = input.customerId
+
+    // Ensure customer exists in PostgreSQL table (handles customers created in metadata before migration)
+    try {
+      const { data: dbCustomer } = await supabase
+        .from("customers")
+        .select("id")
+        .eq("id", input.customerId)
+        .maybeSingle()
+
+      if (!dbCustomer) {
+        const metaKey = `business_customers_${input.businessId}`
+        const metaList =
+          (user.user_metadata?.[metaKey] as Array<{
+            id: string
+            name?: string
+            phone?: string
+            email?: string
+            dni_cuil?: string
+            address?: string
+            current_debt?: number
+            credit_limit?: number
+            notes?: string
+            is_active?: boolean
+          }>) || []
+        const metaCust = metaList.find((c) => c.id === input.customerId)
+
+        await supabase.from("customers").upsert(
+          {
+            id: input.customerId,
+            business_id: input.businessId,
+            name: metaCust?.name || "Cliente",
+            phone: metaCust?.phone || "",
+            email: metaCust?.email || "",
+            dni_cuil: metaCust?.dni_cuil || "",
+            address: metaCust?.address || "",
+            current_debt: Number(metaCust?.current_debt || 0),
+            credit_limit: Number(metaCust?.credit_limit || 0),
+            notes: metaCust?.notes || "",
+            is_active: metaCust?.is_active ?? true,
+          },
+          { onConflict: "id" }
+        )
+      }
+    } catch {
+      // Non-blocking
+    }
   }
 
   let { data, error } = await supabase.rpc("create_sale", rpcParams)
 
   if (error) {
+    // Retry on foreign key constraint violation by re-inserting customer
+    if (error.message?.includes("sales_customer_id_fkey") && input.customerId) {
+      try {
+        const metaKey = `business_customers_${input.businessId}`
+        const metaList =
+          (user.user_metadata?.[metaKey] as Array<{
+            id: string
+            name?: string
+            phone?: string
+            email?: string
+            dni_cuil?: string
+            address?: string
+            current_debt?: number
+            credit_limit?: number
+            notes?: string
+            is_active?: boolean
+          }>) || []
+        const metaCust = metaList.find((c) => c.id === input.customerId)
+        await supabase.from("customers").upsert(
+          {
+            id: input.customerId,
+            business_id: input.businessId,
+            name: metaCust?.name || "Cliente",
+            phone: metaCust?.phone || "",
+            email: metaCust?.email || "",
+            dni_cuil: metaCust?.dni_cuil || "",
+            address: metaCust?.address || "",
+            current_debt: Number(metaCust?.current_debt || 0),
+            credit_limit: Number(metaCust?.credit_limit || 0),
+            notes: metaCust?.notes || "",
+            is_active: metaCust?.is_active ?? true,
+          },
+          { onConflict: "id" }
+        )
+        const retry = await supabase.rpc("create_sale", rpcParams)
+        data = retry.data
+        error = retry.error
+      } catch {
+        // Fallthrough
+      }
+    }
+
     // If PostgREST fails because create_sale signature with p_customer_id doesn't exist on remote DB yet
     if (
+      error &&
       error.message?.includes("create_sale") &&
       (error.message?.includes("schema cache") || error.code === "PGRST202")
     ) {

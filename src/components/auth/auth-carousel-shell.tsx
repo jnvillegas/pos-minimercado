@@ -86,7 +86,7 @@ export function AuthCarouselShell({ children }: { children: React.ReactNode }) {
 
             {/* Footer */}
             <div className="pt-4 text-center text-[11px] font-medium text-neutral-400">
-              © {new Date().getFullYear()} POS App — Gestión multi-rubro
+              © 2026 POS App — Gestión multi-rubro
             </div>
           </div>
         </div>

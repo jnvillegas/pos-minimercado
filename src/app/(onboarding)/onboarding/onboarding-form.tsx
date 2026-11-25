@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Loader2, ArrowRight, Check, ShoppingCart, Shirt, UtensilsCrossed } from "lucide-react"
-import { VERTICAL_OPTIONS, BusinessVertical } from "@/lib/theme/business-theme"
+import { VERTICAL_OPTIONS, VERTICAL_THEMES, BusinessVertical } from "@/lib/theme/business-theme"
 
 const VERTICAL_ICONS: Record<BusinessVertical, React.ElementType> = {
   minimarket: ShoppingCart,
@@ -54,7 +54,7 @@ export function OnboardingForm({ userEmail }: { userEmail: string }) {
               id="name"
               name="name"
               type="text"
-              placeholder="Ej. Almacén Los Primos / Showroom Sol / Rotisería Don Pepe"
+              placeholder={VERTICAL_THEMES[selectedVertical].placeholders.storeName}
               required
               className="border-neutral-700 bg-neutral-950 text-white placeholder:text-neutral-500 text-base h-11"
               autoFocus

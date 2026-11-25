@@ -75,6 +75,7 @@ export default async function SuppliersPage() {
       initialSuppliers={suppliersList}
       businessName={business.name}
       businessId={business.id}
+      industry={business.industry}
     />
   )
 }

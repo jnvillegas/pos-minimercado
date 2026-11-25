@@ -1,8 +1,16 @@
 import React from "react"
 import Link from "next/link"
+import { connection } from "next/server"
 import { ArrowLeft, Users, Building2 } from "lucide-react"
+import { getActiveBusinessContext } from "@/lib/auth/business-context"
+import { DeleteBusinessCard } from "./delete-business-card"
 
-export default function SettingsPlaceholderPage() {
+export const instant = false
+
+export default async function SettingsPlaceholderPage() {
+  await connection()
+  const { business, role } = await getActiveBusinessContext()
+
   return (
     <div className="space-y-6 max-w-4xl">
       <div>
@@ -44,6 +52,10 @@ export default function SettingsPlaceholderPage() {
           </span>
         </div>
       </div>
+
+      {role === "owner" && (
+        <DeleteBusinessCard businessId={business.id} businessName={business.name} />
+      )}
 
       <div className="pt-4">
         <Link

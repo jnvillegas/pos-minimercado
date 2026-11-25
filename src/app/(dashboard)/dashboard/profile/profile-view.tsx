@@ -21,11 +21,15 @@ import {
   ExternalLink,
   Crown,
   Loader2,
+  Trash2,
+  AlertTriangle,
+  X,
 } from "lucide-react"
 import {
   updateProfileAction,
   updatePasswordAction,
   updateBusinessBillingAction,
+  deleteOwnAccountAction,
 } from "./actions"
 
 export interface UserProfileData {
@@ -73,6 +77,9 @@ export function ProfileView({ initialProfile }: ProfileViewProps) {
   const [isPending, startTransition] = useTransition()
   const [isPassPending, startPassTransition] = useTransition()
   const [isBillingPending, startBillingTransition] = useTransition()
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [deleteConfirmText, setDeleteConfirmText] = useState("")
+  const [isDeletePending, startDeleteTransition] = useTransition()
 
   const [notification, setNotification] = useState<{
     type: "success" | "error"
@@ -571,6 +578,96 @@ export function ProfileView({ initialProfile }: ProfileViewProps) {
           )}
         </div>
       </div>
+
+      {/* Danger Zone: Delete Own Account */}
+      <div className="p-6 rounded-3xl bg-red-50/40 border border-red-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <h3 className="text-sm font-bold text-red-900 flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 text-red-600" />
+            Darme de baja del sistema
+          </h3>
+          <p className="text-xs text-red-700/80 max-w-2xl">
+            Eliminá tu cuenta de usuario de forma permanente. Si sos el único dueño de algún comercio, también se eliminarán sus datos asociados.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => {
+            setDeleteConfirmText("")
+            setIsDeleteModalOpen(true)
+          }}
+          className="px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-xs transition-colors shrink-0 cursor-pointer"
+        >
+          <Trash2 className="w-4 h-4" />
+          <span>Darme de baja</span>
+        </button>
+      </div>
+
+      {isDeleteModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="w-full max-w-md bg-white rounded-3xl border border-neutral-200 p-6 shadow-2xl space-y-4">
+            <div className="flex items-start justify-between">
+              <div className="w-10 h-10 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center">
+                <AlertTriangle className="w-5 h-5" />
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsDeleteModalOpen(false)}
+                className="p-1.5 rounded-lg text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="space-y-1">
+              <h3 className="text-lg font-bold text-[#1F1F1F]">
+                ¿Seguro que querés darte de baja?
+              </h3>
+              <p className="text-xs text-neutral-500 leading-relaxed">
+                Tu cuenta ({profile.email}) y los comercios donde seas único dueño se eliminarán de forma definitiva. Escribí{" "}
+                <strong className="text-red-600 font-mono">BAJA</strong> para confirmar.
+              </p>
+            </div>
+
+            <input
+              type="text"
+              value={deleteConfirmText}
+              onChange={(e) => setDeleteConfirmText(e.target.value)}
+              placeholder="Escribí BAJA"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-200 text-sm font-mono uppercase focus:outline-none focus:border-red-500"
+            />
+
+            <div className="flex items-center gap-2.5 pt-1">
+              <button
+                type="button"
+                disabled={isDeletePending}
+                onClick={() => setIsDeleteModalOpen(false)}
+                className="flex-1 py-2.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-700 text-xs font-bold transition-colors cursor-pointer"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                disabled={isDeletePending || deleteConfirmText.trim().toUpperCase() !== "BAJA"}
+                onClick={() => {
+                  startDeleteTransition(async () => {
+                    const res = await deleteOwnAccountAction()
+                    if (res?.error) {
+                      showToast(res.error, true)
+                      setIsDeleteModalOpen(false)
+                    }
+                  })
+                }}
+                className="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 disabled:opacity-40 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+              >
+                {isDeletePending && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                <span>Confirmar Baja</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

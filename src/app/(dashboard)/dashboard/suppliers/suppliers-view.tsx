@@ -32,18 +32,22 @@ import {
   SupplierRecord,
 } from "./actions"
 import { SupplierInput } from "@/lib/validations/product"
+import { getBusinessTheme, BusinessTheme } from "@/lib/theme/business-theme"
 
 interface SuppliersViewProps {
   initialSuppliers: SupplierRecord[]
   businessName: string
   businessId: string
+  industry?: string | null
 }
 
 export function SuppliersView({
   initialSuppliers,
   businessName,
   businessId,
+  industry,
 }: SuppliersViewProps) {
+  const theme = getBusinessTheme(industry)
   const [suppliers, setSuppliers] = useState<SupplierRecord[]>(initialSuppliers)
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedDayFilter, setSelectedDayFilter] = useState("all")
@@ -471,6 +475,7 @@ export function SuppliersView({
         <SupplierFormModal
           supplier={editingSupplier}
           isPending={isPending}
+          placeholders={theme.placeholders}
           onClose={() => {
             setIsModalOpen(false)
             setEditingSupplier(null)
@@ -527,11 +532,13 @@ export function SuppliersView({
 function SupplierFormModal({
   supplier,
   isPending,
+  placeholders,
   onClose,
   onSave,
 }: {
   supplier: SupplierRecord | null
   isPending: boolean
+  placeholders: BusinessTheme["placeholders"]
   onClose: () => void
   onSave: (data: SupplierInput) => void
 }) {
@@ -591,7 +598,7 @@ function SupplierFormModal({
               <input
                 type="text"
                 required
-                placeholder="Ej: Distribuidora Quilmes, Arcor..."
+                placeholder={placeholders.supplierName}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="w-full px-3 py-2 rounded-xl bg-neutral-50 border border-neutral-200 text-xs font-medium text-[#1F1F1F] focus:outline-none focus:border-purple-500"
@@ -604,7 +611,7 @@ function SupplierFormModal({
               </label>
               <input
                 type="text"
-                placeholder="Ej: Carlos Preventista, Juan Venta..."
+                placeholder={placeholders.supplierContact}
                 value={contactName}
                 onChange={(e) => setContactName(e.target.value)}
                 className="w-full px-3 py-2 rounded-xl bg-neutral-50 border border-neutral-200 text-xs font-medium text-[#1F1F1F] focus:outline-none focus:border-purple-500"
@@ -699,7 +706,7 @@ function SupplierFormModal({
             </label>
             <textarea
               rows={2}
-              placeholder="Ej: Pedido mínimo $80.000. Tomar pedidos antes de las 18hs..."
+              placeholder={placeholders.supplierNotes}
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               className="w-full px-3 py-2 rounded-xl bg-neutral-50 border border-neutral-200 text-xs text-[#1F1F1F] placeholder-neutral-400 focus:outline-none focus:border-purple-500"

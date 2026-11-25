@@ -107,6 +107,7 @@ export default async function InventoryPage() {
         initialSuppliers={suppliers}
         businessId={business.id}
         currency={business.currency || "ARS"}
+        industry={business.industry}
       />
     </div>
   )

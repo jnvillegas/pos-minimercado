@@ -91,3 +91,33 @@ export async function exitSupportModeAction() {
   revalidatePath("/dashboard")
   redirect("/admin")
 }
+
+export async function deleteBusinessAsAdminAction(businessId: string) {
+  await requirePlatformAdmin()
+  const supabase = await createClient()
+
+  const { error } = await supabase.rpc("delete_business_account", {
+    p_business_id: businessId,
+  })
+
+  if (error) {
+    return {
+      error: error.message?.includes("schema cache") || error.code === "PGRST202"
+        ? "Falta ejecutar la migración 'REMOTE_DEPLOY_LATEST.sql' en Supabase Cloud para habilitar el borrado de comercios."
+        : error.message || "No se pudo eliminar el comercio",
+    }
+  }
+
+  const cookieStore = await cookies()
+  if (cookieStore.get("support_target_business_id")?.value === businessId) {
+    cookieStore.delete("support_target_business_id")
+  }
+  if (cookieStore.get("active_business_id")?.value === businessId) {
+    cookieStore.delete("active_business_id")
+  }
+
+  revalidatePath("/admin")
+  revalidatePath("/admin/businesses")
+  revalidatePath("/dashboard")
+  return { success: true }
+}

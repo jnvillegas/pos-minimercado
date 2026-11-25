@@ -33,6 +33,7 @@ import {
   importProductsAction,
 } from "./actions"
 import { ProductInput, SpreadsheetProductRow } from "@/lib/validations/product"
+import { getBusinessTheme, BusinessTheme } from "@/lib/theme/business-theme"
 
 export interface ProductRecord {
   id: string
@@ -64,6 +65,7 @@ interface InventoryManagerProps {
   initialSuppliers?: SupplierRecordOption[]
   businessId: string
   currency: string
+  industry?: string | null
 }
 
 export function InventoryManager({
@@ -72,7 +74,9 @@ export function InventoryManager({
   initialSuppliers = [],
   businessId,
   currency,
+  industry,
 }: InventoryManagerProps) {
+  const theme = getBusinessTheme(industry)
   const [products, setProducts] = useState<ProductRecord[]>(initialProducts)
   const [categories, setCategories] = useState<CategoryRecord[]>(initialCategories)
   const [suppliers] = useState<SupplierRecordOption[]>(initialSuppliers || [])
@@ -370,7 +374,7 @@ export function InventoryManager({
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Buscar por nombre o código de barras (ej: Ariel, 7791290...)..."
+              placeholder={theme.placeholders.productSearch}
               className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-neutral-50 border border-neutral-200 text-sm text-[#1F1F1F] placeholder-neutral-500 focus:outline-none focus:border-[#FE9820] transition-colors"
             />
             {searchQuery && (
@@ -671,6 +675,7 @@ export function InventoryManager({
           categories={categories}
           suppliers={suppliers}
           businessId={businessId}
+          placeholders={theme.placeholders}
           onClose={() => setIsProductModalOpen(false)}
           onSaved={(savedProduct, isNew) => {
             if (isNew) {
@@ -692,6 +697,7 @@ export function InventoryManager({
       {isCategoryModalOpen && (
         <CategoryModal
           businessId={businessId}
+          placeholders={theme.placeholders}
           onClose={() => setIsCategoryModalOpen(false)}
           onCreated={(newCat) => {
             setCategories((prev) => [...prev, newCat])
@@ -737,6 +743,7 @@ function ProductFormModal({
   categories,
   suppliers,
   businessId,
+  placeholders,
   onClose,
   onSaved,
   onOpenNewCategory,
@@ -745,6 +752,7 @@ function ProductFormModal({
   categories: CategoryRecord[]
   suppliers: SupplierRecordOption[]
   businessId: string
+  placeholders: BusinessTheme["placeholders"]
   onClose: () => void
   onSaved: (product: ProductRecord, isNew: boolean) => void
   onOpenNewCategory: () => void
@@ -893,7 +901,7 @@ function ProductFormModal({
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Ej: Jabón Líquido Ariel 3L"
+              placeholder={placeholders.productName}
               className="w-full px-3 py-2 rounded-xl bg-neutral-50 border border-neutral-200 text-sm text-[#1F1F1F] placeholder-neutral-500 focus:outline-none focus:border-[#FE9820]"
             />
           </div>
@@ -1114,10 +1122,12 @@ function ProductFormModal({
 // -------------------------------------------------------------
 function CategoryModal({
   businessId,
+  placeholders,
   onClose,
   onCreated,
 }: {
   businessId: string
+  placeholders: BusinessTheme["placeholders"]
   onClose: () => void
   onCreated: (cat: CategoryRecord) => void
 }) {
@@ -1172,7 +1182,7 @@ function CategoryModal({
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Ej: Lácteos, Fiambres, Limpieza..."
+              placeholder={placeholders.categoryName}
               className="w-full px-3 py-2 rounded-xl bg-neutral-50 border border-neutral-200 text-sm text-[#1F1F1F] placeholder-neutral-500 focus:outline-none focus:border-[#FE9820]"
             />
           </div>

@@ -1,6 +1,8 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
+import { cookies } from "next/headers"
+import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 
 export interface ProfileUpdateInput {
@@ -116,4 +118,34 @@ export async function updateBusinessBillingAction(data: BusinessBillingInput) {
 
   revalidatePath("/dashboard/profile")
   return { success: true }
+}
+
+export async function deleteOwnAccountAction() {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    return { error: "No autenticado" }
+  }
+
+  const { error } = await supabase.rpc("delete_own_user_account")
+
+  if (error) {
+    return {
+      error:
+        error.message?.includes("schema cache") || error.code === "PGRST202"
+          ? "Falta ejecutar la migración 'REMOTE_DEPLOY_LATEST.sql' en Supabase Cloud para habilitar la baja de cuenta."
+          : error.message || "No se pudo dar de baja tu cuenta",
+    }
+  }
+
+  const cookieStore = await cookies()
+  cookieStore.delete("active_business_id")
+  cookieStore.delete("support_target_business_id")
+
+  await supabase.auth.signOut().catch(() => null)
+  revalidatePath("/", "layout")
+  redirect("/login")
 }

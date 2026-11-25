@@ -4,6 +4,7 @@ import React, { useState, useTransition } from "react"
 import {
   PlatformBusiness,
   enterSupportModeAction,
+  deleteBusinessAsAdminAction,
 } from "../actions"
 import {
   Building2,
@@ -16,6 +17,8 @@ import {
   Loader2,
   ArrowUpDown,
   Filter,
+  Trash2,
+  AlertTriangle,
 } from "lucide-react"
 
 interface BusinessesViewProps {
@@ -23,11 +26,13 @@ interface BusinessesViewProps {
 }
 
 export function BusinessesView({ initialBusinesses }: BusinessesViewProps) {
-  const [businesses] = useState<PlatformBusiness[]>(initialBusinesses)
+  const [businesses, setBusinesses] = useState<PlatformBusiness[]>(initialBusinesses)
   const [search, setSearch] = useState("")
   const [filterActive, setFilterActive] = useState<"all" | "active" | "inactive">("all")
   const [isPending, startTransition] = useTransition()
   const [activeTargetId, setActiveTargetId] = useState<string | null>(null)
+  const [deletingBiz, setDeletingBiz] = useState<PlatformBusiness | null>(null)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
 
   const filtered = businesses.filter((b) => {
     const q = search.toLowerCase().trim()
@@ -49,6 +54,20 @@ export function BusinessesView({ initialBusinesses }: BusinessesViewProps) {
     setActiveTargetId(bizId)
     startTransition(async () => {
       await enterSupportModeAction(bizId)
+    })
+  }
+
+  const handleConfirmDelete = () => {
+    if (!deletingBiz) return
+    setDeleteError(null)
+    startTransition(async () => {
+      const res = await deleteBusinessAsAdminAction(deletingBiz.id)
+      if (res?.error) {
+        setDeleteError(res.error)
+        return
+      }
+      setBusinesses((prev) => prev.filter((b) => b.id !== deletingBiz.id))
+      setDeletingBiz(null)
     })
   }
 
@@ -232,27 +251,42 @@ export function BusinessesView({ initialBusinesses }: BusinessesViewProps) {
                         )}
                       </td>
 
-                      {/* Support Mode Jump */}
+                      {/* Support Mode Jump & Delete */}
                       <td className="px-5 py-4 text-right">
-                        <button
-                          type="button"
-                          onClick={() => handleSupportJump(biz.id)}
-                          disabled={isPending}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-purple-200 bg-purple-50 hover:bg-purple-100 text-purple-700 font-semibold text-xs transition-all shadow-xs disabled:opacity-50"
-                          title={`Ingresar al panel de ${biz.name} en Modo Soporte`}
-                        >
-                          {isCurrentPending ? (
-                            <>
-                              <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                              <span>Conectando...</span>
-                            </>
-                          ) : (
-                            <>
-                              <ExternalLink className="w-3.5 h-3.5" />
-                              <span>Inspeccionar</span>
-                            </>
-                          )}
-                        </button>
+                        <div className="inline-flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => handleSupportJump(biz.id)}
+                            disabled={isPending}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-purple-200 bg-purple-50 hover:bg-purple-100 text-purple-700 font-semibold text-xs transition-all shadow-xs disabled:opacity-50 cursor-pointer"
+                            title={`Ingresar al panel de ${biz.name} en Modo Soporte`}
+                          >
+                            {isCurrentPending ? (
+                              <>
+                                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                <span>Conectando...</span>
+                              </>
+                            ) : (
+                              <>
+                                <ExternalLink className="w-3.5 h-3.5" />
+                                <span>Inspeccionar</span>
+                              </>
+                            )}
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setDeleteError(null)
+                              setDeletingBiz(biz)
+                            }}
+                            disabled={isPending}
+                            className="p-1.5 rounded-xl border border-red-200 bg-red-50 hover:bg-red-100 text-red-600 transition-all cursor-pointer disabled:opacity-50"
+                            title={`Eliminar comercio ${biz.name}`}
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   )
@@ -262,6 +296,49 @@ export function BusinessesView({ initialBusinesses }: BusinessesViewProps) {
           </table>
         </div>
       </div>
+
+      {/* Confirm Delete Modal */}
+      {deletingBiz && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="w-full max-w-md bg-white rounded-3xl border border-neutral-200 p-6 shadow-2xl space-y-4">
+            <div className="w-10 h-10 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center">
+              <AlertTriangle className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-[#1F1F1F]">
+                Eliminar comercio &ldquo;{deletingBiz.name}&rdquo;
+              </h3>
+              <p className="text-xs text-neutral-500 mt-1 leading-relaxed">
+                Esta acción eliminará el comercio junto con todos sus productos, ventas, turnos y clientes. No se puede deshacer.
+              </p>
+            </div>
+            {deleteError && (
+              <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-medium">
+                {deleteError}
+              </div>
+            )}
+            <div className="flex items-center gap-2.5 pt-1">
+              <button
+                type="button"
+                disabled={isPending}
+                onClick={() => setDeletingBiz(null)}
+                className="flex-1 py-2.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-700 text-xs font-bold cursor-pointer"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                disabled={isPending}
+                onClick={handleConfirmDelete}
+                className="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+              >
+                {isPending && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                <span>Eliminar Comercio</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

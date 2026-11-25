@@ -30,6 +30,15 @@ export interface BusinessTheme {
   softBorder: string
   gradientAvatar: string
   shadow: string
+  placeholders: {
+    storeName: string
+    productSearch: string
+    productName: string
+    categoryName: string
+    supplierName: string
+    supplierContact: string
+    supplierNotes: string
+  }
 }
 
 export const VERTICAL_OPTIONS: BusinessVerticalOption[] = [
@@ -84,6 +93,15 @@ export const VERTICAL_THEMES: Record<BusinessVertical, BusinessTheme> = {
     softBorder: "border-orange-200",
     gradientAvatar: "from-[#FBDAA9] to-[#FE9820]",
     shadow: "shadow-orange-500/20",
+    placeholders: {
+      storeName: "Ej. Almacén Los Primos",
+      productSearch: "Buscar por nombre o código de barras (ej: Jabón, 7791290...)",
+      productName: "Ej: Jabón Líquido 3L / Arroz 1kg",
+      categoryName: "Ej: Lácteos, Fiambres, Limpieza...",
+      supplierName: "Ej: Distribuidora Quilmes, Arcor...",
+      supplierContact: "Ej: Carlos Preventista, Juan Venta...",
+      supplierNotes: "Ej: Pedido mínimo $80.000. Tomar pedidos antes de las 18hs...",
+    },
   },
   clothing: {
     vertical: "clothing",
@@ -103,6 +121,15 @@ export const VERTICAL_THEMES: Record<BusinessVertical, BusinessTheme> = {
     softBorder: "border-emerald-200",
     gradientAvatar: "from-emerald-300 to-emerald-600",
     shadow: "shadow-emerald-500/20",
+    placeholders: {
+      storeName: "Ej. Showroom Aura / Indumentaria Sur",
+      productSearch: "Buscar por prenda, talle o código (ej: Remera, Jean...)",
+      productName: "Ej: Remera Oversize Algodón / Jean Mom",
+      categoryName: "Ej: Remeras, Pantalones, Calzado, Accesorios...",
+      supplierName: "Ej: Textil Flores, Mayorista Avellaneda...",
+      supplierContact: "Ej: Sofía Ventas, Taller Norte...",
+      supplierNotes: "Ej: Reposición de temporada los martes. Mínimo 6 prendas...",
+    },
   },
   food: {
     vertical: "food",
@@ -122,6 +149,15 @@ export const VERTICAL_THEMES: Record<BusinessVertical, BusinessTheme> = {
     softBorder: "border-rose-200",
     gradientAvatar: "from-rose-300 to-rose-600",
     shadow: "shadow-rose-500/20",
+    placeholders: {
+      storeName: "Ej. Rotisería Don Pepe / Hamburguesería Al Paso",
+      productSearch: "Buscar por plato, combo o bebida (ej: Milanesa, Empanadas...)",
+      productName: "Ej: Empanadas de Carne x12 / Milanesa con Fritas",
+      categoryName: "Ej: Minutas, Empanadas, Pizzas, Bebidas...",
+      supplierName: "Ej: Frigorífico Centro, Verdulería El Sol...",
+      supplierContact: "Ej: Marcos Reparto, Carnicería...",
+      supplierNotes: "Ej: Entregas de carne lunes y jueves antes de las 10hs...",
+    },
   },
 }
 

@@ -41,7 +41,7 @@ export async function deleteOwnBusinessAction(businessId: string) {
 
   revalidatePath("/", "layout")
   if (!count || count === 0) {
-    redirect("/onboarding")
+    redirect("/login")
   }
 
   redirect("/dashboard")

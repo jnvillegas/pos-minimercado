@@ -83,7 +83,7 @@ export async function getActiveBusinessContext(): Promise<ActiveBusinessContext>
     .limit(1)
 
   if (error || !members || members.length === 0 || !members[0].businesses) {
-    redirect("/onboarding")
+    redirect("/login")
   }
 
   const membership = members[0]

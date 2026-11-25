@@ -72,7 +72,7 @@ export async function middleware(request: NextRequest) {
 
       if (isDashboardRoute && !hasBusiness) {
         const redirectUrl = request.nextUrl.clone()
-        redirectUrl.pathname = "/onboarding"
+        redirectUrl.pathname = "/login"
         return NextResponse.redirect(redirectUrl)
       }
     }

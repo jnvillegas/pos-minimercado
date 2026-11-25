@@ -15,6 +15,9 @@ function formatAuthError(message: string): string {
   if (message.toLowerCase().includes("already registered")) {
     return "Este correo ya se encuentra registrado"
   }
+  if (message.toLowerCase().includes("signups not allowed")) {
+    return "El registro está deshabilitado en Supabase. Activá 'Allow new users to sign up' en Authentication → Providers / Sign In & Up."
+  }
   return message
 }
 

@@ -52,8 +52,8 @@ export default async function OrdersPage() {
   if (!salesError && salesData) {
     rawSales = salesData as typeof rawSales
   } else {
-    // Graceful fallback if delivery_status column not yet migrated in Supabase Cloud
-    const { data: fallbackSales } = await supabase
+    // Graceful fallback if delivery_status or customers relation is not yet migrated in Supabase Cloud
+    const { data: fallbackSales, error: fallbackError } = await supabase
       .from("sales")
       .select(`
         id,
@@ -61,8 +61,6 @@ export default async function OrdersPage() {
         total_amount,
         payment_method,
         status,
-        customer_id,
-        customers ( id, name, phone ),
         sale_items ( id, product_name, quantity, unit_price, subtotal )
       `)
       .eq("business_id", business.id)
@@ -70,7 +68,9 @@ export default async function OrdersPage() {
       .order("created_at", { ascending: false })
       .limit(100)
 
-    rawSales = (fallbackSales as typeof rawSales) || []
+    if (!fallbackError && fallbackSales) {
+      rawSales = fallbackSales as typeof rawSales
+    }
   }
 
   // Metadata override fallback for unmigrated instances

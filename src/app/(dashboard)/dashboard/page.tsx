@@ -3,6 +3,7 @@ import Link from "next/link"
 import { connection } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { getActiveBusinessContext } from "@/lib/auth/business-context"
+import { getBusinessTheme } from "@/lib/theme/business-theme"
 import {
   ShoppingBag,
   Package,
@@ -19,11 +20,12 @@ export default async function DashboardPage() {
   await connection()
 
   const { business } = await getActiveBusinessContext()
+  const theme = getBusinessTheme(business?.industry)
 
   return (
     <div className="space-y-6">
-      {/* Welcome Banner with Brand Gradient */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#FBDAA9] via-[#FE9820] to-[#FE9820] p-6 sm:p-8 text-white shadow-lg shadow-[#FE9820]/20">
+      {/* Welcome Banner with Dynamic Vertical Gradient */}
+      <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-r ${theme.bannerGradient} p-6 sm:p-8 text-white shadow-lg ${theme.shadow}`}>
         <div className="absolute -right-8 -bottom-10 w-44 h-44 rounded-full bg-white/10 blur-xl pointer-events-none" />
         <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-white/10 rounded-l-full pointer-events-none" />
 
@@ -49,10 +51,10 @@ export default async function DashboardPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Link
             href="/dashboard/pos"
-            className="group p-5 rounded-2xl bg-white border border-neutral-200 hover:border-[#FE9820] hover:shadow-md transition-all flex flex-col justify-between shadow-sm"
+            className={`group p-5 rounded-2xl bg-white border border-neutral-200 hover:${theme.primaryBorder} hover:shadow-md transition-all flex flex-col justify-between shadow-sm`}
           >
             <div>
-              <div className="w-12 h-12 rounded-xl bg-[#FE9820]/15 border border-[#FE9820]/30 flex items-center justify-center text-[#FE9820] mb-4 group-hover:scale-105 transition-transform">
+              <div className={`w-12 h-12 rounded-xl ${theme.badgeBg} border ${theme.badgeBorder} flex items-center justify-center ${theme.primaryText} mb-4 group-hover:scale-105 transition-transform`}>
                 <ShoppingBag className="w-6 h-6" />
               </div>
               <h3 className="font-semibold text-[#1F1F1F] text-base">Punto de Venta</h3>
@@ -60,7 +62,7 @@ export default async function DashboardPage() {
                 Cobro ágil con lector de código de barras o cámara del celular.
               </p>
             </div>
-            <span className="text-xs text-[#FE9820] font-semibold mt-4 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+            <span className={`text-xs ${theme.primaryText} font-semibold mt-4 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform`}>
               Abrir POS &rarr;
             </span>
           </Link>
@@ -135,8 +137,8 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        <div className="flex items-center gap-2 text-xs text-neutral-600 bg-neutral-100 px-3 py-1.5 rounded-lg border border-neutral-200 shrink-0">
-          <Building2 className="w-4 h-4 text-[#FE9820]" />
+        <div className={`flex items-center gap-2 text-xs text-neutral-600 ${theme.softBg} px-3 py-1.5 rounded-lg border ${theme.softBorder} shrink-0`}>
+          <Building2 className={`w-4 h-4 ${theme.primaryText}`} />
           <span>Rubro: <strong className="text-[#1F1F1F]">{business?.industry}</strong></span>
           <span className="text-neutral-400">•</span>
           <span>Moneda: <strong className="text-[#1F1F1F]">{business?.currency}</strong></span>

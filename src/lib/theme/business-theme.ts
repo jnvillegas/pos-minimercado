@@ -29,6 +29,7 @@ export interface BusinessTheme {
   softBg: string
   softBorder: string
   gradientAvatar: string
+  bannerGradient: string
   shadow: string
   placeholders: {
     storeName: string
@@ -92,6 +93,7 @@ export const VERTICAL_THEMES: Record<BusinessVertical, BusinessTheme> = {
     softBg: "bg-orange-50",
     softBorder: "border-orange-200",
     gradientAvatar: "from-[#FBDAA9] to-[#FE9820]",
+    bannerGradient: "from-[#FBDAA9] via-[#FE9820] to-[#FE9820]",
     shadow: "shadow-orange-500/20",
     placeholders: {
       storeName: "Ej. Almacén Los Primos",
@@ -109,18 +111,19 @@ export const VERTICAL_THEMES: Record<BusinessVertical, BusinessTheme> = {
     shortLabel: "Indumentaria",
     badgeLabel: "Indumentaria",
     hex: "#10B981",
-    primaryBg: "bg-emerald-600",
-    primaryHoverBg: "hover:bg-emerald-700",
+    primaryBg: "bg-emerald-500",
+    primaryHoverBg: "hover:bg-emerald-600",
     primaryText: "text-emerald-600",
-    primaryBorder: "border-emerald-600",
-    primaryRing: "focus:border-emerald-600 focus:ring-emerald-600",
-    badgeBg: "bg-emerald-500/15",
+    primaryBorder: "border-emerald-400",
+    primaryRing: "focus:border-emerald-500 focus:ring-emerald-500",
+    badgeBg: "bg-emerald-400/15",
     badgeText: "text-emerald-700",
-    badgeBorder: "border-emerald-500/30",
+    badgeBorder: "border-emerald-400/35",
     softBg: "bg-emerald-50",
     softBorder: "border-emerald-200",
-    gradientAvatar: "from-emerald-300 to-emerald-600",
-    shadow: "shadow-emerald-500/20",
+    gradientAvatar: "from-emerald-300 to-emerald-500",
+    bannerGradient: "from-emerald-300 via-emerald-400 to-emerald-500",
+    shadow: "shadow-emerald-400/20",
     placeholders: {
       storeName: "Ej. Showroom Aura / Indumentaria Sur",
       productSearch: "Buscar por prenda, talle o código (ej: Remera, Jean...)",
@@ -148,6 +151,7 @@ export const VERTICAL_THEMES: Record<BusinessVertical, BusinessTheme> = {
     softBg: "bg-rose-50",
     softBorder: "border-rose-200",
     gradientAvatar: "from-rose-300 to-rose-600",
+    bannerGradient: "from-rose-400 via-rose-500 to-red-500",
     shadow: "shadow-rose-500/20",
     placeholders: {
       storeName: "Ej. Rotisería Don Pepe / Hamburguesería Al Paso",

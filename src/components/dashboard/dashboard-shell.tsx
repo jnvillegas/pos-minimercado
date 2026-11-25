@@ -544,7 +544,7 @@ export function DashboardShell({
                 title="Perfil de Usuario"
                 aria-label="Perfil de Usuario"
               >
-                <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-amber-500 to-[#FE9820] text-neutral-950 font-black text-xs flex items-center justify-center shrink-0 shadow-xs ring-2 ring-amber-100">
+                <div className={`w-9 h-9 rounded-full bg-gradient-to-tr ${theme.gradientAvatar} text-white font-black text-xs flex items-center justify-center shrink-0 shadow-xs ring-2 ring-white`}>
                   {userEmail.charAt(0).toUpperCase()}
                 </div>
                 <div className="block">
@@ -559,7 +559,7 @@ export function DashboardShell({
               {profileDropdownOpen && (
                 <div className="absolute left-0 mt-2 w-64 bg-white border border-neutral-200 rounded-3xl p-3 shadow-2xl z-50 text-xs space-y-2 animate-in fade-in zoom-in-95 duration-150">
                     <div className="flex items-center gap-3 p-2.5 bg-neutral-50 rounded-2xl border border-neutral-100">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-500 to-[#FE9820] text-neutral-950 font-black text-sm flex items-center justify-center shrink-0 shadow-xs">
+                      <div className={`w-10 h-10 rounded-full bg-gradient-to-tr ${theme.gradientAvatar} text-white font-black text-sm flex items-center justify-center shrink-0 shadow-xs`}>
                         {displayName.charAt(0).toUpperCase()}
                       </div>
                       <div className="min-w-0 flex-1">
@@ -575,7 +575,7 @@ export function DashboardShell({
                       onClick={() => setProfileDropdownOpen(false)}
                       className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-bold text-neutral-800 bg-neutral-50 hover:bg-neutral-100 transition-colors"
                     >
-                      <User className="w-4 h-4 text-[#FE9820]" />
+                      <User className={`w-4 h-4 ${theme.primaryText}`} />
                       <span>Mi Perfil</span>
                     </Link>
 
@@ -720,12 +720,12 @@ export function DashboardShell({
         {pathname.startsWith("/dashboard/inventory") ? (
           <Link
             href="/dashboard/inventory"
-            className="flex items-center gap-2 bg-amber-500/15 border border-amber-500/25 p-1 pr-3.5 rounded-full shadow-xs transition-all shrink-0"
+            className={`flex items-center gap-2 ${theme.badgeBg} border ${theme.badgeBorder} p-1 pr-3.5 rounded-full shadow-xs transition-all shrink-0`}
           >
-            <span className="w-8 h-8 rounded-full bg-[#FE9820] text-white flex items-center justify-center shrink-0 shadow-xs">
+            <span className={`w-8 h-8 rounded-full ${theme.primaryBg} text-white flex items-center justify-center shrink-0 shadow-xs`}>
               <Package className="w-4 h-4" />
             </span>
-            <span className="text-xs font-bold text-amber-900">Stock</span>
+            <span className={`text-xs font-bold ${theme.badgeText}`}>Stock</span>
           </Link>
         ) : (
           <Link
@@ -741,12 +741,12 @@ export function DashboardShell({
         {pathname.startsWith("/dashboard/cash-register") ? (
           <Link
             href="/dashboard/cash-register"
-            className="flex items-center gap-2 bg-amber-500/15 border border-amber-500/25 p-1 pr-3.5 rounded-full shadow-xs transition-all shrink-0"
+            className={`flex items-center gap-2 ${theme.badgeBg} border ${theme.badgeBorder} p-1 pr-3.5 rounded-full shadow-xs transition-all shrink-0`}
           >
-            <span className="w-8 h-8 rounded-full bg-[#FE9820] text-white flex items-center justify-center shrink-0 shadow-xs">
+            <span className={`w-8 h-8 rounded-full ${theme.primaryBg} text-white flex items-center justify-center shrink-0 shadow-xs`}>
               <Landmark className="w-4 h-4" />
             </span>
-            <span className="text-xs font-bold text-amber-900">Caja</span>
+            <span className={`text-xs font-bold ${theme.badgeText}`}>Caja</span>
           </Link>
         ) : (
           <Link
@@ -765,12 +765,12 @@ export function DashboardShell({
         {pathname.startsWith("/dashboard/pos") ? (
           <Link
             href="/dashboard/pos"
-            className="flex items-center gap-2 bg-amber-500/15 border border-amber-500/25 p-1 pr-3.5 rounded-full shadow-xs transition-all shrink-0"
+            className={`flex items-center gap-2 ${theme.badgeBg} border ${theme.badgeBorder} p-1 pr-3.5 rounded-full shadow-xs transition-all shrink-0`}
           >
-            <span className="w-8 h-8 rounded-full bg-[#FE9820] text-white flex items-center justify-center shrink-0 shadow-xs">
+            <span className={`w-8 h-8 rounded-full ${theme.primaryBg} text-white flex items-center justify-center shrink-0 shadow-xs`}>
               <ShoppingBag className="w-4 h-4" />
             </span>
-            <span className="text-xs font-bold text-amber-900">POS</span>
+            <span className={`text-xs font-bold ${theme.badgeText}`}>POS</span>
           </Link>
         ) : (
           <Link
@@ -786,12 +786,12 @@ export function DashboardShell({
         {pathname.startsWith("/dashboard/movements") ? (
           <Link
             href="/dashboard/movements"
-            className="flex items-center gap-2 bg-amber-500/15 border border-amber-500/25 p-1 pr-3.5 rounded-full shadow-xs transition-all shrink-0"
+            className={`flex items-center gap-2 ${theme.badgeBg} border ${theme.badgeBorder} p-1 pr-3.5 rounded-full shadow-xs transition-all shrink-0`}
           >
-            <span className="w-8 h-8 rounded-full bg-[#FE9820] text-white flex items-center justify-center shrink-0 shadow-xs">
+            <span className={`w-8 h-8 rounded-full ${theme.primaryBg} text-white flex items-center justify-center shrink-0 shadow-xs`}>
               <ArrowLeftRight className="w-4 h-4" />
             </span>
-            <span className="text-xs font-bold text-amber-900">Flujo</span>
+            <span className={`text-xs font-bold ${theme.badgeText}`}>Flujo</span>
           </Link>
         ) : (
           <Link

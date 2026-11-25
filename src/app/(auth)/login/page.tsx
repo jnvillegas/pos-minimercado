@@ -1,15 +1,15 @@
 "use client"
 
-import React, { useActionState } from "react"
+import React, { useActionState, useState } from "react"
 import Link from "next/link"
 import { signInAction } from "@/app/(auth)/actions"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Loader2, LogIn } from "lucide-react"
+import { Eye, EyeOff, Loader2 } from "lucide-react"
 
 export default function LoginPage() {
+  const [showPassword, setShowPassword] = useState(false)
   const [state, formAction, isPending] = useActionState(
     async (_prevState: { error?: string } | null, formData: FormData) => {
       return await signInAction(formData)
@@ -18,78 +18,92 @@ export default function LoginPage() {
   )
 
   return (
-    <Card className="border-neutral-200 bg-white text-[#1F1F1F] shadow-xl shadow-neutral-200/50 rounded-2xl">
-      <CardHeader className="space-y-1">
-        <CardTitle className="text-xl font-semibold text-[#1F1F1F]">Iniciar Sesión</CardTitle>
-        <CardDescription className="text-[#9E9E9E]">
-          Ingresá con tu correo y contraseña para acceder a tu comercio
-        </CardDescription>
-      </CardHeader>
+    <div className="space-y-6">
+      <div className="space-y-1.5">
+        <h1 className="text-2xl font-bold tracking-tight text-[#1F1F1F]">
+          Bienvenido de nuevo
+        </h1>
+        <p className="text-xs text-neutral-500">
+          Ingresá a tu cuenta POS para continuar operando.
+        </p>
+      </div>
 
-      <form action={formAction}>
-        <CardContent className="space-y-4">
-          {state?.error && (
-            <div className="p-3 text-sm rounded-lg bg-red-50 border border-red-200 text-red-700">
-              {state.error}
-            </div>
-          )}
-
-          <div className="space-y-2">
-            <Label htmlFor="email" className="text-[#1F1F1F] font-medium">Correo electrónico</Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="dueño@minimercado.com"
-              required
-              autoComplete="email"
-              className="border-neutral-300 bg-white text-[#1F1F1F] placeholder:text-[#9E9E9E] focus:border-[#FE9820] focus:ring-[#FE9820]"
-            />
+      <form action={formAction} className="space-y-4">
+        {state?.error && (
+          <div className="p-3 text-xs font-medium rounded-xl bg-red-50 border border-red-200 text-red-700">
+            {state.error}
           </div>
+        )}
 
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="password" className="text-[#1F1F1F] font-medium">Contraseña</Label>
-            </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="email" className="text-xs font-semibold text-neutral-700">
+            Correo electrónico
+          </Label>
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            placeholder="Ingresá tu correo"
+            required
+            autoComplete="email"
+            className="h-11 rounded-xl border-neutral-200 bg-white text-sm text-[#1F1F1F] placeholder:text-neutral-400 focus:border-neutral-900 focus:ring-neutral-900"
+          />
+        </div>
+
+        <div className="space-y-1.5">
+          <Label htmlFor="password" className="text-xs font-semibold text-neutral-700">
+            Contraseña
+          </Label>
+          <div className="relative">
             <Input
               id="password"
               name="password"
-              type="password"
-              placeholder="••••••••"
+              type={showPassword ? "text" : "password"}
+              placeholder="Ingresá tu contraseña"
               required
               autoComplete="current-password"
-              className="border-neutral-300 bg-white text-[#1F1F1F] placeholder:text-[#9E9E9E] focus:border-[#FE9820] focus:ring-[#FE9820]"
+              className="h-11 rounded-xl border-neutral-200 bg-white pr-10 text-sm text-[#1F1F1F] placeholder:text-neutral-400 focus:border-neutral-900 focus:ring-neutral-900"
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              aria-label={showPassword ? "Ocultar contraseña" : "Ver contraseña"}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-700 cursor-pointer"
+            >
+              {showPassword ? (
+                <EyeOff className="w-4 h-4" />
+              ) : (
+                <Eye className="w-4 h-4" />
+              )}
+            </button>
           </div>
-        </CardContent>
+        </div>
 
-        <CardFooter className="flex flex-col space-y-4">
-          <Button
-            type="submit"
-            disabled={isPending}
-            className="w-full bg-[#FE9820] hover:bg-[#FE9820]/90 text-white font-semibold h-11 rounded-xl shadow-md shadow-[#FE9820]/25 transition-all"
-          >
-            {isPending ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Iniciando sesión...
-              </>
-            ) : (
-              <>
-                <LogIn className="w-4 h-4 mr-2" />
-                Ingresar al sistema
-              </>
-            )}
-          </Button>
-
-          <p className="text-sm text-center text-[#9E9E9E]">
-            ¿No tenés una cuenta?{" "}
-            <Link href="/register" className="text-[#FE9820] hover:text-[#FE9820]/80 font-medium underline underline-offset-4">
-              Registrate acá
-            </Link>
-          </p>
-        </CardFooter>
+        <Button
+          type="submit"
+          disabled={isPending}
+          className="w-full h-11 rounded-xl bg-[#1F1F1F] hover:bg-black text-white font-semibold text-sm shadow-sm transition-all cursor-pointer mt-2"
+        >
+          {isPending ? (
+            <>
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              Iniciando sesión...
+            </>
+          ) : (
+            "Iniciar Sesión"
+          )}
+        </Button>
       </form>
-    </Card>
+
+      <p className="text-xs text-center text-neutral-500">
+        ¿No tenés una cuenta?{" "}
+        <Link
+          href="/register"
+          className="text-[#FE9820] hover:text-[#FE9820]/80 font-semibold transition-colors"
+        >
+          Registrate acá
+        </Link>
+      </p>
+    </div>
   )
 }

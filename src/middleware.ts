@@ -54,9 +54,14 @@ export async function middleware(request: NextRequest) {
       const hasBusiness = (count ?? 0) > 0
 
       if (isAuthRoute) {
-        const redirectUrl = request.nextUrl.clone()
-        redirectUrl.pathname = hasBusiness ? "/dashboard" : "/onboarding"
-        return NextResponse.redirect(redirectUrl)
+        // Only auto-redirect away from /login or /register if the user already has a business.
+        // Users without a business can still access /login to switch accounts or sign in.
+        if (hasBusiness) {
+          const redirectUrl = request.nextUrl.clone()
+          redirectUrl.pathname = "/dashboard"
+          return NextResponse.redirect(redirectUrl)
+        }
+        return supabaseResponse
       }
 
       if (isOnboardingRoute && hasBusiness) {

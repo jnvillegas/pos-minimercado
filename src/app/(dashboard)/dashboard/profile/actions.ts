@@ -144,6 +144,11 @@ export async function deleteOwnAccountAction() {
   const cookieStore = await cookies()
   cookieStore.delete("active_business_id")
   cookieStore.delete("support_target_business_id")
+  for (const cookie of cookieStore.getAll()) {
+    if (cookie.name.startsWith("sb-")) {
+      cookieStore.delete(cookie.name)
+    }
+  }
 
   await supabase.auth.signOut().catch(() => null)
   revalidatePath("/", "layout")

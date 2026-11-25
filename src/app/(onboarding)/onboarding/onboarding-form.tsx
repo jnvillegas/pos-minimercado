@@ -2,11 +2,12 @@
 
 import React, { useState, useActionState } from "react"
 import { createBusinessOnboardingAction } from "@/app/(onboarding)/actions"
+import { signOutAction } from "@/app/(auth)/actions"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Loader2, ArrowRight, Check, ShoppingCart, Shirt, UtensilsCrossed } from "lucide-react"
+import { Loader2, ArrowRight, Check, ShoppingCart, Shirt, UtensilsCrossed, LogOut } from "lucide-react"
 import { VERTICAL_OPTIONS, VERTICAL_THEMES, BusinessVertical } from "@/lib/theme/business-theme"
 
 const VERTICAL_ICONS: Record<BusinessVertical, React.ElementType> = {
@@ -223,6 +224,18 @@ export function OnboardingForm({ userEmail }: { userEmail: string }) {
           </p>
         </CardFooter>
       </form>
+
+      <div className="px-6 pb-5 pt-1 flex justify-center border-t border-neutral-800/80">
+        <form action={signOutAction}>
+          <button
+            type="submit"
+            className="inline-flex items-center gap-1.5 text-xs text-neutral-400 hover:text-white transition-colors py-1.5 cursor-pointer"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+            <span>Cerrar sesión / Cambiar de cuenta</span>
+          </button>
+        </form>
+      </div>
     </Card>
   )
 }

@@ -51,7 +51,7 @@ export async function createProductAction(input: ProductInput, businessId: strin
 
     if (existingInactive) {
       // Reactivate and update with new details
-      const { data, error } = await supabase
+      let { data, error } = await supabase
         .from("products")
         .update({
           ...productData,
@@ -61,6 +61,22 @@ export async function createProductAction(input: ProductInput, businessId: strin
         .eq("id", existingInactive.id)
         .select()
         .single()
+
+      if (error?.message?.includes("supplier_id")) {
+        const { supplier_id: _omitted, ...fallbackData } = productData
+        const retry = await supabase
+          .from("products")
+          .update({
+            ...fallbackData,
+            is_active: true,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", existingInactive.id)
+          .select()
+          .single()
+        data = retry.data
+        error = retry.error
+      }
 
       if (error) {
         return { error: error.message || "Error al reactivar el producto" }
@@ -72,11 +88,22 @@ export async function createProductAction(input: ProductInput, businessId: strin
     }
   }
 
-  const { data, error } = await supabase
+  let { data, error } = await supabase
     .from("products")
     .insert(productData)
     .select()
     .single()
+
+  if (error?.message?.includes("supplier_id")) {
+    const { supplier_id: _omitted, ...fallbackData } = productData
+    const retry = await supabase
+      .from("products")
+      .insert(fallbackData)
+      .select()
+      .single()
+    data = retry.data
+    error = retry.error
+  }
 
   if (error) {
     if (error.code === "23505") {
@@ -120,13 +147,26 @@ export async function updateProductAction(
     updated_at: new Date().toISOString(),
   }
 
-  const { data, error } = await supabase
+  let { data, error } = await supabase
     .from("products")
     .update(updateData)
     .eq("id", productId)
     .eq("business_id", businessId)
     .select()
     .single()
+
+  if (error?.message?.includes("supplier_id")) {
+    const { supplier_id: _omitted, ...fallbackData } = updateData
+    const retry = await supabase
+      .from("products")
+      .update(fallbackData)
+      .eq("id", productId)
+      .eq("business_id", businessId)
+      .select()
+      .single()
+    data = retry.data
+    error = retry.error
+  }
 
   if (error) {
     if (error.code === "23505") {

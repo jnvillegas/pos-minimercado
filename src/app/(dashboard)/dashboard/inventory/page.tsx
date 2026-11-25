@@ -40,19 +40,20 @@ export default async function InventoryPage() {
 
   // Fetch products (all active products for this business)
   let rawProducts: Record<string, unknown>[] | null = null
-  try {
-    const res = await supabase
-      .from("products")
-      .select(
-        "id, name, barcode, category_id, supplier_id, cost_price, sale_price, stock, min_stock, image_url, is_active"
-      )
-      .eq("business_id", business.id)
-      .eq("is_active", true)
-      .order("name", { ascending: true })
-    rawProducts = res.data as Record<string, unknown>[] | null
-  } catch {
-    // If supplier_id column is missing on remote DB
-    const res = await supabase
+  const primaryProductsRes = await supabase
+    .from("products")
+    .select(
+      "id, name, barcode, category_id, supplier_id, cost_price, sale_price, stock, min_stock, image_url, is_active"
+    )
+    .eq("business_id", business.id)
+    .eq("is_active", true)
+    .order("name", { ascending: true })
+
+  if (!primaryProductsRes.error && primaryProductsRes.data) {
+    rawProducts = primaryProductsRes.data as Record<string, unknown>[]
+  } else {
+    // Fallback if supplier_id column is missing on remote DB
+    const fallbackRes = await supabase
       .from("products")
       .select(
         "id, name, barcode, category_id, cost_price, sale_price, stock, min_stock, image_url, is_active"
@@ -60,7 +61,7 @@ export default async function InventoryPage() {
       .eq("business_id", business.id)
       .eq("is_active", true)
       .order("name", { ascending: true })
-    rawProducts = res.data as Record<string, unknown>[] | null
+    rawProducts = fallbackRes.data as Record<string, unknown>[] | null
   }
 
   const products: ProductRecord[] = (rawProducts || []).map((p) => ({

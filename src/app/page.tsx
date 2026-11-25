@@ -20,7 +20,7 @@ export default async function HomePage() {
     .eq("user_id", user.id)
 
   if (!count || count === 0) {
-    redirect("/onboarding")
+    redirect("/login")
   }
 
   redirect("/dashboard")

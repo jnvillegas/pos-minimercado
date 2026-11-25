@@ -20,6 +20,7 @@ export interface ProcessSaleInput {
   discountType?: "percentage" | "fixed" | null
   amountTendered?: number | null
   customerId?: string | null
+  deliveryStatus?: "pending" | "delivered"
 }
 
 export async function processSaleAction(input: ProcessSaleInput) {
@@ -202,11 +203,100 @@ export async function processSaleAction(input: ProcessSaleInput) {
     }
   }
 
+  // Persist delivery status ('pending' or 'delivered')
+  const createdSaleId = (data as { sale_id?: string })?.sale_id
+  const targetDeliveryStatus = input.deliveryStatus || "delivered"
+
+  if (createdSaleId) {
+    try {
+      await supabase
+        .from("sales")
+        .update({ delivery_status: targetDeliveryStatus })
+        .eq("id", createdSaleId)
+    } catch {
+      // Non-blocking if column not yet added to remote DB
+    }
+
+    // Mirror in user_metadata for resilient zero-downtime fallback
+    if (user.user_metadata) {
+      try {
+        const metaStatusKey = `business_orders_status_${input.businessId}`
+        const currentStatuses =
+          (user.user_metadata[metaStatusKey] as Record<string, "pending" | "delivered">) || {}
+        currentStatuses[createdSaleId] = targetDeliveryStatus
+
+        await supabase.auth
+          .updateUser({
+            data: {
+              [metaStatusKey]: currentStatuses,
+            },
+          })
+          .catch(() => null)
+      } catch {
+        // Non-blocking
+      }
+    }
+  }
+
   revalidatePath("/dashboard/pos")
   revalidatePath("/dashboard")
+  revalidatePath("/dashboard/orders")
   revalidatePath("/dashboard/customers")
   return {
     success: true,
-    data,
+    data: {
+      ...(typeof data === "object" ? data : {}),
+      delivery_status: targetDeliveryStatus,
+    },
   }
+}
+
+export async function updateSaleDeliveryStatusAction(
+  saleId: string,
+  deliveryStatus: "pending" | "delivered",
+  businessId: string
+) {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    return { error: "No autenticado" }
+  }
+
+  // 1. Try PostgreSQL update
+  try {
+    await supabase
+      .from("sales")
+      .update({ delivery_status: deliveryStatus })
+      .eq("id", saleId)
+      .eq("business_id", businessId)
+  } catch {
+    // Non-blocking
+  }
+
+  // 2. Mirror in user_metadata for zero-migration fallback
+  if (user.user_metadata) {
+    try {
+      const metaStatusKey = `business_orders_status_${businessId}`
+      const currentStatuses =
+        (user.user_metadata[metaStatusKey] as Record<string, "pending" | "delivered">) || {}
+      currentStatuses[saleId] = deliveryStatus
+
+      await supabase.auth
+        .updateUser({
+          data: {
+            [metaStatusKey]: currentStatuses,
+          },
+        })
+        .catch(() => null)
+    } catch {
+      // Non-blocking
+    }
+  }
+
+  revalidatePath("/dashboard/orders")
+  revalidatePath("/dashboard/pos")
+  return { success: true, deliveryStatus }
 }

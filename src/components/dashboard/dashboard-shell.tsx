@@ -29,6 +29,7 @@ import {
   User,
   Users,
   Truck,
+  UtensilsCrossed,
 } from "lucide-react"
 import { getBusinessTheme, BusinessTheme } from "@/lib/theme/business-theme"
 
@@ -106,9 +107,30 @@ function NavigationGroupList({
   const badgeBg = theme?.badgeBg || "bg-[#FE9820]/15"
   const badgeBorder = theme?.badgeBorder || "border-[#FE9820]/30"
 
+  const isFood = theme?.vertical === "food"
+  const groups = NAV_GROUPS.map((group) => {
+    if (group.title === "Operaciones" && isFood) {
+      const items = [...group.items]
+      const posIdx = items.findIndex((i) => i.href === "/dashboard/pos")
+      const orderItem: NavItem = {
+        label: "Pedidos / Despacho",
+        href: "/dashboard/orders",
+        icon: UtensilsCrossed,
+        badge: "Cocina",
+      }
+      if (posIdx >= 0) {
+        items.splice(posIdx + 1, 0, orderItem)
+      } else {
+        items.push(orderItem)
+      }
+      return { ...group, items }
+    }
+    return group
+  })
+
   return (
     <div className="space-y-4 px-3 py-3">
-      {NAV_GROUPS.map((group) => (
+      {groups.map((group) => (
         <div key={group.title} className="space-y-1">
           {!isCollapsed && (
             <h3 className="px-3 text-[11px] font-semibold uppercase tracking-wider text-neutral-400">
@@ -822,6 +844,20 @@ export function DashboardShell({
                 >
                   Panel General
                 </Link>
+
+                {theme.vertical === "food" && (
+                  <Link
+                    href="/dashboard/orders"
+                    onClick={() => setMobileMoreOpen(false)}
+                    className={`block px-3.5 py-2.5 rounded-2xl text-xs font-semibold transition-colors ${
+                      pathname.startsWith("/dashboard/orders")
+                        ? "bg-rose-50 text-rose-900 font-bold"
+                        : "text-neutral-700 hover:text-[#1F1F1F] hover:bg-neutral-50"
+                    }`}
+                  >
+                    Pedidos / Despacho
+                  </Link>
+                )}
 
                 <Link
                   href="/dashboard/reports"

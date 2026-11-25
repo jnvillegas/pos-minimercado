@@ -602,5 +602,13 @@ $;
 
 grant execute on function public.create_sale(uuid, jsonb, text, numeric, text, numeric, uuid) to authenticated, service_role;
 
--- 5. Reload PostgREST schema cache
+-- 5. Delivery status for food & takeaway verticals ('pending' / 'delivered')
+alter table public.sales
+  add column if not exists delivery_status text not null default 'delivered'
+  check (delivery_status in ('pending', 'delivered'));
+
+create index if not exists idx_sales_delivery_status
+  on public.sales (business_id, delivery_status, created_at desc);
+
+-- 6. Reload PostgREST schema cache
 notify pgrst, 'reload schema';

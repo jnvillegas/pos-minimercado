@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useRef, useEffect, useTransition } from "react"
+import Link from "next/link"
 import { processSaleAction, CartItemPayload } from "./actions"
 import { CameraScannerModal } from "@/components/pos/camera-scanner-modal"
 import {
@@ -24,6 +25,8 @@ import {
   Wallet,
   Users,
   MessageSquare,
+  Clock,
+  UtensilsCrossed,
 } from "lucide-react"
 import { getBusinessTheme } from "@/lib/theme/business-theme"
 
@@ -96,6 +99,9 @@ export function PosTerminal({
   const [selectedCustomerId, setSelectedCustomerId] = useState<string>("")
   const [customerSearchQuery, setCustomerSearchQuery] = useState<string>("")
   const [amountTendered, setAmountTendered] = useState<number>(0)
+  const [deliveryStatus, setDeliveryStatus] = useState<"pending" | "delivered">(
+    theme.vertical === "food" ? "pending" : "delivered"
+  )
   const [isPending, startTransition] = useTransition()
   const [checkoutError, setCheckoutError] = useState<string | null>(null)
 
@@ -106,6 +112,7 @@ export function PosTerminal({
     changeDue: number
     items: CartItem[]
     paymentMethod: string
+    deliveryStatus?: "pending" | "delivered"
     customerName?: string
     customerPhone?: string
     newDebt?: number
@@ -306,6 +313,7 @@ export function PosTerminal({
     setAmountTendered(total)
     setSelectedCustomerId("")
     setCustomerSearchQuery("")
+    setDeliveryStatus(theme.vertical === "food" ? "pending" : "delivered")
     setCheckoutError(null)
     setCheckoutOpen(true)
   }
@@ -337,6 +345,7 @@ export function PosTerminal({
         discountType: discountAmount > 0 ? discountType : null,
         amountTendered: paymentMethod === "cash" ? amountTendered : null,
         customerId: paymentMethod === "credit" ? selectedCustomerId : null,
+        deliveryStatus: theme.vertical === "food" ? deliveryStatus : "delivered",
       })
 
       if (res.error) {
@@ -352,6 +361,7 @@ export function PosTerminal({
         changeDue: (res.data as { change_due: number })?.change_due ?? changeDue,
         items: [...cart],
         paymentMethod,
+        deliveryStatus: theme.vertical === "food" ? deliveryStatus : "delivered",
         customerName: paymentMethod === "credit" ? selCustomer?.name : undefined,
         customerPhone: paymentMethod === "credit" ? selCustomer?.phone : undefined,
         newDebt:
@@ -406,6 +416,17 @@ export function PosTerminal({
               <Camera className={`w-4 h-4 ${theme.primaryText}`} />
               <span className="hidden sm:inline">Cámara</span>
             </button>
+
+            {theme.vertical === "food" && (
+              <Link
+                href="/dashboard/orders"
+                className="flex items-center gap-2 px-4 py-3 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 font-bold text-xs shadow-xs transition-colors shrink-0"
+                title="Ver pedidos y comandas en cocina / mostrador"
+              >
+                <UtensilsCrossed className="w-4 h-4 text-rose-600" />
+                <span className="hidden sm:inline">Pedidos / Cocina</span>
+              </Link>
+            )}
           </div>
 
           {barcodeAlert && (
@@ -1034,6 +1055,47 @@ export function PosTerminal({
               </div>
             )}
 
+            {/* Food Vertical Delivery Status Selector */}
+            {theme.vertical === "food" && (
+              <div className="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200/80 space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-amber-950">
+                    <UtensilsCrossed className="w-4 h-4 text-amber-700" />
+                    <span>Estado del Pedido (Comanda):</span>
+                  </div>
+                  <span className="text-[10px] font-semibold text-amber-800">
+                    {deliveryStatus === "pending" ? "Para preparar" : "Retira en el acto"}
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setDeliveryStatus("pending")}
+                    className={`py-2 px-3 rounded-xl border text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                      deliveryStatus === "pending"
+                        ? "bg-amber-500 text-white border-amber-600 shadow-xs"
+                        : "bg-white text-neutral-600 border-neutral-200 hover:bg-neutral-50"
+                    }`}
+                  >
+                    <Clock className="w-3.5 h-3.5" />
+                    <span>No entregado (Pendiente)</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDeliveryStatus("delivered")}
+                    className={`py-2 px-3 rounded-xl border text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                      deliveryStatus === "delivered"
+                        ? "bg-emerald-600 text-white border-emerald-700 shadow-xs"
+                        : "bg-white text-neutral-600 border-neutral-200 hover:bg-neutral-50"
+                    }`}
+                  >
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <span>Entregado</span>
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Action Buttons */}
             <div className="flex items-center gap-3 pt-2">
               <button
@@ -1108,6 +1170,37 @@ export function PosTerminal({
                       Deuda acumulada: ${completedSale.newDebt.toLocaleString("es-AR")}
                     </p>
                   )}
+                </div>
+              )}
+
+              {/* Delivery Status Pill for Food */}
+              {theme.vertical === "food" && (
+                <div
+                  className={`p-3 rounded-2xl border text-xs text-left flex items-center justify-between ${
+                    completedSale.deliveryStatus === "pending"
+                      ? "bg-amber-50 border-amber-200 text-amber-900"
+                      : "bg-emerald-50 border-emerald-200 text-emerald-900"
+                  }`}
+                >
+                  <span className="flex items-center gap-1.5 font-bold">
+                    {completedSale.deliveryStatus === "pending" ? (
+                      <Clock className="w-4 h-4 text-amber-600" />
+                    ) : (
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                    )}
+                    {completedSale.deliveryStatus === "pending"
+                      ? "Comanda No Entregada (Cocina)"
+                      : "Comanda Entregada"}
+                  </span>
+                  <span
+                    className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                      completedSale.deliveryStatus === "pending"
+                        ? "bg-amber-200 text-amber-900"
+                        : "bg-emerald-200 text-emerald-900"
+                    }`}
+                  >
+                    {completedSale.deliveryStatus === "pending" ? "Pendiente" : "Listo"}
+                  </span>
                 </div>
               )}
 

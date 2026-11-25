@@ -91,9 +91,29 @@ export async function signUpAction(formData: FormData) {
     }
   }
 
+  // Supabase returns an empty identities array without error when email already exists
+  if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+    return {
+      error: "Este correo ya se encuentra registrado. Iniciá sesión con tu cuenta.",
+    }
+  }
+
+  let activeSession = data.session
+
+  // Fallback: attempt immediate sign-in in case signUp omitted session despite email confirmation being off
+  if (!activeSession) {
+    const signInRes = await supabase.auth.signInWithPassword({
+      email: parsed.data.email,
+      password: parsed.data.password,
+    })
+    if (signInRes.data?.session) {
+      activeSession = signInRes.data.session
+    }
+  }
+
   revalidatePath("/", "layout")
 
-  if (data.session) {
+  if (activeSession) {
     redirect("/onboarding")
   }
 

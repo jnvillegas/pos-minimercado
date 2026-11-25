@@ -126,6 +126,7 @@ export default async function PosPage() {
     <PosTerminal
       businessId={business.id}
       businessName={business.name}
+      industry={business.industry}
       currency={business.currency || "ARS"}
       initialProducts={products}
       categories={categories}

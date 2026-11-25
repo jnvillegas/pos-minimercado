@@ -25,6 +25,7 @@ import {
   Users,
   MessageSquare,
 } from "lucide-react"
+import { getBusinessTheme } from "@/lib/theme/business-theme"
 
 export interface ProductItem {
   id: string
@@ -59,6 +60,7 @@ interface PosTerminalProps {
   businessId: string
   businessName: string
   currency: string
+  industry?: string
   initialProducts: ProductItem[]
   categories: CategoryItem[]
   initialCustomers?: CustomerPosItem[]
@@ -68,10 +70,12 @@ export function PosTerminal({
   businessId,
   businessName,
   currency,
+  industry,
   initialProducts,
   categories,
   initialCustomers = [],
 }: PosTerminalProps) {
+  const theme = getBusinessTheme(industry)
   const [products] = useState<ProductItem[]>(initialProducts)
   const [customers] = useState<CustomerPosItem[]>(initialCustomers)
   const [cart, setCart] = useState<CartItem[]>([])
@@ -375,7 +379,7 @@ export function PosTerminal({
         <div className="relative">
           <div className="flex items-center gap-2">
             <form onSubmit={handleBarcodeSubmit} className="relative flex-1">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#FE9820]">
+              <div className={`absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none ${theme.primaryText}`}>
                 <Barcode className="w-5 h-5" />
               </div>
               <input
@@ -384,7 +388,7 @@ export function PosTerminal({
                 value={barcodeInput}
                 onChange={(e) => setBarcodeInput(e.target.value)}
                 placeholder="Escanear con pistola USB / Bluetooth (o tipear código + Enter)..."
-                className="w-full pl-11 pr-24 py-3 bg-white border-2 border-neutral-200 focus:border-[#FE9820] rounded-xl text-[#1F1F1F] placeholder:text-[#9E9E9E] text-sm outline-none transition-all shadow-inner"
+                className={`w-full pl-11 pr-24 py-3 bg-white border-2 border-neutral-200 ${theme.primaryRing} rounded-xl text-[#1F1F1F] placeholder:text-[#9E9E9E] text-sm outline-none transition-all shadow-inner`}
               />
               <div className="absolute inset-y-0 right-1.5 flex items-center">
                 <span className="text-[10px] font-mono uppercase bg-neutral-100 text-neutral-600 px-2 py-1 rounded border border-neutral-200">
@@ -396,10 +400,10 @@ export function PosTerminal({
             <button
               type="button"
               onClick={() => setIsCameraScannerOpen(true)}
-              className="flex items-center gap-2 px-4 py-3 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-xs shadow-xs transition-colors shrink-0"
+              className="flex items-center gap-2 px-4 py-3 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-xs shadow-xs transition-colors shrink-0 cursor-pointer"
               title="Abrir cámara para escanear con el celular o notebook"
             >
-              <Camera className="w-4 h-4 text-[#FE9820]" />
+              <Camera className={`w-4 h-4 ${theme.primaryText}`} />
               <span className="hidden sm:inline">Cámara</span>
             </button>
           </div>
@@ -432,7 +436,7 @@ export function PosTerminal({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Buscar por nombre o código de barras..."
-              className="w-full pl-9 pr-3 py-2 bg-white border border-neutral-200 focus:border-[#FE9820] rounded-xl text-sm text-[#1F1F1F] placeholder:text-[#9E9E9E] outline-none"
+              className={`w-full pl-9 pr-3 py-2 bg-white border border-neutral-200 ${theme.primaryRing} rounded-xl text-sm text-[#1F1F1F] placeholder:text-[#9E9E9E] outline-none`}
             />
           </div>
 
@@ -441,9 +445,9 @@ export function PosTerminal({
             <button
               type="button"
               onClick={() => setSelectedCategory("all")}
-              className={`text-xs px-3 py-2 rounded-xl border whitespace-nowrap transition-all ${
+              className={`text-xs px-3 py-2 rounded-xl border whitespace-nowrap transition-all cursor-pointer ${
                 selectedCategory === "all"
-                  ? "bg-[#FE9820] text-white font-bold border-[#FE9820]"
+                  ? `${theme.primaryBg} text-white font-bold ${theme.primaryBorder}`
                   : "bg-white text-neutral-600 border-neutral-200 hover:border-neutral-300 hover:text-[#1F1F1F]"
               }`}
             >
@@ -454,9 +458,9 @@ export function PosTerminal({
                 key={cat.id}
                 type="button"
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`text-xs px-3 py-2 rounded-xl border whitespace-nowrap transition-all ${
+                className={`text-xs px-3 py-2 rounded-xl border whitespace-nowrap transition-all cursor-pointer ${
                   selectedCategory === cat.id
-                    ? "bg-[#FE9820] text-white font-bold border-[#FE9820]"
+                    ? `${theme.primaryBg} text-white font-bold ${theme.primaryBorder}`
                     : "bg-white text-neutral-600 border-neutral-200 hover:border-neutral-300 hover:text-[#1F1F1F]"
                 }`}
               >
@@ -482,10 +486,10 @@ export function PosTerminal({
                     key={p.id}
                     type="button"
                     onClick={() => addToCart(p)}
-                    className="group relative p-3.5 rounded-2xl bg-white border border-neutral-200 hover:border-[#FE9820] hover:shadow-md text-left transition-all flex flex-col justify-between shadow-sm"
+                    className={`group relative p-3.5 rounded-2xl bg-white border border-neutral-200 hover:${theme.primaryBorder} hover:shadow-md text-left transition-all flex flex-col justify-between shadow-sm cursor-pointer`}
                   >
                     {inCart && (
-                      <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-[#FE9820] text-white font-extrabold text-xs flex items-center justify-center shadow-lg shadow-amber-500/30">
+                      <span className={`absolute -top-2 -right-2 w-6 h-6 rounded-full ${theme.primaryBg} text-white font-extrabold text-xs flex items-center justify-center shadow-lg ${theme.shadow}`}>
                         {inCart.quantity}
                       </span>
                     )}
@@ -495,18 +499,18 @@ export function PosTerminal({
                         <span className="font-mono bg-neutral-100 text-neutral-600 px-1.5 py-0.5 rounded text-[10px]">
                           {p.barcode || "Sin código"}
                         </span>
-                        <span className="text-emerald-400 font-medium">Stock: {p.stock}</span>
+                        <span className="text-emerald-500 font-semibold">Stock: {p.stock}</span>
                       </div>
-                      <h4 className="text-sm font-semibold text-[#1F1F1F] group-hover:text-[#FE9820] line-clamp-2 transition-colors">
+                      <h4 className={`text-sm font-semibold text-[#1F1F1F] group-hover:${theme.primaryText} line-clamp-2 transition-colors`}>
                         {p.name}
                       </h4>
                     </div>
 
-                    <div className="mt-3 pt-2 border-t border-neutral-800 flex items-center justify-between">
-                      <span className="text-base font-extrabold text-[#FE9820]">
+                    <div className="mt-3 pt-2 border-t border-neutral-100 flex items-center justify-between">
+                      <span className={`text-base font-extrabold ${theme.primaryText}`}>
                         ${Number(p.sale_price).toLocaleString("es-AR")}
                       </span>
-                      <span className="w-6 h-6 rounded-lg bg-neutral-100 group-hover:bg-[#FE9820] group-hover:text-white text-neutral-700 flex items-center justify-center text-xs transition-colors">
+                      <span className={`w-6 h-6 rounded-lg bg-neutral-100 group-hover:${theme.primaryBg} group-hover:text-white text-neutral-700 flex items-center justify-center text-xs transition-colors`}>
                         <Plus className="w-3.5 h-3.5" />
                       </span>
                     </div>
@@ -523,7 +527,7 @@ export function PosTerminal({
         {/* Cart Header */}
         <div className="p-4 border-b border-neutral-200 flex items-center justify-between bg-neutral-50/80">
           <div className="flex items-center gap-2">
-            <ShoppingBag className="w-5 h-5 text-[#FE9820]" />
+            <ShoppingBag className={`w-5 h-5 ${theme.primaryText}`} />
             <h3 className="font-bold text-[#1F1F1F] text-base">Carrito de Venta</h3>
             <span className="text-xs font-mono bg-neutral-100 text-neutral-600 px-2 py-0.5 rounded-full">
               {cart.reduce((acc, i) => acc + i.quantity, 0)} ítems
@@ -611,7 +615,7 @@ export function PosTerminal({
             <button
               type="button"
               onClick={() => setShowDiscountModal(true)}
-              className="text-[#FE9820] hover:text-[#FE9820]/80 font-medium inline-flex items-center gap-1"
+              className={`${theme.primaryText} hover:opacity-80 font-medium inline-flex items-center gap-1 cursor-pointer`}
             >
               <Percent className="w-3.5 h-3.5" />
               {discountAmount > 0
@@ -622,7 +626,7 @@ export function PosTerminal({
               <button
                 type="button"
                 onClick={() => setDiscountValue(0)}
-                className="text-neutral-400 hover:text-neutral-200 text-[10px]"
+                className="text-neutral-400 hover:text-neutral-600 text-[10px] cursor-pointer"
               >
                 Quitar
               </button>
@@ -631,12 +635,12 @@ export function PosTerminal({
 
           {/* Subtotal & Discount rows */}
           {discountAmount > 0 && (
-            <div className="space-y-1 text-xs text-neutral-400 border-t border-neutral-800/60 pt-2">
+            <div className="space-y-1 text-xs text-neutral-400 border-t border-neutral-100 pt-2">
               <div className="flex justify-between">
                 <span>Subtotal:</span>
                 <span>${subtotal.toLocaleString("es-AR")}</span>
               </div>
-              <div className="flex justify-between text-amber-400">
+              <div className="flex justify-between text-amber-600 font-medium">
                 <span>Descuento:</span>
                 <span>-${discountAmount.toLocaleString("es-AR")}</span>
               </div>
@@ -646,7 +650,7 @@ export function PosTerminal({
           {/* TOTAL BANNER */}
           <div className="flex items-center justify-between pt-1">
             <span className="text-sm font-semibold text-neutral-600">Total a Pagar</span>
-            <span className="text-2xl font-black text-[#FE9820]">
+            <span className={`text-2xl font-black ${theme.primaryText}`}>
               ${total.toLocaleString("es-AR")} <span className="text-xs text-neutral-400 font-normal">{currency}</span>
             </span>
           </div>
@@ -656,7 +660,7 @@ export function PosTerminal({
             type="button"
             disabled={cart.length === 0}
             onClick={handleOpenCheckout}
-            className="w-full py-3.5 px-4 rounded-xl bg-[#FE9820] hover:bg-[#FE9820]/90 disabled:opacity-40 disabled:pointer-events-none text-white font-extrabold text-base tracking-wide flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 transition-all cursor-pointer"
+            className={`w-full py-3.5 px-4 rounded-xl ${theme.primaryBg} ${theme.primaryHoverBg} disabled:opacity-40 disabled:pointer-events-none text-white font-extrabold text-base tracking-wide flex items-center justify-center gap-2 shadow-lg ${theme.shadow} transition-all cursor-pointer`}
           >
             <Banknote className="w-5 h-5" />
             <span>COBRAR (${total.toLocaleString("es-AR")})</span>
@@ -756,9 +760,9 @@ export function PosTerminal({
             )}
 
             {/* Total Highlight */}
-            <div className="p-4 rounded-2xl bg-neutral-50/80 border border-[#FE9820]/30 flex items-center justify-between">
+            <div className={`p-4 rounded-2xl bg-neutral-50/80 border ${theme.badgeBorder} flex items-center justify-between`}>
               <span className="text-xs sm:text-sm text-neutral-500 font-semibold">Total de la venta:</span>
-              <span className="text-3xl font-black text-[#FE9820]">
+              <span className={`text-3xl font-black ${theme.primaryText}`}>
                 ${total.toLocaleString("es-AR")} <span className="text-xs text-neutral-500 font-bold">{currency}</span>
               </span>
             </div>
@@ -782,11 +786,11 @@ export function PosTerminal({
                       setPaymentMethod(m.id as typeof paymentMethod)
                       setCheckoutError(null)
                     }}
-                    className={`p-3 rounded-xl border flex items-center gap-2 font-bold text-xs transition-all ${
+                    className={`p-3 rounded-xl border flex items-center gap-2 font-bold text-xs transition-all cursor-pointer ${
                       isSelected
                         ? m.isCredit
                           ? "bg-purple-50 border-purple-500 text-purple-900 ring-1 ring-purple-500 shadow-xs"
-                          : "bg-[#FE9820]/10 border-[#FE9820] text-[#1F1F1F] ring-1 ring-[#FE9820] shadow-xs"
+                          : `${theme.badgeBg} ${theme.primaryBorder} text-[#1F1F1F] ring-1 ${theme.primaryRing} shadow-xs`
                         : "bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50 hover:border-neutral-300"
                     } ${m.isCredit ? "col-span-2 sm:col-span-1" : ""}`}
                   >
@@ -795,7 +799,7 @@ export function PosTerminal({
                         isSelected
                           ? m.isCredit
                             ? "text-purple-600"
-                            : "text-[#FE9820]"
+                            : theme.primaryText
                           : "text-neutral-400"
                       }`}
                     />
@@ -992,7 +996,7 @@ export function PosTerminal({
                   value={amountTendered || ""}
                   onChange={(e) => setAmountTendered(Number(e.target.value))}
                   placeholder="Ingrese el monto recibido"
-                  className="w-full p-3 rounded-xl bg-white border border-neutral-200 focus:border-[#FE9820] font-black text-2xl text-[#1F1F1F] outline-none shadow-inner transition-colors"
+                  className={`w-full p-3 rounded-xl bg-white border border-neutral-200 ${theme.primaryRing} font-black text-2xl text-[#1F1F1F] outline-none shadow-inner transition-colors`}
                 />
 
                 {/* Quick Bill Chips */}
@@ -1000,7 +1004,7 @@ export function PosTerminal({
                   <button
                     type="button"
                     onClick={() => setAmountTendered(total)}
-                    className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-white border border-neutral-200 text-neutral-700 hover:border-[#FE9820] shadow-2xs"
+                    className={`text-xs font-semibold px-2.5 py-1 rounded-lg bg-white border border-neutral-200 text-neutral-700 hover:${theme.primaryBorder} shadow-2xs cursor-pointer`}
                   >
                     Exacto
                   </button>
@@ -1009,7 +1013,7 @@ export function PosTerminal({
                       key={bill}
                       type="button"
                       onClick={() => setAmountTendered((prev) => prev + bill)}
-                      className="text-xs font-bold px-2.5 py-1 rounded-lg bg-white border border-neutral-200 text-[#FE9820] hover:border-[#FE9820] shadow-2xs"
+                      className={`text-xs font-bold px-2.5 py-1 rounded-lg bg-white border border-neutral-200 ${theme.primaryText} hover:${theme.primaryBorder} shadow-2xs cursor-pointer`}
                     >
                       +${bill.toLocaleString("es-AR")}
                     </button>
@@ -1036,7 +1040,7 @@ export function PosTerminal({
                 type="button"
                 disabled={isPending}
                 onClick={() => setCheckoutOpen(false)}
-                className="flex-1 py-3.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-700 font-bold text-xs transition-colors"
+                className="flex-1 py-3.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-700 font-bold text-xs transition-colors cursor-pointer"
               >
                 Cancelar
               </button>
@@ -1045,7 +1049,7 @@ export function PosTerminal({
                 type="button"
                 disabled={isPending}
                 onClick={handleConfirmSale}
-                className="flex-1 py-3.5 rounded-xl bg-[#FE9820] hover:bg-[#FE9820]/90 disabled:opacity-50 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-orange-500/20 transition-all cursor-pointer"
+                className={`flex-1 py-3.5 rounded-xl ${theme.primaryBg} ${theme.primaryHoverBg} disabled:opacity-50 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md ${theme.shadow} transition-all cursor-pointer`}
               >
                 {isPending ? (
                   <>
@@ -1131,7 +1135,7 @@ export function PosTerminal({
                 ))}
                 <div className="pt-2 border-t border-neutral-200 flex justify-between font-bold text-[#1F1F1F] text-sm">
                   <span>TOTAL:</span>
-                  <span className="text-[#FE9820]">
+                  <span className={theme.primaryText}>
                     ${completedSale.total.toLocaleString("es-AR")}
                   </span>
                 </div>
@@ -1157,7 +1161,7 @@ export function PosTerminal({
               <button
                 type="button"
                 onClick={() => window.print()}
-                className="w-full py-2.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-800 font-bold text-xs flex items-center justify-center gap-2 transition-colors border border-neutral-200 shadow-xs"
+                className="w-full py-2.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-800 font-bold text-xs flex items-center justify-center gap-2 transition-colors border border-neutral-200 shadow-xs cursor-pointer"
               >
                 <Printer className="w-4 h-4" />
                 <span>Imprimir Ticket</span>
@@ -1166,7 +1170,7 @@ export function PosTerminal({
               <button
                 type="button"
                 onClick={handleNewSale}
-                className="w-full py-3.5 rounded-xl bg-[#FE9820] hover:bg-[#FE9820]/90 text-white font-black text-sm flex items-center justify-center gap-2 shadow-md shadow-orange-500/20 transition-all cursor-pointer"
+                className={`w-full py-3.5 rounded-xl ${theme.primaryBg} ${theme.primaryHoverBg} text-white font-black text-sm flex items-center justify-center gap-2 shadow-md ${theme.shadow} transition-all cursor-pointer`}
               >
                 <RotateCcw className="w-4 h-4" />
                 <span>Nueva Venta (Enter / Espacio)</span>

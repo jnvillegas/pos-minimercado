@@ -30,6 +30,7 @@ import {
   Users,
   Truck,
 } from "lucide-react"
+import { getBusinessTheme, BusinessTheme } from "@/lib/theme/business-theme"
 
 interface Business {
   id: string
@@ -92,12 +93,19 @@ function NavigationGroupList({
   isCashShiftOpen = false,
   isCollapsed = false,
   onItemClick,
+  theme,
 }: {
   pathname: string
   isCashShiftOpen?: boolean
   isCollapsed?: boolean
   onItemClick?: () => void
+  theme?: BusinessTheme
 }) {
+  const primaryText = theme?.primaryText || "text-[#FE9820]"
+  const primaryBg = theme?.primaryBg || "bg-[#FE9820]"
+  const badgeBg = theme?.badgeBg || "bg-[#FE9820]/15"
+  const badgeBorder = theme?.badgeBorder || "border-[#FE9820]/30"
+
   return (
     <div className="space-y-4 px-3 py-3">
       {NAV_GROUPS.map((group) => (
@@ -134,7 +142,7 @@ function NavigationGroupList({
                   <div className="flex items-center gap-3 min-w-0">
                     <Icon
                       className={`w-5 h-5 shrink-0 transition-colors ${
-                        isActive ? "text-[#FE9820]" : "text-neutral-400 group-hover:text-neutral-600"
+                        isActive ? primaryText : "text-neutral-400 group-hover:text-neutral-600"
                       }`}
                     />
                     {!isCollapsed && <span className="truncate">{item.label}</span>}
@@ -161,7 +169,7 @@ function NavigationGroupList({
                         <span
                           className={`text-[10px] uppercase font-bold px-1.5 py-0.5 rounded tracking-wide ${
                             isActive
-                              ? "bg-[#FE9820]/15 text-[#FE9820] border border-[#FE9820]/30"
+                              ? `${badgeBg} ${primaryText} ${badgeBorder}`
                               : "bg-neutral-100 text-neutral-500 border border-neutral-200"
                           }`}
                         >
@@ -169,16 +177,16 @@ function NavigationGroupList({
                         </span>
                       ) : null}
 
-                      {/* Right-edge vertical active indicator bar (from reference image) */}
+                      {/* Right-edge vertical active indicator bar */}
                       {isActive && (
-                        <span className="w-1 h-5 rounded-full bg-[#FE9820] shrink-0 shadow-xs" />
+                        <span className={`w-1 h-5 rounded-full ${primaryBg} shrink-0 shadow-xs`} />
                       )}
                     </div>
                   )}
 
                   {/* If collapsed and active, show small right indicator */}
                   {isCollapsed && isActive && (
-                    <span className="absolute right-1 w-1 h-4 rounded-full bg-[#FE9820]" />
+                    <span className={`absolute right-1 w-1 h-4 rounded-full ${primaryBg}`} />
                   )}
                 </Link>
               )
@@ -201,6 +209,7 @@ export function DashboardShell({
   children,
 }: DashboardShellProps) {
   const pathname = usePathname()
+  const theme = getBusinessTheme(business.industry)
   const displayName = userName?.trim() || userEmail.split("@")[0]
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [mobileMoreOpen, setMobileMoreOpen] = useState(false)
@@ -231,10 +240,10 @@ export function DashboardShell({
             {!isCollapsed && (
               <div className="min-w-0 flex flex-col">
                 <span className="font-bold text-base tracking-tight text-[#1F1F1F] flex items-center gap-1">
-                  POS <span className="text-[#FE9820]">Minimercado</span>
+                  POS <span className={theme.primaryText}>{theme.shortLabel}</span>
                 </span>
                 <span className="text-[10px] text-neutral-400 truncate">
-                  {business.industry}
+                  {business.name}
                 </span>
               </div>
             )}
@@ -242,7 +251,7 @@ export function DashboardShell({
           <button
             type="button"
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-1.5 rounded-lg text-neutral-400 hover:text-[#1F1F1F] hover:bg-neutral-100 transition-colors"
+            className="p-1.5 rounded-lg text-neutral-400 hover:text-[#1F1F1F] hover:bg-neutral-100 transition-colors cursor-pointer"
             title={isCollapsed ? "Expandir menú" : "Colapsar menú"}
           >
             {isCollapsed ? (
@@ -259,6 +268,7 @@ export function DashboardShell({
             pathname={pathname}
             isCashShiftOpen={isCashShiftOpen}
             isCollapsed={isCollapsed}
+            theme={theme}
           />
         </div>
 
@@ -311,7 +321,7 @@ export function DashboardShell({
               } gap-2.5 shadow-xs`}
             >
               <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#FBDAA9] to-[#FE9820] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs">
+                <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${theme.gradientAvatar} text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs`}>
                   {business.name.charAt(0).toUpperCase()}
                 </div>
                 {!isCollapsed && (
@@ -411,6 +421,7 @@ export function DashboardShell({
                 pathname={pathname}
                 isCashShiftOpen={isCashShiftOpen}
                 onItemClick={() => setMobileMenuOpen(false)}
+                theme={theme}
               />
             </div>
             <div className="p-3 border-t border-neutral-200 bg-neutral-50/50 space-y-2">
@@ -643,10 +654,13 @@ export function DashboardShell({
               <button
                 type="button"
                 onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                className="flex items-center gap-2.5 pl-2 pr-3 py-1.5 rounded-xl border border-neutral-200/80 bg-white hover:bg-neutral-50 hover:border-neutral-300 transition-all shadow-xs"
+                className="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-xl border border-neutral-200/80 bg-white hover:bg-neutral-50 hover:border-neutral-300 transition-all shadow-xs cursor-pointer"
               >
-                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-neutral-100 text-neutral-600 border border-neutral-200">
+                <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-md bg-neutral-100 text-neutral-600 border border-neutral-200">
                   {business.currency}
+                </span>
+                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md ${theme.badgeBg} ${theme.primaryText} border ${theme.badgeBorder}`}>
+                  {theme.badgeLabel}
                 </span>
                 <span className="text-xs font-bold text-[#1F1F1F] max-w-[120px] sm:max-w-[180px] truncate">
                   {business.name}
